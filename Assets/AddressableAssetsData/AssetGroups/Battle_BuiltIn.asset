@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Battle_BuiltIn
+  m_EditorClassIdentifier: 
+  m_GroupName: Battle_BuiltIn
+  m_GUID: ce37ca8018eb9456aa5db70b48c9d122
+  m_SerializeEntries:
+  - m_GUID: d9e222f9e0aa740c69edfcc2541b89e6
+    m_Address: Battle/GameObject (1).prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: b38a95f92f9ce483fb5049d7ed07c4e0, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 86d9890937abe4d0c813c3d272166d62, type: 2}

@@ -1,0 +1,19 @@
+{
+    "name": "DOTweenPro.Rumtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e24ad53797362cc4c9c3d2a3aa1ce013"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "DOTween.dll",
+        "DOTweenPro.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

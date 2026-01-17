@@ -1,0 +1,16 @@
+{
+    "name": "DoughFramework.Generated",
+    "rootNamespace": "",
+    "references": [
+        "GUID:676f4a34f73d44ad7a0539c39a78b515"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
