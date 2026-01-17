@@ -10,4 +10,10 @@ public static class MathUtils
                2 * (1 - t) * t * p1 +
                Mathf.Pow(t, 2) * p2;
     }
+
+    // index를 0 ~ count-1 사이로 리턴한다. 
+    public static int WrapIndex(int index, int count)
+    {
+        return (index % count + count) % count;
+    }
 }
