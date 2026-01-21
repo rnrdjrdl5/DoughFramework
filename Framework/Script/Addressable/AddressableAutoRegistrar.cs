@@ -83,14 +83,25 @@ public class AddressableAutoRegistrar : AssetPostprocessor
         var relativePath = assetPath.Substring(ContentsPath.Length);
         var parts = relativePath.Split('/');
 
-        if (parts.Length < 3)
+        // BuiltIn 또는 CDN 폴더를 찾기
+        int folderTypeIndex = -1;
+        string folderType = null;
+
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (parts[i] == BuiltInFolder || parts[i] == CDNFolder)
+            {
+                folderTypeIndex = i;
+                folderType = parts[i];
+                break;
+            }
+        }
+
+        if (folderTypeIndex == -1 || folderTypeIndex == 0)
             return null;
 
-        var contentName = parts[0];
-        var folderType = parts[1];
-
-        if (folderType != BuiltInFolder && folderType != CDNFolder)
-            return null;
+        // BuiltIn/CDN의 바로 위 폴더를 contentName으로 사용
+        var contentName = parts[folderTypeIndex - 1];
 
         return (contentName, folderType);
     }
@@ -129,9 +140,16 @@ public class AddressableAutoRegistrar : AssetPostprocessor
 
     static string GenerateAddress(string assetPath, string contentName, string folderType)
     {
-        var relativePath = assetPath.Substring(ContentsPath.Length);
-        var folderPrefix = $"{contentName}/{folderType}/";
-        var addressPath = relativePath.Substring(folderPrefix.Length);
+        // BuiltIn 또는 CDN 폴더 이후의 경로만 추출
+        var builtInIndex = assetPath.IndexOf($"/{BuiltInFolder}/");
+        var cdnIndex = assetPath.IndexOf($"/{CDNFolder}/");
+        var folderIndex = builtInIndex != -1 ? builtInIndex : cdnIndex;
+
+        if (folderIndex == -1)
+            return assetPath;
+
+        var folderTypeLength = folderType == BuiltInFolder ? BuiltInFolder.Length : CDNFolder.Length;
+        var addressPath = assetPath.Substring(folderIndex + folderTypeLength + 2); // +2 for the two slashes
 
         return $"{contentName}/{addressPath}";
     }
