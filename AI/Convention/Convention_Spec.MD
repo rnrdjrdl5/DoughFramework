@@ -20,12 +20,47 @@ public IReadOnlyList<Trait> Traits => traits;
 public IReadOnlyList<IActorData> ActorDatas => actorDatas;
 ```
 
+언더스코어(`_`) 백킹필드 금지:
+```csharp
+// before
+int _value;
+public int Value => _value;
+
+// after
+int value;
+public int Value => value;
+```
+
 ## 2. 필드 초기화
 
 `new()` 표현식 사용:
 ```csharp
 List<Panel> panels = new();
 List<Trait> traits = new();
+```
+
+멤버 변수 초기화 규칙(필수)
+- 클래스/구조체의 멤버 변수에서 객체를 생성할 때는 `new Type()`이 아닌 타겟-타입 `new()`를 사용합니다.
+
+잘못된 예
+```csharp
+List<string> datas = new List<string>();
+Dictionary<string, int> map = new Dictionary<string, int>();
+```
+
+올바른 예
+```csharp
+List<string> datas = new();
+Dictionary<string, int> map = new();
+```
+
+언더스코어 금지 예시
+```csharp
+// before
+readonly List<string> _datas = new();
+
+// after
+readonly List<string> datas = new();
 ```
 
 ## 3. 제네릭 패턴
@@ -172,4 +207,33 @@ public void AllocateObject(int count)
 public void AllocateObject(int count, GameObject prefab)
 public GameObject AllocateObject()
 public GameObject AllocateObject(GameObject prefab)
+```
+
+## 13. 멤버 변수 선언 상세 규칙
+
+### 접근 한정자
+- private 키워드는 표기하지 않습니다. (클래스 멤버의 기본 접근자는 private)
+- protected/public 등 다른 접근 한정자는 기존 규칙대로 명시합니다.
+
+### 선언 순서
+- 멤버 변수는 그룹을 나누어 선언합니다: `public` 그룹 → 빈 줄 → `private` 그룹(표기 생략)
+- 각 그룹 내부에서는 컨테이너(Dictionary, List, HashSet 등) → 기본형/값형(int, string, float 등) 순서로 정렬합니다.
+ - 모든 멤버/로컬/파라미터 이름에 선행 언더스코어(`_`)를 사용하지 않습니다.
+
+### 예시
+```csharp
+public class Inventory
+{
+    // public fields
+    public List<Item> items;
+    public Dictionary<string, int> counts;
+    public int capacity;
+
+    // blank line between public and private groups
+
+    // private fields (no 'private' keyword)
+    readonly List<Item> activeItems = new();
+    Dictionary<string, int> cache = new();
+    int currentCount;
+}
 ```

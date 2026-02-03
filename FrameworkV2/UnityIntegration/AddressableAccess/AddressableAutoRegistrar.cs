@@ -151,6 +151,11 @@ public class AddressableAutoRegistrar : AssetPostprocessor
         var folderTypeLength = folderType == BuiltInFolder ? BuiltInFolder.Length : CDNFolder.Length;
         var addressPath = assetPath.Substring(folderIndex + folderTypeLength + 2); // +2 for the two slashes
 
+        // 확장자 제거
+        var lastDotIndex = addressPath.LastIndexOf('.');
+        if (lastDotIndex > 0)
+            addressPath = addressPath.Substring(0, lastDotIndex);
+
         return $"{contentName}/{addressPath}";
     }
 

@@ -5,7 +5,9 @@
         "UniTask",
         "Unity.TextMeshPro",
         "Unity.InputSystem",
-        "DOTweenPro.Rumtime"
+        "DOTweenPro.Rumtime",
+        "Unity.Addressables",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

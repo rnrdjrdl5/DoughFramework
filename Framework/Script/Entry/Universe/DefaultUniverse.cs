@@ -16,6 +16,6 @@
             base.Initialize();
 
             var stageModule = Environment.GetModule<StageModule>();
-            stageModule.AddStage<DefaultStage>("Common/Stage/DefaultStage");
+            stageModule.AddStage<DefaultStage>("Core/DefaultStage");
         }
     }
