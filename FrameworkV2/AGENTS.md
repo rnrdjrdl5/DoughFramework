@@ -130,3 +130,7 @@
 - `WorldEntity.Execute(...)`는 `CommandAbility`가 없을 때 자동 추가합니다(입력 파이프 강제 보장).
 - Presence 출력 드레인은 프레임마다 수행됩니다(`Presence.Update()`에서 호출). 헤드리스 환경에서는 `HeadlessPresence.Tick()`을 직접 호출하세요.
 - `FrameworkViewerWindow`로 현재 Realm/Entity/Ability 구성을 시각 점검하고, `Copy` 버튼으로 텍스트 덤프를 복사할 수 있습니다.
+# FrameworkV2 Agent Notes
+
+## Content Placement
+- New content units must be created under `FrameworkV2/Core/Content`.
