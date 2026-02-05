@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 
-// ItemAbility 사용 예시를 보여주는 참고 스크립트
-public static class ExampleItemAbility
+// InventoryAbility 사용 예시를 보여주는 참고 스크립트
+public static class ExampleInventoryAbility
 {
-    // Example: 아이템 정의 등록 -> 룰 구성 -> ItemAbility 사용
+    // Example: 아이템 정의 등록 -> 룰 구성 -> InventoryAbility 사용
     public static void RunExample()
     {
         var provider = new StaticItemDefinitionProvider();
@@ -15,12 +15,12 @@ public static class ExampleItemAbility
             new MaxStackRule(provider)
         };
 
-        var itemAbility = new ItemAbility();
-        itemAbility.Configure(provider, rules);
+        var inventoryAbility = new InventoryAbility();
+        inventoryAbility.Configure(provider, rules);
 
-        itemAbility.TryAdd(1001, 3);
-        itemAbility.TryAdd(2001, 1);
-        itemAbility.TrySetAmount(1001, 50);
+        inventoryAbility.TryAdd(1001, 3);
+        inventoryAbility.TryAdd(2001, 1);
+        inventoryAbility.TrySetAmount(1001, 50);
     }
 
     // 아이템 최대 스택 규칙 예시

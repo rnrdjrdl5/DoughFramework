@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 // 아이템 수량을 관리하는 인벤토리 Ability
-public sealed class ItemAbility : Ability
+public sealed class InventoryAbility : Ability
 {
     // 수량 변경 이벤트
     public event Action<ItemEventPayload> AmountChanged;
