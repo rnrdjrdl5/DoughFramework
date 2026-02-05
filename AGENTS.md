@@ -2,4 +2,8 @@
 
 - Read `AI/Convention/Convention.MD` before making code changes.
 - Follow the conventions described there.
-- 예시 스크립트/예시 코드가 필요할 때는 프로젝트 최상위 MD 파일에 간단한 사용 예시 문장을 함께 작성합니다.
+- `AI/Convention/Convention.MD`의 함수 구조 예시는 초기화 흐름 설계 참고용입니다.
+- 오케스트레이션 원칙: 진입점은 고수준 흐름만 정의하고, 하위 함수로 구체 로직을 위임합니다.
+- 작업 후 테스트케이스: 변경한 문서/코드에 대해 사용자가 직접 확인할 수 있는 테스트 목록을 제공합니다.
+- Ability 작업 규칙: 요청한 Ability 작업 후 해당 디렉토리에 Ability 요약 `AGENTS.md`를 작성합니다.
+- Ability 예제 규칙: 요청한 Ability 작업 후 해당 디렉토리에 사용법을 담은 `Example{AbilityName}` 파일을 작성합니다. (접두사 `Example` 필수, 이름은 중복 회피를 위해 자유롭게 결정)

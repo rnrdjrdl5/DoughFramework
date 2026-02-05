@@ -236,11 +236,46 @@ using UnityEngine;                   // Unity
 
 - 구조적 주석: `// NOTE :`, `// TBD`
 - 기본적으로 한글 주석을 작성합니다.
-- 클래스 시작부에는 기능 목적을 한 줄 주석으로 명시합니다.
-- 함수나 문맥(중요 분기/처리 흐름)에는 읽기 쉬운 설명 주석을 추가합니다.
+- 클래스 시작부에는 기능 목적을 읽기 쉬운 한 줄 주석으로 **필수** 명시합니다.
+- 함수 시작부에는 읽기 쉬운 한 줄 주석을 **필수**로 작성합니다.
+- 함수나 문맥(중요 분기/처리 흐름)에는 추가 설명 주석을 더합니다.
 - 불필요한 주석은 피하되, 가독성을 우선합니다.
 - 한국어/영어 혼용 허용
 - XML 문서 주석은 필요시에만
+
+## 함수 구조 (오케스트레이션)
+
+- 접근점에 가까울수록 **고수준/두루뭉실한 흐름**을 정의합니다.
+- 함수가 깊어질수록 **더 세분화된 구체 로직**을 담당합니다.
+- 상위 함수는 순서/흐름만 조율하고, 실제 처리는 하위 함수로 위임합니다.
+
+예시:
+```csharp
+// Session 초기화 흐름을 관리하는 오케스트레이터
+public class Session
+{
+    // 외부에서 호출되는 고수준 초기화 진입점
+    public void Initialize(SessionConfig config)
+    {
+        InitializeEnvironment(config);
+        InitializeState(config);
+    }
+
+    // 내부 초기화 단계의 흐름만 조율
+    void InitializeState(SessionConfig config)
+    {
+        AssignSessionId();
+        LoadModules(config);
+        WireEvents();
+    }
+
+    // 실제 모듈 로딩 처리
+    void LoadModules(SessionConfig config)
+    {
+        // 구체 로직
+    }
+}
+```
 
 ## 메서드 오버로딩
 
