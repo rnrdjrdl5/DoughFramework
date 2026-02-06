@@ -1,5 +1,3 @@
-public interface IStatDefinitionProvider
+public interface IStatDefinitionProvider : IDefinitionProvider<StatDefinition>
 {
-    bool TryResolveId(int id, out int resolvedId);
-    bool TryGetDefinition(int id, out StatDefinition definition);
 }

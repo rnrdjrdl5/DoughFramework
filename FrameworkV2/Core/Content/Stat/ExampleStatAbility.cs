@@ -20,6 +20,10 @@ public static class ExampleStatAbility
 
         var statAbility = new StatAbility();
         statAbility.Configure(provider);
+        statAbility.OnChangedStat += payload =>
+        {
+            // 변경된 스탯을 수신한다
+        };
 
         var strengthId = HashKey.FromName("Strength");
         var agilityId = HashKey.FromName("Agility");

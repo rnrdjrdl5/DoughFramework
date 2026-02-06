@@ -9,35 +9,31 @@ public sealed class InventoryAbility : Ability
 
     IItemDefinitionProvider provider;
     IReadOnlyList<IItemRule> rules;
-    readonly Dictionary<int, int> amounts = new();
+    DefinitionValueStore<ItemDefinition> store;
 
     // 아이템 정의 공급자와 규칙을 주입한다
     public void Configure(IItemDefinitionProvider provider, IReadOnlyList<IItemRule> rules = null)
     {
         this.provider = provider;
         this.rules = rules ?? new List<IItemRule>();
+        store = provider == null
+            ? null
+            : new DefinitionValueStore<ItemDefinition>(
+                provider,
+                definition => 0);
     }
 
     // 아이템 수량을 조회한다
     public bool TryGetAmount(int id, out int amount)
     {
         amount = 0;
-        if (!TryResolveId(id, out var resolvedId))
-        {
-            return false;
-        }
-
-        return amounts.TryGetValue(resolvedId, out amount);
+        return store != null && store.TryGetValue(id, out amount);
     }
 
     // 아이템 수량을 없으면 0으로 반환한다
     public int GetAmountOrZero(int id)
     {
-        if (TryGetAmount(id, out var amount))
-        {
-            return amount;
-        }
-        return 0;
+        return store != null ? store.GetValueOrZero(id) : 0;
     }
 
     // 특정 수량 이상 보유 여부를 확인한다
@@ -70,16 +66,11 @@ public sealed class InventoryAbility : Ability
             return false;
         }
 
-        amounts.TryGetValue(resolvedId, out var previous);
-        if (previous > int.MaxValue - amount)
+        if (store == null || !store.TryAddValue(resolvedId, amount, out var previous, out var current))
         {
-            // 오버플로우 방지
             return false;
         }
 
-        var current = previous + amount;
-
-        amounts[resolvedId] = current;
         EmitChanged(resolvedId, previous, amount, current, reason);
         return true;
     }
@@ -103,15 +94,18 @@ public sealed class InventoryAbility : Ability
             return false;
         }
 
-        amounts.TryGetValue(resolvedId, out var previous);
-        if (previous < amount)
+        if (store == null || !store.TryGetValue(resolvedId, out var previous) || previous < amount)
         {
             // 보유 수량 부족
             return false;
         }
 
         var current = previous - amount;
-        amounts[resolvedId] = current;
+        if (!store.TrySetValue(resolvedId, current, out _, out _, out _))
+        {
+            return false;
+        }
+
         EmitChanged(resolvedId, previous, -amount, current, reason);
         return true;
     }
@@ -135,15 +129,17 @@ public sealed class InventoryAbility : Ability
             return false;
         }
 
-        amounts.TryGetValue(resolvedId, out var previous);
-        if (previous == newAmount)
+        if (store == null || !store.TrySetValue(resolvedId, newAmount, out var previous, out var delta, out var current))
+        {
+            return false;
+        }
+
+        if (previous == current)
         {
             // 변경이 없으면 성공 처리
             return true;
         }
 
-        amounts[resolvedId] = newAmount;
-        var delta = newAmount - previous;
         EmitChanged(resolvedId, previous, delta, newAmount, reason);
         return true;
     }
@@ -152,7 +148,7 @@ public sealed class InventoryAbility : Ability
     public IReadOnlyDictionary<int, int> GetAmounts()
     {
         // 외부 변경을 막기 위해 복사본 반환
-        return new Dictionary<int, int>(amounts);
+        return store != null ? store.GetValues() : new Dictionary<int, int>();
     }
 
     // 아이템 id를 검증하고 반환한다

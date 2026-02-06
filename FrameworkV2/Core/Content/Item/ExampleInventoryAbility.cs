@@ -17,6 +17,10 @@ public static class ExampleInventoryAbility
 
         var inventoryAbility = new InventoryAbility();
         inventoryAbility.Configure(provider, rules);
+        inventoryAbility.AmountChanged += payload =>
+        {
+            // 변경된 아이템 수량을 수신한다
+        };
 
         inventoryAbility.TryAdd(1001, 3);
         inventoryAbility.TryAdd(2001, 1);
