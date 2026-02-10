@@ -1,18 +1,25 @@
 using System;
+using UnityEngine;
 
 // TeamAbility 사용 예시를 보여주는 참고 스크립트
 public static class ExampleTeamAbility
 {
-    // Example: Realm 생성 -> TeamAbility 부착 -> 팀 배정/이동/제거
+    // Realm/Entity 생성 및 TeamAbility 동작을 예시로 보여줍니다.
     public static void RunExample()
     {
-        var realm = new Realm();
-        var teamAbility = new TeamAbility();
-        realm.AddAbility(teamAbility);
+        var realmObject = new GameObject("ExampleRealm");
+        var realm = realmObject.AddComponent<Realm>();
+        var teamAbility = realm.AddAbility<TeamAbility>();
 
-        var entity = new WorldEntity();
-        var memberAbility = new TeamMemberAbility();
-        entity.AddAbility(memberAbility);
+        var entityObject = new GameObject("ExampleEntity");
+        entityObject.transform.SetParent(realmObject.transform, false);
+        var entity = entityObject.AddComponent<Entity>();
+        var memberAbility = entity.AddAbility<TeamMemberAbility>();
+
+        realm.Initialize();
+        realm.Ready();
+        entity.Initialize();
+        entity.Ready();
 
         teamAbility.MemberChanged += payload =>
         {

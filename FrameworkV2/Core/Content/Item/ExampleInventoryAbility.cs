@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 // InventoryAbility 사용 예시를 보여주는 참고 스크립트
 public static class ExampleInventoryAbility
@@ -15,8 +16,14 @@ public static class ExampleInventoryAbility
             new MaxStackRule(provider)
         };
 
-        var inventoryAbility = new InventoryAbility();
+        var hostObject = new GameObject("InventoryHost");
+        var host = hostObject.AddComponent<Entity>();
+        var inventoryAbility = host.AddAbility<InventoryAbility>();
         inventoryAbility.Configure(provider, rules);
+
+        host.Initialize();
+        host.Ready();
+
         inventoryAbility.AmountChanged += payload =>
         {
             // 변경된 아이템 수량을 수신한다
@@ -32,23 +39,27 @@ public static class ExampleInventoryAbility
     {
         readonly IItemDefinitionProvider provider;
 
+        // 아이템 정의 제공자를 설정합니다.
         public MaxStackRule(IItemDefinitionProvider provider)
         {
             this.provider = provider;
         }
 
+        // 아이템 추가 가능 여부를 판단합니다.
         public bool CanAdd(int id, int amount, out string reason)
         {
             reason = null;
             return provider != null && provider.TryGetDefinition(id, out _);
         }
 
+        // 아이템 제거 가능 여부를 판단합니다.
         public bool CanRemove(int id, int amount, out string reason)
         {
             reason = null;
             return true;
         }
 
+        // 아이템 수량 설정 가능 여부를 판단합니다.
         public bool CanSetAmount(int id, int amount, out string reason)
         {
             reason = null;

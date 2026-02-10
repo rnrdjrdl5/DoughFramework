@@ -2,40 +2,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+// Realm 트리와 Ability를 보유하는 최상위 컨텍스트 컴포넌트
 [Ability(typeof(BuildRealmAbility))]
 [Ability(typeof(SpawnEntityAbility))]
 [Ability(typeof(ClockAbility))]
-public partial class Realm : ILifecycle
+public partial class Realm : AbilityHost
 {
     public string Id => identity.Id;
     public IReadOnlyList<Realm> Children => children;
-    public IReadOnlyList<Ability> Abilities => abilitySet.Abilities;
     public IReadOnlyList<string> Aliases => aliases.Aliases;
-    public IAbilityResolver UpstreamAbilityResolver { get; private set; }
-    public bool IsInitialized => isInitialized;
-    public bool IsReady => isReady;
-    
-    readonly Identity identity;
+
+    readonly Identity identity = new();
     readonly List<Realm> children = new();
-    readonly AbilitySet abilitySet;
     readonly AliasSet aliases = new();
-    bool isInitialized;
-    bool isReady;
+
+    // 별칭을 추가합니다.
     public void AddAlias(string alias)
     {
         aliases.Add(alias);
     }
 
+    // 별칭을 제거합니다.
     public bool RemoveAlias(string alias)
     {
         return aliases.Remove(alias);
     }
 
+    // 별칭 존재 여부를 확인합니다.
     public bool HasAlias(string alias)
     {
         return aliases.Has(alias);
     }
 
+    // 별칭으로 Realm을 검색합니다.
     public IEnumerable<Realm> FindByAlias(string alias)
     {
         if (string.IsNullOrWhiteSpace(alias))
@@ -56,20 +55,14 @@ public partial class Realm : ILifecycle
             }
         }
     }
-    
+
+    // 별칭으로 단일 Realm을 조회합니다.
     public Realm GetByAlias(string alias)
     {
         return FindByAlias(alias).FirstOrDefault();
     }
-    public Realm()
-    {
-        identity = new Identity();
-        abilitySet = new AbilitySet();
-        AbilityAttributeInstaller.Apply(this, AddAbility);
-    }
 
-    // Explicit id injection removed: automatic-only policy
-
+    // 자식 Realm을 추가하고 부모-자식 관계를 설정합니다.
     public void AddChild(Realm realm)
     {
         if (realm == null)
@@ -77,11 +70,22 @@ public partial class Realm : ILifecycle
             throw new ArgumentNullException(nameof(realm));
         }
 
-        children.Add(realm);
+        if (realm.transform.parent != transform)
+        {
+            realm.transform.SetParent(transform, false);
+        }
+
+        if (!children.Contains(realm))
+        {
+            children.Add(realm);
+        }
+
         realm.Initialize();
         realm.Ready();
+        RefreshEntitiesIfNeeded();
     }
 
+    // 자식 Realm을 제거하고 수명을 종료합니다.
     public bool RemoveChild(Realm realm)
     {
         if (realm == null)
@@ -95,100 +99,46 @@ public partial class Realm : ILifecycle
             realm.Uninitialize();
         }
 
+        RefreshEntitiesIfNeeded();
         return removed;
     }
 
-    public void AddAbility(Ability ability)
+    // Transform 자식 변경을 감지하여 캐시를 갱신합니다.
+    void OnTransformChildrenChanged()
     {
-        abilitySet.Add(ability);
-        // 상위 Resolver를 신규 Ability에 전달
-        ability.AttachUpstreamResolver(UpstreamAbilityResolver);
+        RefreshChildrenCache();
+        RefreshEntitiesIfNeeded();
     }
 
-    public bool RemoveAbility(Ability ability)
+    // Realm 초기화 전 작업을 수행합니다.
+    protected override void OnInitialize()
     {
-        var removed = abilitySet.Remove(ability);
-        if (removed)
+        RefreshChildrenCache();
+        RefreshEntitiesIfNeeded();
+    }
+
+    // 자식 Realm 캐시를 갱신합니다.
+    void RefreshChildrenCache()
+    {
+        children.Clear();
+        for (int i = 0; i < transform.childCount; i++)
         {
-            ability.DetachUpstreamResolver();
-        }
-        return removed;
-    }
-
-    
-
-    public bool HasAbility<T>() where T : Ability
-    {
-        return abilitySet.HasAbility<T>();
-    }
-
-    public T GetAbility<T>() where T : Ability
-    {
-        return abilitySet.GetAbility<T>();
-    }
-
-    public void Initialize()
-    {
-        if (isInitialized)
-        {
-            return;
-        }
-        OnInitialize();
-        isInitialized = true;
-    }
-
-    public void Ready()
-    {
-        if (!isInitialized || isReady)
-        {
-            return;
-        }
-        OnReady();
-        isReady = true;
-    }
-
-    public void Uninitialize()
-    {
-        if (!isInitialized)
-        {
-            return;
-        }
-        OnUninitialize();
-        isReady = false;
-        isInitialized = false;
-    }
-
-    protected virtual void OnInitialize()
-    {
-    }
-
-    protected virtual void OnReady()
-    {
-    }
-
-    protected virtual void OnUninitialize()
-    {
-    }
-
-    internal void AttachUpstreamResolver(IAbilityResolver resolver)
-    {
-        UpstreamAbilityResolver = resolver;
-        // 보유 Ability에도 전파
-        var list = Abilities;
-        for (int i = 0; i < list.Count; i++)
-        {
-            list[i]?.AttachUpstreamResolver(resolver);
+            var child = transform.GetChild(i);
+            var childRealm = child.GetComponent<Realm>();
+            if (childRealm != null)
+            {
+                children.Add(childRealm);
+            }
         }
     }
 
-    internal void DetachUpstreamResolver()
+    // SpawnEntityAbility가 존재하면 Entity 목록을 갱신합니다.
+    void RefreshEntitiesIfNeeded()
     {
-        UpstreamAbilityResolver = null;
-        // 보유 Ability에도 전파
-        var list = Abilities;
-        for (int i = 0; i < list.Count; i++)
+        var spawn = GetAbility<SpawnEntityAbility>();
+        if (spawn != null)
         {
-            list[i]?.DetachUpstreamResolver();
+            spawn.RefreshEntities();
         }
     }
 }

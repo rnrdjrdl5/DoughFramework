@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+// 현재 Realm/Entity/Ability 구조를 텍스트로 덤프합니다.
 public static class FrameworkStructureText
 {
+    // 덤프 옵션 설정을 제공합니다.
     public sealed class Options
     {
         public bool IncludeAliases = true;
@@ -12,6 +14,7 @@ public static class FrameworkStructureText
         public int MaxDepth = int.MaxValue; 
     }
 
+    // Realm 트리 구조를 문자열로 반환합니다.
     public static string Dump(Realm root, Options options = null)
     {
         if (root == null)
@@ -25,6 +28,7 @@ public static class FrameworkStructureText
         return sb.ToString();
     }
 
+    // 단일 Realm을 텍스트로 기록합니다.
     static void DumpRealm(StringBuilder sb, Realm realm, int depth, Options opt)
     {
         if (depth > opt.MaxDepth)
@@ -66,36 +70,28 @@ public static class FrameworkStructureText
         }
     }
 
+    // Realm의 Entity 목록을 기록합니다.
     static void DumpEntities(StringBuilder sb, SpawnEntityAbility reg, int depth, Options opt)
     {
         var indent = Indent(depth);
 
-        var locals = reg.LocalEntities;
-        if (locals != null && locals.Count > 0)
+        var list = reg.Entities;
+        if (list != null && list.Count > 0)
         {
-            sb.Append(indent).Append("LocalEntities (count=").Append(locals.Count).Append(")\n");
-            for (int i = 0; i < locals.Count; i++)
+            sb.Append(indent).Append("Entities (count=").Append(list.Count).Append(")\n");
+            for (int i = 0; i < list.Count; i++)
             {
-                DumpEntity(sb, locals[i], depth + 1, opt, label: "Local");
-            }
-        }
-
-        var worlds = reg.WorldEntities;
-        if (worlds != null && worlds.Count > 0)
-        {
-            sb.Append(indent).Append("WorldEntities (count=").Append(worlds.Count).Append(")\n");
-            for (int i = 0; i < worlds.Count; i++)
-            {
-                DumpEntity(sb, worlds[i], depth + 1, opt, label: "World");
+                DumpEntity(sb, list[i], depth + 1, opt);
             }
         }
     }
 
-    static void DumpEntity(StringBuilder sb, Entity e, int depth, Options opt, string label)
+    // 단일 Entity를 기록합니다.
+    static void DumpEntity(StringBuilder sb, Entity e, int depth, Options opt)
     {
         var indent = Indent(depth);
 
-        sb.Append(indent).Append(label).Append("Entity ").Append(e.Id);
+        sb.Append(indent).Append("Entity ").Append(e.Id);
         if (opt.IncludeAliases)
         {
             AppendAliases(sb, e.Aliases);
@@ -110,6 +106,7 @@ public static class FrameworkStructureText
         }
     }
 
+    // 별칭 정보를 출력합니다.
     static void AppendAliases(StringBuilder sb, IReadOnlyList<string> aliases)
     {
         if (aliases == null || aliases.Count == 0)
@@ -125,6 +122,7 @@ public static class FrameworkStructureText
         sb.Append(']');
     }
 
+    // Ability 타입명을 출력합니다.
     static void AppendTypes(StringBuilder sb, IReadOnlyList<Ability> abilities)
     {
         for (int i = 0; i < abilities.Count; i++)
@@ -134,6 +132,7 @@ public static class FrameworkStructureText
         }
     }
 
+    // 들여쓰기 문자열을 생성합니다.
     static string Indent(int depth)
     {
         if (depth <= 0) return string.Empty;

@@ -1,9 +1,11 @@
 using System;
-using System.Reflection;
+using UnityEngine;
 
+// AbilityAttribute로 선언된 Ability 컴포넌트를 자동 부착합니다.
 public static class AbilityAttributeInstaller
 {
-    public static void Apply(object host, Action<Ability> add)
+    // 호스트 타입의 AbilityAttribute를 검사해 Ability를 부착합니다.
+    public static void Apply(AbilityHost host, Action<Ability> add)
     {
         if (host == null || add == null)
         {
@@ -14,13 +16,14 @@ public static class AbilityAttributeInstaller
         for (int i = 0; i < types.Length; i++)
         {
             var t = types[i];
-            var ctor = t.GetConstructor(Type.EmptyTypes);
-            if (ctor == null)
+            var existing = host.GetComponent(t) as Ability;
+            if (existing != null)
             {
+                add(existing);
                 continue;
             }
 
-            var instance = (Ability)Activator.CreateInstance(t);
+            var instance = host.gameObject.AddComponent(t) as Ability;
             if (instance == null)
             {
                 continue;
@@ -30,4 +33,3 @@ public static class AbilityAttributeInstaller
         }
     }
 }
-

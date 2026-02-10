@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 // DataStorageAbility 사용 예시를 보여주는 참고 스크립트
 public static class ExampleDataStorageAbility
@@ -6,7 +7,12 @@ public static class ExampleDataStorageAbility
     // Example: 외부 이벤트로 저장/로드 요청을 처리한다
     public static void RunExample()
     {
-        var storageAbility = new DataStorageAbility();
+        var hostObject = new GameObject("DataStorageHost");
+        var host = hostObject.AddComponent<Entity>();
+        var storageAbility = host.AddAbility<DataStorageAbility>();
+
+        host.Initialize();
+        host.Ready();
 
         storageAbility.Register(new DemoSaveData(coin: 100, itemCount: 3));
         storageAbility.Register(new DemoQuestData(progress: 2));
