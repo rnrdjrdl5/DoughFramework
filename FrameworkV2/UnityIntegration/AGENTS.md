@@ -4,7 +4,7 @@
 
 ## 핵심
 
-- Core의 Realm/Entity/Ability는 `MonoBehaviour` 기반입니다.
+- Core의 Realm/Entity/Ability는 `MonoBehaviour` 기반이며, Ability는 순수 C# 객체입니다.
 - UnityIntegration은 서비스/에디터/입력/유틸 계층을 담당합니다.
 - 서비스 기능은 Ability로 제공되며 RootRealm에 부착해 사용합니다.
 
@@ -27,6 +27,7 @@
 ## GameRoot
 
 - 루트 Realm 생성, RootAbility 부착, `Initialize/Ready` 호출을 담당합니다.
+- `GameRoot.Update()`가 `RootRealm.Tick()`을 호출해 Tick 능력을 가진 Ability를 갱신합니다.
 
 ## 에디터
 

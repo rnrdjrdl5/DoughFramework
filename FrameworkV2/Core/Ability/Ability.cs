@@ -1,14 +1,16 @@
 using UnityEngine;
 
-// Ability 수명과 Resolver 연결을 담당하는 기본 컴포넌트
-public abstract class Ability : MonoBehaviour, ILifecycle
+// Ability 수명과 Resolver 연결을 담당하는 기본 객체
+public abstract class Ability : ILifecycle
 {
     public bool IsInitialized => isInitialized;
     public bool IsReady => isReady;
+    public GameObject Owner => owner;
 
     protected IAbilityResolver AbilityResolver { get; private set; }
     protected IAbilityResolver UpstreamAbilityResolver { get; private set; }
 
+    GameObject owner;
     bool isInitialized;
     bool isReady;
 
@@ -55,6 +57,18 @@ public abstract class Ability : MonoBehaviour, ILifecycle
     // Ability 종료 훅을 제공합니다.
     protected virtual void OnUninitialize() { }
 
+    // Ability 소유자 GameObject를 연결합니다.
+    internal void AttachOwner(GameObject owner)
+    {
+        this.owner = owner;
+    }
+
+    // Ability 소유자 GameObject를 해제합니다.
+    internal void DetachOwner()
+    {
+        owner = null;
+    }
+
     // Ability의 로컬 Resolver를 연결합니다.
     internal void AttachResolver(IAbilityResolver resolver)
     {
@@ -89,5 +103,11 @@ public abstract class Ability : MonoBehaviour, ILifecycle
     protected T GetUpstreamAbility<T>() where T : Ability
     {
         return UpstreamAbilityResolver != null ? UpstreamAbilityResolver.GetAbility<T>() : null;
+    }
+
+    // 소유자 컴포넌트를 조회합니다.
+    protected T GetOwnerComponent<T>() where T : Component
+    {
+        return owner != null ? owner.GetComponent<T>() : null;
     }
 }

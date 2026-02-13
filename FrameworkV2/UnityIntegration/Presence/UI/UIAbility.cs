@@ -4,12 +4,17 @@ using UnityEngine;
 // 다중 Realm이 필요하면 SortingLayer 결정부분 수정 필요
 public class UIAbility : Ability, IUIAbility
 {
-    [Header("Parents(Optional)")]
-    [SerializeField] Transform uiRootParent;
-    [SerializeField] Transform systemRoot; // System UI 전용
+    Transform uiRootParent;
+    Transform systemRoot;
 
     readonly Dictionary<string, UIRealmContext> contexts = new();
     Realm activeRealm;
+
+    public void Configure(Transform rootParent, Transform systemRootOverride = null)
+    {
+        uiRootParent = rootParent;
+        systemRoot = systemRootOverride;
+    }
 
     public Transform GetSystemRoot()
     {
@@ -211,7 +216,7 @@ public class UIAbility : Ability, IUIAbility
             return uiRootParent;
         }
 
-        return transform;
+        return Owner != null ? Owner.transform : null;
     }
 
     class UIRealmContext

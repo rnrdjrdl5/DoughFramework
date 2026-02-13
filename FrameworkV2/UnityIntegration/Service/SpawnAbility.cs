@@ -10,15 +10,6 @@ public class SpawnAbility : Ability, ISpawnAbility
     {
         ui = AbilityResolver?.GetAbility<UIAbility>();
         pool = AbilityResolver?.GetAbility<ObjectPoolAbility>();
-
-        if (pool == null)
-        {
-            pool = GetComponent<ObjectPoolAbility>();
-        }
-        if (pool == null)
-        {
-            pool = GetComponentInParent<ObjectPoolAbility>();
-        }
     }
 
     // 프리팹을 스폰하여 GameObject를 반환합니다.

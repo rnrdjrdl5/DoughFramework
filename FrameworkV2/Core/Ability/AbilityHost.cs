@@ -12,21 +12,17 @@ public abstract class AbilityHost : MonoBehaviour, ILifecycle, IAbilityResolver
     public bool IsReady => isReady;
 
     readonly List<Ability> abilities = new();
+    readonly List<IAbilityTick> tickables = new();
     IAbilityResolver upstreamAbilityResolver;
     bool isInitialized;
     bool isReady;
 
-    // Host에 Ability 컴포넌트를 추가하고 등록합니다.
+    // Host에 Ability를 추가하고 등록합니다.
     public void AddAbility(Ability ability)
     {
         if (ability == null)
         {
             throw new ArgumentNullException(nameof(ability));
-        }
-
-        if (ability.gameObject != gameObject)
-        {
-            throw new InvalidOperationException("Ability must be on the same GameObject as the host.");
         }
 
         if (abilities.Contains(ability))
@@ -35,6 +31,7 @@ public abstract class AbilityHost : MonoBehaviour, ILifecycle, IAbilityResolver
         }
 
         abilities.Add(ability);
+        ability.AttachOwner(gameObject);
         ability.AttachResolver(this);
         ability.AttachUpstreamResolver(upstreamAbilityResolver);
         OnAbilityAdded(ability);
@@ -49,22 +46,21 @@ public abstract class AbilityHost : MonoBehaviour, ILifecycle, IAbilityResolver
         }
     }
 
-    // Host에 Ability 컴포넌트를 생성하여 추가합니다.
-    public T AddAbility<T>() where T : Ability
+    // Host에 Ability를 생성하여 추가합니다.
+    public T AddAbility<T>() where T : Ability, new()
     {
-        var existing = GetComponent<T>();
+        var existing = abilities.OfType<T>().FirstOrDefault();
         if (existing != null)
         {
-            AddAbility(existing);
             return existing;
         }
 
-        var created = gameObject.AddComponent<T>();
+        var created = new T();
         AddAbility(created);
         return created;
     }
 
-    // Host에서 Ability 컴포넌트를 제거하고 수명을 해제합니다.
+    // Host에서 Ability를 제거하고 수명을 해제합니다.
     public bool RemoveAbility(Ability ability)
     {
         if (ability == null)
@@ -78,10 +74,16 @@ public abstract class AbilityHost : MonoBehaviour, ILifecycle, IAbilityResolver
             return false;
         }
 
+        if (ability is IAbilityTick tickable)
+        {
+            UnregisterTick(tickable);
+        }
+
         OnAbilityRemoved(ability);
         ability.Uninitialize();
         ability.DetachResolver();
         ability.DetachUpstreamResolver();
+        ability.DetachOwner();
         return true;
     }
 
@@ -97,6 +99,33 @@ public abstract class AbilityHost : MonoBehaviour, ILifecycle, IAbilityResolver
         return abilities.OfType<T>().FirstOrDefault();
     }
 
+    // Tick 대상 Ability를 등록합니다.
+    public void RegisterTick(IAbilityTick ability)
+    {
+        if (ability == null)
+        {
+            return;
+        }
+
+        if (tickables.Contains(ability))
+        {
+            return;
+        }
+
+        tickables.Add(ability);
+    }
+
+    // Tick 대상 Ability를 해제합니다.
+    public void UnregisterTick(IAbilityTick ability)
+    {
+        if (ability == null)
+        {
+            return;
+        }
+
+        tickables.Remove(ability);
+    }
+
     // Host 수명 초기화를 시작하고 Ability를 초기화합니다.
     public void Initialize()
     {
@@ -106,7 +135,6 @@ public abstract class AbilityHost : MonoBehaviour, ILifecycle, IAbilityResolver
         }
 
         RegisterAttributeAbilities();
-        RegisterExistingAbilities();
         InitializeAbilities();
         OnInitialize();
         isInitialized = true;
@@ -135,8 +163,18 @@ public abstract class AbilityHost : MonoBehaviour, ILifecycle, IAbilityResolver
 
         OnUninitialize();
         UninitializeAbilities();
+        tickables.Clear();
         isReady = false;
         isInitialized = false;
+    }
+
+    // 매 프레임 호출이 필요한 Ability를 업데이트합니다.
+    public void Tick()
+    {
+        for (int i = 0; i < tickables.Count; i++)
+        {
+            tickables[i]?.Tick();
+        }
     }
 
     // 상위 Resolver를 전달합니다.
@@ -188,16 +226,6 @@ public abstract class AbilityHost : MonoBehaviour, ILifecycle, IAbilityResolver
     void RegisterAttributeAbilities()
     {
         AbilityAttributeInstaller.Apply(this, AddAbility);
-    }
-
-    // 이미 붙어있는 Ability 컴포넌트를 등록합니다.
-    void RegisterExistingAbilities()
-    {
-        var existing = GetComponents<Ability>();
-        for (int i = 0; i < existing.Length; i++)
-        {
-            AddAbility(existing[i]);
-        }
     }
 
     // Ability들의 Initialize를 호출합니다.

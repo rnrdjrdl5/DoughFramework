@@ -103,6 +103,27 @@ public partial class Realm : AbilityHost
         return removed;
     }
 
+    // Realm 트리 전체를 Tick 처리합니다.
+    public void TickTree()
+    {
+        Tick();
+
+        var spawn = GetAbility<SpawnEntityAbility>();
+        if (spawn != null)
+        {
+            var entities = spawn.Entities;
+            for (int i = 0; i < entities.Count; i++)
+            {
+                entities[i]?.Tick();
+            }
+        }
+
+        for (int i = 0; i < children.Count; i++)
+        {
+            children[i]?.TickTree();
+        }
+    }
+
     // Transform 자식 변경을 감지하여 캐시를 갱신합니다.
     void OnTransformChildrenChanged()
     {

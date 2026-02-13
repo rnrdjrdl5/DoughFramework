@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// Ability 컴포넌트 사용 예시
+// Ability 사용 예시
 public static class ExampleAbilityComponentUsage
 {
     // AbilityHost에 Ability를 부착하고 수명을 호출하는 흐름을 보여줍니다.

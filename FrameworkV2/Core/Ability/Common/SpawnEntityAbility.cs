@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 // Realm 하위 Entity 목록을 관리하는 Ability
 public sealed class SpawnEntityAbility : Ability
@@ -17,7 +16,7 @@ public sealed class SpawnEntityAbility : Ability
     // Ability 초기화 시 현재 Realm의 Entity를 스캔합니다.
     protected override void OnInitialize()
     {
-        ownerRealm = GetComponent<Realm>();
+        ownerRealm = GetOwnerComponent<Realm>();
         RefreshEntities();
     }
 
@@ -26,7 +25,7 @@ public sealed class SpawnEntityAbility : Ability
     {
         if (ownerRealm == null)
         {
-            ownerRealm = GetComponent<Realm>();
+            ownerRealm = GetOwnerComponent<Realm>();
         }
         if (ownerRealm == null)
         {

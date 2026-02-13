@@ -6,12 +6,9 @@ using UnityEngine.EventSystems;
 // 순서: System -> Modal -> UI(Panel/Core 등) -> World
 // - UI 버튼/이미지 등은 Unity EventSystem이 처리
 // - 본 Ability는 UI 히트/모달 여부만 판단해 World로 보낼지 결정
-public sealed class InputAbility : Ability, IInputAbility
+public sealed class InputAbility : Ability, IInputAbility, IAbilityTick
 {
-    [Header("Deps (optional)")]
-    [SerializeField] Camera worldCamera;
-    [SerializeField] MonoBehaviour uiAbilityRef; // IUIAbility 참조 가능(선택)
-
+    Camera worldCamera;
     IUIAbility ui;
     IWorldInputReceiver world;
     bool isEnabled = true;
@@ -20,19 +17,27 @@ public sealed class InputAbility : Ability, IInputAbility
 
     protected override void OnReady()
     {
-        // IUIAbility 자동 획득(인스펙터 참조가 있으면 우선)
-        ui = uiAbilityRef as IUIAbility;
-        if (ui == null)
+        ui ??= AbilityResolver?.GetAbility<UIAbility>();
+        if (AbilityResolver is AbilityHost host)
         {
-            ui = AbilityResolver?.GetAbility<UIAbility>();
+            host.RegisterTick(this);
+        }
+    }
+
+    protected override void OnUninitialize()
+    {
+        if (AbilityResolver is AbilityHost host)
+        {
+            host.UnregisterTick(this);
         }
     }
 
     public void SetWorldReceiver(IWorldInputReceiver receiver) => world = receiver;
     public void SetWorldCamera(Camera cam) => worldCamera = cam;
+    public void SetUIAbility(IUIAbility ability) => ui = ability;
     public void Enable(bool enabled) => isEnabled = enabled;
 
-    void Update()
+    public void Tick()
     {
         if (!isEnabled) return;
 

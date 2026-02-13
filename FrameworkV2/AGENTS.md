@@ -5,7 +5,7 @@
 ## 핵심 개념 요약
 
 - Core는 Unity 참조가 가능한 구조입니다.
-- Realm/Entity/Ability는 모두 `MonoBehaviour` 기반 컴포넌트입니다.
+- Realm/Entity/Ability는 `MonoBehaviour` 기반이며, Ability는 순수 C# 객체로 동작합니다.
 - 수명 관리 `ILifecycle`
   - `Initialize()`, `Ready()`, `Uninitialize()` + 상태 프로퍼티(`IsInitialized`, `IsReady`).
   - 수명 호출은 자동이 아닌 수동 호출입니다.
@@ -20,13 +20,14 @@
 - Core/Event
   - `HashKey`: 문자열→정수 키(FNV-1a).
 - Core/Ability
-  - `Ability`: `MonoBehaviour` + `ILifecycle` 베이스.
+  - `Ability`: 순수 C# + `ILifecycle` 베이스.
   - `AbilityHost`: Ability 목록/수명/Resolver를 관리하는 호스트 베이스.
   - `IAbilityResolver`: `HasAbility<T>()`/`GetAbility<T>()`(로컬 Ability만 조회).
+  - `IAbilityTick`: 매 프레임 Tick이 필요한 Ability용 인터페이스.
   - `AbilityAttribute`, `AbilityAttributeCache`, `AbilityAttributeInstaller`: 클래스 Attribute 기반 Ability 자동 부착.
   - `Common/BuildRealmAbility`, `Common/SpawnEntityAbility`, `Common/EventAbility`.
 - 시간(Clock)
-  - `ClockAbility`: Realm 단위 시간 스냅샷 보관/조회. `GameRoot.Update()`가 프레임마다 `TimeSnapshot`을 트리에 푸시합니다.
+  - `ClockAbility`: Realm 단위 시간 스냅샷 보관/조회.
 - Core/Realm
   - `Realm`: Children/Abilities/Aliases 보유. 기본 Attribute로 `BuildRealmAbility`, `SpawnEntityAbility`, `ClockAbility` 자동 부착.
 - Core/RealmBuilder
@@ -51,6 +52,8 @@
   - `Realm`은 `OnTransformChildrenChanged()`에서 자식 Realm/Entity 캐시를 갱신합니다.
 - Root Ability
   - UI/입력/스폰/풀 기능은 RootRealm에 부착된 Ability를 통해 사용합니다.
+- Tick
+  - `GameRoot.Update()`가 `RootRealm.Tick()`을 호출해 Tick 능력을 가진 Ability를 업데이트합니다.
 
 ## 코딩 가이드(이 범위에서)
 

@@ -47,4 +47,9 @@ public class GameRoot : MonoBehaviour
         root.AddAbility<SpawnAbility>();
         root.AddAbility<InputAbility>();
     }
+
+    void Update()
+    {
+        RootRealm?.TickTree();
+    }
 }
