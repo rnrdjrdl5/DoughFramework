@@ -1,17 +1,17 @@
-# Ability 디렉토리 요약
+# Ability Directory Summary
 
-이 디렉토리는 Ability 시스템의 기본 구조를 제공합니다.
+This directory provides the base structure for the Ability system.
 
-## 핵심 사항
+## Key Points
 
-- `Ability`는 순수 C# 객체이며 `ILifecycle` 기반입니다.
-- `AbilityHost`가 Ability 등록/조회/수명 관리를 담당합니다.
-- `AbilityAttribute`를 통해 Host 타입에 기본 Ability를 자동 부착할 수 있습니다.
-- Ability 수명은 Unity 이벤트가 아니라 Host의 `Initialize/Ready/Uninitialize`로 제어합니다.
-- 매 프레임 호출이 필요한 Ability는 `IAbilityTick`을 구현합니다.
+- `Ability` is a pure C# object and is based on `ILifecycle`.
+- `AbilityHost` manages Ability registration/query/lifecycle.
+- You can auto-attach default Abilities to a Host type via `AbilityAttribute`.
+- Ability lifecycle is controlled by the Host's `Initialize/Ready/Uninitialize`, not Unity events.
+- Abilities that need per-frame calls implement `IAbilityTick`.
 
-## 사용 규칙
+## Usage Rules
 
-- Ability를 추가할 때는 Host의 `AddAbility<T>()` 또는 `AddAbility(Ability)`를 사용합니다.
-- Ability는 Host 소유의 GameObject를 주입받습니다.
-- 상위 컨텍스트 조회는 `UpstreamAbilityResolver`를 통해 수행합니다.
+- When adding an Ability, use the Host's `AddAbility<T>()` or `AddAbility(Ability)`.
+- Abilities receive the Host-owned GameObject.
+- Upstream context lookup is performed via `UpstreamAbilityResolver`.

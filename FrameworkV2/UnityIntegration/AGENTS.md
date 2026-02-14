@@ -1,34 +1,34 @@
 # UnityIntegration Notes
 
-이 문서는 `FrameworkV2/UnityIntegration` 범위의 현재 구조/의도/사용 패턴을 요약합니다.
+This document summarizes the current structure/intent/usage patterns within `FrameworkV2/UnityIntegration`.
 
-## 핵심
+## Core
 
-- Core의 Realm/Entity/Ability는 `MonoBehaviour` 기반이며, Ability는 순수 C# 객체입니다.
-- UnityIntegration은 서비스/에디터/입력/유틸 계층을 담당합니다.
-- 서비스 기능은 Ability로 제공되며 RootRealm에 부착해 사용합니다.
+- Core Realm/Entity/Ability are `MonoBehaviour`-based, while Ability is a pure C# object.
+- UnityIntegration is responsible for service/editor/input/utility layers.
+- Service features are provided as Abilities and attached to RootRealm.
 
-## 서비스(Ability)
+## Services (Abilities)
 
-- `UIAbility(IUIAbility)`: Realm별 Core/Panel/Modal과 전역 System UI 관리.
-- `InputAbility(IInputAbility)`: UI 히트 여부 판단 후 월드 입력 라우팅.
-- `SpawnAbility(ISpawnAbility)`: 프리팹 스폰 및 UI 루트 부착 제공.
-- `ObjectPoolAbility`: 간단 오브젝트 풀.
+- `UIAbility(IUIAbility)`: Realm-level Core/Panel/Modal and global System UI management.
+- `InputAbility(IInputAbility)`: Routes world input after checking UI hit status.
+- `SpawnAbility(ISpawnAbility)`: Prefab spawning and UI root attachment.
+- `ObjectPoolAbility`: Simple object pool.
 
 ## UI
 
-- UI 루트는 Realm 기준으로 분리됩니다.
-- `UIAbility`는 Panel/Modal 스택 정렬과 활성 Realm 상태를 관리합니다.
+- UI roots are separated by Realm.
+- `UIAbility` manages Panel/Modal stack ordering and active Realm state.
 
-## 입력
+## Input
 
-- `InputAbility`는 UI 히트 여부를 판단하여 월드 입력을 라우팅합니다.
+- `InputAbility` checks UI hit status and routes world input.
 
 ## GameRoot
 
-- 루트 Realm 생성, RootAbility 부착, `Initialize/Ready` 호출을 담당합니다.
-- `GameRoot.Update()`가 `RootRealm.Tick()`을 호출해 Tick 능력을 가진 Ability를 갱신합니다.
+- Creates the root Realm, attaches RootAbilities, and calls `Initialize/Ready`.
+- `GameRoot.Update()` calls `RootRealm.Tick()` to update Abilities with Tick capability.
 
-## 에디터
+## Editor
 
-- `FrameworkViewerWindow`: `Inspection/FrameworkStructureText`를 이용해 구조 텍스트를 표시합니다.
+- `FrameworkViewerWindow`: Displays structure text using `Inspection/FrameworkStructureText`.

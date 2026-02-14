@@ -1,50 +1,50 @@
-# Addressable - 개요
+# Addressable - Overview
 
-DoughFramework의 Addressable Asset 자동 관리 시스템.
+DoughFramework Addressable Asset auto-management system.
 
-## 목적
+## Purpose
 
-- Asset 추가 시 Addressable Key 자동 등록
-- Group 자동 생성
-- 일관된 Key 명명 규칙 적용
+- Auto-register Addressable Keys when Assets are added
+- Auto-create Groups
+- Apply consistent Key naming rules
 
-## 폴더 구조
+## Folder Structure
 
 ```
 Assets/Contents/
-├── [컨텐츠명]/
+├── [ContentName]/
 │   ├── BuiltIn/        → Addressable Group (Local)
 │   ├── CDN/            → Addressable Group (Remote)
-│   └── ResourceBase/   → Addressable 제외 (원본 저장소)
+│   └── ResourceBase/   → Excluded from Addressables (source storage)
 ```
 
-### ResourceBase 역할
+### ResourceBase Role
 
-- Addressable에 등록되지 않음
-- 원본 리소스 저장소
-- BuiltIn/CDN에서 참조로 연결
+- Not registered to Addressables
+- Source resource storage
+- Referenced from BuiltIn/CDN
 
-## 자동 등록 흐름
+## Auto-Registration Flow
 
 ```
-Asset 추가 (BuiltIn/ 또는 CDN/)
+Asset added (BuiltIn/ or CDN/)
     ↓
-Group 확인 → 없으면 자동 생성
+Check Group → auto-create if missing
     ↓
-Key 자동 등록
+Auto-register Key
 ```
 
 ## Editor Window
 
-- **메뉴**: Dough/Addressable
-- **구조**: Tab 기반 확장 가능
-- **Common Tab**: 동기화 실행 (전체 에셋 스캔 → 등록/수정)
-- **결과창**: `ResultWindow`로 동기화 결과 표시 (등록/수정/스킵 수)
+- **Menu**: Dough/Addressable
+- **Structure**: Tab-based, extensible
+- **Common Tab**: Run sync (scan all assets → register/update)
+- **Result Window**: Show sync results via `ResultWindow` (register/update/skip counts)
 
-## 관련 코드
+## Related Code
 
-| 위치 | 역할 |
+| Location | Role |
 |------|------|
-| `Assets/Script/Entry/Universe/Universe.Addressable.cs` | Load/Unload 진입점 |
-| `Assets/Script/Addressable/AddressableAutoRegistrar.cs` | 자동 등록 (AssetPostprocessor) |
-| `Assets/Script/Addressable/Editor/` | Editor Window, Tab 구현 |
+| `Assets/Script/Entry/Universe/Universe.Addressable.cs` | Load/Unload entry point |
+| `Assets/Script/Addressable/AddressableAutoRegistrar.cs` | Auto-registration (AssetPostprocessor) |
+| `Assets/Script/Addressable/Editor/` | Editor Window, Tab implementation |

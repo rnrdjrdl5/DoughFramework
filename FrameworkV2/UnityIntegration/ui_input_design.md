@@ -1,130 +1,130 @@
-# UI & Input 설계 정리 (확정본)
+# UI & Input Design Summary (Final)
 
-## 0. 전체 핵심 요약
+## 0. Overall Core Summary
 
-UI는 표현과 입력을 담당하는 물리 계층이며, Input은 물리 계층에서
-분류·전파되고, 의미 있는 상태 변화만 논리 계층(Realm)에서 처리된다.
-
-------------------------------------------------------------------------
-
-## 1. UI의 기본 정의
-
--   UI는 데이터를 받아 표현하는 계층
--   규칙 판단, 상태 소유를 하지 않음
--   열고/닫고/보여주는 행위만 담당
--   UI로 인해 발생한 의미 해석은 Realm의 책임
+UI is the physical layer responsible for presentation and input. Input is classified and propagated
+in the physical layer, and only meaningful state changes are processed in the logical layer (Realm).
 
 ------------------------------------------------------------------------
 
-## 2. UI의 분류
+## 1. Basic Definition of UI
 
-### 2.1 기본 UI (Core / Persistent UI)
-
--   항상 화면에 존재
--   닫을 수 없음
--   게임 세계와 직접 소통 예: HUD, 플레이어 상태, 스킬 슬롯, 조준선\
-    의미: Presence의 시각적 표현
-
-### 2.2 패널 UI (Panel / Interaction UI, 비모달)
-
--   열고 닫을 수 있음
--   Esc 대상(정책에 따라)
--   입력 포커스 획득 가능하나, 아래 계층 입력을 전면 차단하지 않음
--   일시적 컨텍스트 예: 패널, 인벤토리, 사이드 메뉴, 툴팁/토스트(정책에 따라)
-
-### 2.3 모달 UI (Modal)
-
--   열고 닫을 수 있음
--   항상 아래(UI/Core/월드) 입력을 차단, 포커스를 내부에 가둠
--   최상단 대역으로 정렬(Panel 위)
--   예: 설정 창, 확인/경고 다이얼로그, 블로커가 필요한 메뉴
-
-### 2.4 시스템 UI (System / Global UI)
-
--   항상 최상단
--   다른 UI에 가려지면 안 됨
--   게임 전체 상태 표현 예: 로딩 화면, 시스템 에러, 네트워크 경고\
-    ※ Esc 가능 여부는 개별 UI 정책
+- UI is the layer that renders data
+- It does not judge rules or own state
+- It only opens/closes/shows
+- Interpretation of meaning caused by UI is the Realm's responsibility
 
 ------------------------------------------------------------------------
 
-## 3. Realm 기준 UI 분리
+## 2. UI Classification
 
--   System UI: 전역 공통, Realm별 분리 없음
--   Core UI / Panel UI / Modal UI: Realm별 컨텍스트에 종속
+### 2.1 Core UI (Core / Persistent UI)
 
-------------------------------------------------------------------------
+- Always present on screen
+- Cannot be closed
+- Directly communicates with the game world (e.g., HUD, player status, skill slots, crosshair)
+- Meaning: a visual representation of Presence
 
-## 4. UI 입력 처리 기본 원칙
+### 2.2 Panel UI (Panel / Interaction UI, Non-modal)
 
--   입력 처리는 물리 계층 책임
--   키보드/마우스/터치/패드 모두 포함
--   포커스, Z-order, Esc 처리 포함
--   논리 계층은 입력 결과(Event)만 수신
+- Can be opened and closed
+- Subject to Esc (per policy)
+- Can acquire input focus, but does not fully block lower-layer input
+- Temporary context (e.g., panels, inventory, side menu, tooltip/toast per policy)
 
-------------------------------------------------------------------------
+### 2.3 Modal UI (Modal)
 
-## 5. Esc 처리 규칙
+- Can be opened and closed
+- Always blocks lower (UI/Core/World) input and traps focus inside
+- Sorted at the top layer (above Panels)
+- Examples: settings window, confirm/warning dialog, menus that require a blocker
 
--   Esc는 활성 창 탈출 의미(모달이 있으면 모달 우선, 없으면 패널 최상단)
--   최상단부터 검사하여 처리 의사가 있는 UI만 처리
--   처리되면 하위로 전달되지 않음(소모)
+### 2.4 System UI (System / Global UI)
 
-------------------------------------------------------------------------
-
-## 6. Realm 내부 입력 우선순위
-
-1.  Modal UI
-2.  Panel UI(비모달)
-3.  Core UI
-4.  Presence / Player Ability
-5.  World Interaction
-
--   캐릭터 이동 입력은 항상 최하단
--   UI가 열려 있으면 이동 입력은 소모됨
+- Always top-most
+- Must not be covered by other UI
+- Represents global game state (e.g., loading screen, system errors, network warnings)
+- Esc availability follows each UI's policy
 
 ------------------------------------------------------------------------
 
-## 7. Input 분류
+## 3. Realm-Based UI Separation
+
+- System UI: global, not separated by Realm
+- Core UI / Panel UI / Modal UI: bound to Realm context
+
+------------------------------------------------------------------------
+
+## 4. Core Principles of UI Input Handling
+
+- Input handling is the physical layer's responsibility
+- Includes keyboard/mouse/touch/pad
+- Includes focus, Z-order, Esc handling
+- Logical layer receives only input results (Events)
+
+------------------------------------------------------------------------
+
+## 5. Esc Handling Rules
+
+- Esc means exiting the active window (modal first if present; otherwise top-most panel)
+- Evaluate from the top and handle only UIs that intend to consume Esc
+- Once handled, it is not propagated downward (consumed)
+
+------------------------------------------------------------------------
+
+## 6. Input Priority Within a Realm
+
+1. Modal UI
+2. Panel UI (non-modal)
+3. Core UI
+4. Presence / Player Ability
+5. World Interaction
+
+- Character movement input is always the lowest priority
+- If any UI is open, movement input is consumed
+
+------------------------------------------------------------------------
+
+## 7. Input Classification
 
 ### 7.1 Broadcast Input
 
--   여러 Realm에 동시에 전달
--   구독한 Realm만 수신
--   Realm 간 소모 개념 없음 예: Pause, 전역 조작, 동시 진행 이동
+- Delivered to multiple Realms simultaneously
+- Only subscribed Realms receive it
+- No cross-Realm consumption (e.g., Pause, global actions, simultaneous movement)
 
 ### 7.2 Focus Input
 
--   현재 활성화된 Realm에만 전달
--   Realm 간 소모 개념 있음 예: 클릭, UI 조작, Esc
+- Delivered only to the currently active Realm
+- Cross-Realm consumption applies (e.g., click, UI actions, Esc)
 
 ------------------------------------------------------------------------
 
-## 8. Realm 간 vs Realm 내부 처리
+## 8. Inter-Realm vs Intra-Realm Handling
 
--   Realm 간: Broadcast / Focus로 전달 대상 결정
--   Realm 내부: 항상 소모 규칙 적용
--   하나의 Input은 하나의 의미 있는 처리만 발생
-
-------------------------------------------------------------------------
-
-## 9. UI 열림/닫힘과 논리 계층
-
--   UI 열고 닫기: 물리 계층
--   상태 변화 필요 여부 판단: 논리 계층
--   전달되는 것은 Event(사실), Command 아님
+- Inter-Realm: determine delivery targets via Broadcast / Focus
+- Intra-Realm: always apply consumption rules
+- One Input results in exactly one meaningful handling
 
 ------------------------------------------------------------------------
 
-## 10. 멀티 컨텍스트 UI
+## 9. UI Open/Close and the Logical Layer
 
--   화면 기준이 아닌 Realm(컨텍스트) 기준 UI Root
--   System UI는 전역 공통
--   입력은 Routed / Broadcast로 분기(모달이 존재하면 아래 계층으로 전파 금지)
+- UI open/close: physical layer
+- Determine whether state change is needed: logical layer
+- What is delivered is an Event (fact), not a Command
 
 ------------------------------------------------------------------------
 
-## 11. 최종 요약 문장
+## 10. Multi-Context UI
 
-UI는 표현과 입력을 담당하고, Input은 물리 계층에서 분류·전파되며,
-Realm은 UI 결과가 의미 있는 상태 변화인지 해석한다.
+- UI root is based on Realm (context), not screen
+- System UI is global
+- Input branches as Routed / Broadcast (if a modal exists, do not propagate to lower layers)
+
+------------------------------------------------------------------------
+
+## 11. Final Summary Sentence
+
+UI handles presentation and input, Input is classified/propagated in the physical layer,
+and Realm interprets whether UI results are meaningful state changes.

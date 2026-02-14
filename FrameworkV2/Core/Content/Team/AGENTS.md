@@ -1,20 +1,20 @@
-# Team Ability 요약
+# Team Ability Summary
 
-## 목적
-- `TeamAbility`: Realm 단위 팀 로스터/이벤트 관리
-- `TeamMemberAbility`: Entity 단위 팀 정보 보관
+## Purpose
+- `TeamAbility`: Realm-level team roster/event management
+- `TeamMemberAbility`: Entity-level team data storage
 
-## 조립 규칙
-- `TeamAbility`는 필요한 Realm에서만 `AddAbility`로 부착한다.
-- `TeamMemberAbility`는 Entity 생성 시 외부 조립자가 반드시 부착한다.
-- Ability 내부에서는 `Entity`, `Realm` 타입을 참조하지 않는다.
+## Assembly Rules
+- Attach `TeamAbility` via `AddAbility` only in the Realms that need it.
+- When creating an Entity, the external assembler must attach `TeamMemberAbility`.
+- Inside Abilities, do not reference `Entity` or `Realm` types.
 
-## 이벤트
-- `TeamAbility.MemberChanged`는 join/leave/move 모두 발행한다.
-- 페이로드에는 `teamId`, `memberId`, `previousTeamId`, `reason`이 포함된다.
+## Events
+- `TeamAbility.MemberChanged` fires for join/leave/move.
+- Payload includes `teamId`, `memberId`, `previousTeamId`, `reason`.
 
-## 사용 흐름
-1. Realm에 `TeamAbility` 부착
-2. Entity에 `TeamMemberAbility` 부착
-3. `TeamAbility.TryAddMember/TryMoveMember/TryRemoveMember`로 팀 관리
-   - 호출 시 `memberId`와 `TeamMemberAbility`를 전달한다
+## Usage Flow
+1. Attach `TeamAbility` to the Realm.
+2. Attach `TeamMemberAbility` to the Entity.
+3. Manage teams with `TeamAbility.TryAddMember/TryMoveMember/TryRemoveMember`.
+   - Pass `memberId` and `TeamMemberAbility` when calling.

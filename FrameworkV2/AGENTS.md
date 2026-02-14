@@ -1,87 +1,87 @@
 # FrameworkV2 Overview and Working Notes
 
-이 문서는 `Assets/DoughFramework/FrameworkV2` 트리의 현재 구조/의도/사용 패턴을 요약하고, 이 범위에서 작업 시 따라야 할 실무 지침을 제공합니다. 적용 범위는 본 폴더와 모든 하위 폴더입니다.
+This document summarizes the current structure/intent/usage patterns of the `Assets/DoughFramework/FrameworkV2` tree and provides practical guidelines for working in this scope. The scope applies to this folder and all subfolders.
 
-## 핵심 개념 요약
+## Core Concepts Summary
 
-- Core는 Unity 참조가 가능한 구조입니다.
-- Realm/Entity/Ability는 `MonoBehaviour` 기반이며, Ability는 순수 C# 객체로 동작합니다.
-- 수명 관리 `ILifecycle`
-  - `Initialize()`, `Ready()`, `Uninitialize()` + 상태 프로퍼티(`IsInitialized`, `IsReady`).
-  - 수명 호출은 자동이 아닌 수동 호출입니다.
-- Transform 계층이 Realm/Entity 트리의 기준입니다.
-- Entity는 GameObject 역할을 수행하며 `WorldEntity` 개념은 제거되었습니다.
-- 기존 Service 기능은 모두 Ability로 전환되었고, RootRealm에 부착해 사용합니다.
+- Core is structured to allow Unity references.
+- Realm/Entity/Ability are `MonoBehaviour`-based, while Ability itself is a pure C# object.
+- Lifecycle management `ILifecycle`
+  - `Initialize()`, `Ready()`, `Uninitialize()` + state properties (`IsInitialized`, `IsReady`).
+  - Lifecycle calls are manual, not automatic.
+- The Transform hierarchy is the basis of the Realm/Entity tree.
+- Entity plays the GameObject role; the `WorldEntity` concept was removed.
+- All existing Service features were converted to Ability and are attached to RootRealm.
 
-## 디렉토리 구조 요약
+## Directory Structure Summary
 
 - Core/Common
   - `ILifecycle`, `Identity`, `IIdentifiable`, `AliasSet`, `SubscriptionSet`, `SubscriptionExtensions`.
 - Core/Event
-  - `HashKey`: 문자열→정수 키(FNV-1a).
+  - `HashKey`: string → int key (FNV-1a).
 - Core/Ability
-  - `Ability`: 순수 C# + `ILifecycle` 베이스.
-  - `AbilityHost`: Ability 목록/수명/Resolver를 관리하는 호스트 베이스.
-  - `IAbilityResolver`: `HasAbility<T>()`/`GetAbility<T>()`(로컬 Ability만 조회).
-  - `IAbilityTick`: 매 프레임 Tick이 필요한 Ability용 인터페이스.
-  - `AbilityAttribute`, `AbilityAttributeCache`, `AbilityAttributeInstaller`: 클래스 Attribute 기반 Ability 자동 부착.
+  - `Ability`: pure C# + `ILifecycle` base.
+  - `AbilityHost`: host base that manages Ability list/lifecycle/resolver.
+  - `IAbilityResolver`: `HasAbility<T>()`/`GetAbility<T>()` (local Ability lookup only).
+  - `IAbilityTick`: interface for Abilities that need per-frame Tick.
+  - `AbilityAttribute`, `AbilityAttributeCache`, `AbilityAttributeInstaller`: auto-attach Abilities based on class attributes.
   - `Common/BuildRealmAbility`, `Common/SpawnEntityAbility`, `Common/EventAbility`.
-- 시간(Clock)
-  - `ClockAbility`: Realm 단위 시간 스냅샷 보관/조회.
+- Time (Clock)
+  - `ClockAbility`: stores/queries Realm-level time snapshots.
 - Core/Realm
-  - `Realm`: Children/Abilities/Aliases 보유. 기본 Attribute로 `BuildRealmAbility`, `SpawnEntityAbility`, `ClockAbility` 자동 부착.
+  - `Realm`: holds Children/Abilities/Aliases. Defaults to auto-attaching `BuildRealmAbility`, `SpawnEntityAbility`, `ClockAbility` via attribute.
 - Core/RealmBuilder
-  - `RealmBuilder.Build(parent)`: Realm 생성/구성만 수행(부착 금지).
-  - `CommonBuilder`: 예시 빌더.
+  - `RealmBuilder.Build(parent)`: creates/configures Realm only (no attaching).
+  - `CommonBuilder`: sample builder.
 - Core/Entity
-  - `Entity`: Aliases/Abilities 보유, Entity 자체가 GameObject 역할.
+  - `Entity`: holds Aliases/Abilities; the Entity itself plays the GameObject role.
 - UnityIntegration/Service
-  - `UIAbility`, `InputAbility`, `SpawnAbility`, `ObjectPoolAbility`는 Ability로 제공.
-  - RootRealm에 부착해 사용합니다.
+  - `UIAbility`, `InputAbility`, `SpawnAbility`, `ObjectPoolAbility` are provided as Abilities.
+  - Attach to RootRealm to use.
 - UnityIntegration/Editor
-  - `FrameworkViewerWindow`: 구조 텍스트 덤프 UI. `Inspection/FrameworkStructureText` 사용.
+  - `FrameworkViewerWindow`: structure text dump UI. Uses `Inspection/FrameworkStructureText`.
 - Inspection
-  - `FrameworkStructureText`: Realm/Entities/Abilities/별칭 텍스트 덤프.
+  - `FrameworkStructureText`: text dump for Realm/Entities/Abilities/aliases.
 
-## 동작 흐름
+## Execution Flow
 
-- Entity 등록
-  - `SpawnEntityAbility`가 Realm 하위 Transform에서 Entity를 스캔해 목록을 관리합니다.
-- Realm 트리
-  - `BuildRealmAbility`가 `RealmBuilder.Build(parent)`로 생성한 Realm을 `owner.AddChild(...)`로 부착합니다.
-  - `Realm`은 `OnTransformChildrenChanged()`에서 자식 Realm/Entity 캐시를 갱신합니다.
+- Entity registration
+  - `SpawnEntityAbility` scans Entities under the Realm Transform and manages the list.
+- Realm tree
+  - `BuildRealmAbility` builds Realms with `RealmBuilder.Build(parent)` and attaches them via `owner.AddChild(...)`.
+  - `Realm` refreshes child Realm/Entity caches on `OnTransformChildrenChanged()`.
 - Root Ability
-  - UI/입력/스폰/풀 기능은 RootRealm에 부착된 Ability를 통해 사용합니다.
+  - UI/input/spawn/pool features are used via Abilities attached to RootRealm.
 - Tick
-  - `GameRoot.Update()`가 `RootRealm.Tick()`을 호출해 Tick 능력을 가진 Ability를 업데이트합니다.
+  - `GameRoot.Update()` calls `RootRealm.Tick()` to update Abilities with Tick capability.
 
-## 코딩 가이드(이 범위에서)
+## Coding Guide (Within This Scope)
 
-- ID 정책은 자동 생성만 허용. `Identity` 외 직접 Id 주입 금지.
-- Ability 협력은 Resolver 기반 로컬 조회를 우선 사용합니다.
-- 상위 컨텍스트 협력이 필요하면 소유자 측 `UpstreamAbilityResolver`로 전달/주입합니다.
-- `RealmBuilder.Build(parent)`는 부착을 하지 않습니다. 부착은 `BuildRealmAbility.Build(owner, builder)`가 수행합니다.
+- ID policy allows only auto-generated IDs. Do not inject IDs directly except via `Identity`.
+- For Ability collaboration, prefer local lookup via Resolver.
+- If upstream context collaboration is needed, pass/inject via the owner's `UpstreamAbilityResolver`.
+- `RealmBuilder.Build(parent)` does not attach. Attachment is performed by `BuildRealmAbility.Build(owner, builder)`.
 
-### Ability 관리 규칙
+### Ability Management Rules
 
-- Ability 추가/삭제/조회는 소유자(`Entity`, `Realm`) API만 사용합니다.
-- 예) `entity.AddAbility<FooAbility>()`, `realm.GetAbility<SpawnEntityAbility>()`.
-- Ability의 단일 소스 오브 트루스는 소유자(`AbilityHost`)입니다.
-- `AbilityAttribute`를 통해 기본 Ability를 자동 부착할 수 있습니다.
+- Use only owner (`Entity`, `Realm`) APIs to add/remove/query Abilities.
+- Example: `entity.AddAbility<FooAbility>()`, `realm.GetAbility<SpawnEntityAbility>()`.
+- The single source of truth for an Ability is the owner (`AbilityHost`).
+- You can auto-attach default Abilities via `AbilityAttribute`.
 
-## 작성/스타일 규칙
+## Writing/Style Rules
 
-- 코딩 스타일은 `Assets/DoughFramework/AI/Convention/` 문서를 준수합니다.
-- 불필요한 주석은 작성하지 않습니다. 주석이 필요할 경우 한글로 간결히 작성합니다.
+- Follow the coding style in `Assets/DoughFramework/AI/Convention/`.
+- Do not write unnecessary comments. If comments are needed, write them concisely in Korean.
 
-### 우선순위
+### Priority
 
-- 사용자/시스템/개발자 지시 > 본 문서 > 컨벤션 문서.
-- 동일 트리 내 중첩 AGENTS.md가 있을 경우, 더 하위 경로의 문서가 우선합니다.
+- User/system/developer instructions > this document > convention documents.
+- If there is a nested AGENTS.md in the same tree, the lower-path document takes precedence.
 
-## 운영 팁/주의사항
+## Operations Tips/Notes
 
-- `FrameworkViewerWindow`로 현재 Realm/Entity/Ability 구성을 점검할 수 있습니다.
+- You can inspect the current Realm/Entity/Ability configuration with `FrameworkViewerWindow`.
 
 # FrameworkV2 Agent Notes
 

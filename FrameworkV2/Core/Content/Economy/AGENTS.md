@@ -1,4 +1,4 @@
 # Economy Content Notes
 
-이 폴더는 경제(통화/지갑) 코어 컨텐츠를 담습니다.
-통화 정의, 공통 키, 지갑 로직 등 경제 관련 핵심 개념을 정리합니다.
+This folder contains core economy (currency/wallet) content.
+It summarizes key economy concepts such as currency definitions, common keys, and wallet logic.

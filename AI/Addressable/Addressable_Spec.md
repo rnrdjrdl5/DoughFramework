@@ -1,15 +1,15 @@
-# Addressable_Spec - 상세 명세
+# Addressable_Spec - Detailed Specification
 
-## 폴더 구조 명세
+## Folder Structure Specification
 
-### 대상 경로
+### Target Paths
 ```
-Assets/Contents/[컨텐츠명]/BuiltIn/   → Addressable 등록 대상
-Assets/Contents/[컨텐츠명]/CDN/       → Addressable 등록 대상
-Assets/Contents/[컨텐츠명]/ResourceBase/ → 제외
+Assets/Contents/[ContentName]/BuiltIn/   → Addressable registration target
+Assets/Contents/[ContentName]/CDN/       → Addressable registration target
+Assets/Contents/[ContentName]/ResourceBase/ → Excluded
 ```
 
-### 컨텐츠 예시
+### Content Examples
 ```
 Assets/Contents/Combat/BuiltIn/
 Assets/Contents/Combat/CDN/
@@ -17,76 +17,76 @@ Assets/Contents/Lobby/BuiltIn/
 Assets/Contents/Lobby/CDN/
 ```
 
-## Group 명명 규칙
+## Group Naming Rules
 
-### 패턴
+### Pattern
 ```
-[컨텐츠명]_[폴더타입]
+[ContentName]_[FolderType]
 ```
 
-### 예시
-| 경로 | Group명 |
+### Examples
+| Path | Group Name |
 |------|---------|
 | `Assets/Contents/Combat/BuiltIn/` | `Combat_BuiltIn` |
 | `Assets/Contents/Combat/CDN/` | `Combat_CDN` |
 | `Assets/Contents/Lobby/BuiltIn/` | `Lobby_BuiltIn` |
 
-### Group 설정
-| 폴더타입 | Build Path | Load Path |
+### Group Settings
+| Folder Type | Build Path | Load Path |
 |----------|------------|-----------|
 | BuiltIn | Local | Local |
 | CDN | Remote | Remote |
 
-## Key(Address) 명명 규칙
+## Key (Address) Naming Rules
 
-### 패턴
+### Pattern
 ```
-[컨텐츠명]/[하위디렉토리]/.../[Asset명].[확장자]
+[ContentName]/[SubDirectory]/.../[AssetName].[Extension]
 ```
 
-### 변환 규칙
-1. `Assets/Contents/` 제거
-2. `BuiltIn/` 또는 `CDN/` 제거
-3. 나머지 경로 + 파일명 + 확장자
+### Conversion Rules
+1. Remove `Assets/Contents/`
+2. Remove `BuiltIn/` or `CDN/`
+3. Use the remaining path + file name + extension
 
-### 예시
-| 실제 경로 | Key |
+### Examples
+| Actual Path | Key |
 |-----------|-----|
 | `Assets/Contents/Combat/BuiltIn/Character/Hero.prefab` | `Combat/Character/Hero.prefab` |
 | `Assets/Contents/Combat/BuiltIn/Character/Hero.png` | `Combat/Character/Hero.png` |
 | `Assets/Contents/Combat/CDN/UI/BattlePanel.prefab` | `Combat/UI/BattlePanel.prefab` |
 | `Assets/Contents/Lobby/BuiltIn/NPC/Merchant.prefab` | `Lobby/NPC/Merchant.prefab` |
 
-## 자동 등록 동작
+## Auto-Registration Behavior
 
-### 트리거
-- Asset이 `Assets/Contents/[컨텐츠명]/BuiltIn/` 또는 `CDN/`에 추가될 때
+### Trigger
+- When an Asset is added under `Assets/Contents/[ContentName]/BuiltIn/` or `CDN/`
 
-### 처리 순서
-1. 경로에서 컨텐츠명, 폴더타입(BuiltIn/CDN) 추출
-2. Group 존재 확인
-   - 없으면: `[컨텐츠명]_[폴더타입]` Group 생성
-   - 있으면: 기존 Group 사용
-3. Key 생성 (명명 규칙 적용)
-4. Addressable Entry 등록
+### Processing Order
+1. Extract content name and folder type (BuiltIn/CDN) from the path
+2. Check whether the Group exists
+   - If missing: create `[ContentName]_[FolderType]` Group
+   - If present: use the existing Group
+3. Generate Key (apply naming rules)
+4. Register Addressable Entry
 
-### 제외 조건
-- `ResourceBase/` 하위 Asset
-- `.meta` 파일
-- 폴더 자체
+### Exclusion Conditions
+- Assets under `ResourceBase/`
+- `.meta` files
+- Folders themselves
 
-## 동기화 결과
+## Sync Results
 
 ### RegisterResult enum
-| 값 | 설명 |
+| Value | Description |
 |-----|------|
-| `Skipped` | 이미 등록됨 또는 대상 아님 |
-| `Registered` | 새로 등록됨 |
-| `Updated` | Key 규칙 불일치로 수정됨 |
+| `Skipped` | Already registered or not a target |
+| `Registered` | Newly registered |
+| `Updated` | Fixed due to Key rule mismatch |
 
-### 결과창 표시
+### Result Window Display
 ```
-등록: X개
-수정: Y개
-스킵: Z개
+Registered: X
+Updated: Y
+Skipped: Z
 ```

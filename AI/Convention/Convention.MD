@@ -1,59 +1,59 @@
-# Convention - 코딩 스타일
+# Convention - Coding Style
 
-DoughFramework 프로젝트의 C# 코딩 컨벤션.
+C# coding conventions for the DoughFramework project.
 
-## 네이밍 규칙
+## Naming Rules
 
-| 대상 | 규칙 | 예시 |
+| Target | Rule | Example |
 |------|------|------|
-| 클래스/구조체 | PascalCase | `BaseNode`, `Panel`, `EventListener` |
-| 메서드 | PascalCase | `OnEnterNode()`, `GetModule<T>()` |
-| 프로퍼티 | PascalCase | `Environment`, `Canvas`, `Parent` |
-| private 필드 | camelCase | `parentNode`, `targetDataSet` |
-| 파라미터 | camelCase | `prefabPath`, `parameter` |
-| 상수 | PascalCase | `DefaultHierarchyLevel` |
+| Class/Struct | PascalCase | `BaseNode`, `Panel`, `EventListener` |
+| Method | PascalCase | `OnEnterNode()`, `GetModule<T>()` |
+| Property | PascalCase | `Environment`, `Canvas`, `Parent` |
+| Private field | camelCase | `parentNode`, `targetDataSet` |
+| Parameter | camelCase | `prefabPath`, `parameter` |
+| Constant | PascalCase | `DefaultHierarchyLevel` |
 | Enum | PascalCase | `BTNodeState.Running` |
 
-## 콜백/이벤트 메서드
+## Callback/Event Methods
 
-`On` prefix 사용:
+Use the `On` prefix:
 - `OnEnterState()`, `OnUpdateState()`, `OnExitState()`
 - `OnEnterFlow()`, `OnExitFlow()`
 - `OnEnterNode()`, `OnUpdateNode()`, `OnExitNode()`
 
-## 접근 제한자 원칙
+## Access Modifier Principles
 
-- **필드**: private (기본) + public 프로퍼티로 노출
-- **프로퍼티**: public get, private set
-- **상속용**: protected virtual/override
+- **Fields**: private (default) + exposed via public properties
+- **Properties**: public get, private set
+- **For inheritance**: protected virtual/override
 
-## 포맷팅
+## Formatting
 
-- **들여쓰기**: 4 스페이스
-- **중괄호**: Allman 스타일 (새 줄에서 시작)
-- 언더스코어(`_`) prefix 미사용 (모든 변수/필드에서 금지)
+- **Indentation**: 4 spaces
+- **Braces**: Allman style (start on a new line)
+- No underscore (`_`) prefix (disallowed for all variables/fields)
 
-## 프로퍼티 스타일
+## Property Style
 
-### 화살표 표현식 (읽기 전용)
+### Arrow expression (read-only)
 ```csharp
 public Environment Environment => environment;
 public Canvas Canvas => canvas;
 ```
 
-### get/set 분리
+### get/set split
 ```csharp
 public Environment Environment { get; private set; }
 public int PanelCustomOffset { get; protected set; }
 ```
 
-### IReadOnlyList로 컬렉션 보호
+### Protect collections with IReadOnlyList
 ```csharp
 public IReadOnlyList<Trait> Traits => traits;
 public IReadOnlyList<IActorData> ActorDatas => actorDatas;
 ```
 
-언더스코어(`_`) 백킹필드 금지:
+No underscore (`_`) backing fields:
 ```csharp
 // before
 int _value;
@@ -64,30 +64,30 @@ int value;
 public int Value => value;
 ```
 
-## 필드 초기화
+## Field Initialization
 
-`new()` 표현식 사용:
+Use `new()` expressions:
 ```csharp
 List<Panel> panels = new();
 List<Trait> traits = new();
 ```
 
-멤버 변수 초기화 규칙(필수)
-- 클래스/구조체의 멤버 변수에서 객체를 생성할 때는 `new Type()`이 아닌 타겟-타입 `new()`를 사용합니다.
+Member variable initialization rule (required)
+- When creating objects in class/struct member variables, use target-typed `new()` instead of `new Type()`.
 
-잘못된 예
+Incorrect example
 ```csharp
 List<string> datas = new List<string>();
 Dictionary<string, int> map = new Dictionary<string, int>();
 ```
 
-올바른 예
+Correct example
 ```csharp
 List<string> datas = new();
 Dictionary<string, int> map = new();
 ```
 
-언더스코어 금지 예시
+No-underscore example
 ```csharp
 // before
 readonly List<string> _datas = new();
@@ -96,29 +96,29 @@ readonly List<string> _datas = new();
 readonly List<string> datas = new();
 ```
 
-## 제네릭 패턴
+## Generic Patterns
 
-### Where 제약조건
+### Where constraints
 ```csharp
-where T : class              // 참조 타입
-where T : new()              // 매개변수 없는 생성자
-where T : Trait              // 기본 클래스 상속
-where T : IData              // 인터페이스 구현
-where T : class, IActorData  // 복합 조건
+where T : class              // reference type
+where T : new()              // parameterless constructor
+where T : Trait              // base class inheritance
+where T : IData              // interface implementation
+where T : class, IActorData  // composite constraint
 ```
 
-### 제네릭 메서드
+### Generic methods
 ```csharp
 public TElement GetPanelElement<TElement>() where TElement : PanelElement
 public TraitType GetTrait<TraitType>() where TraitType : Trait
 ```
 
-### 타입 체킹
+### Type checking
 ```csharp
 typeof(TElement).IsAssignableFrom(element.GetType())
 ```
 
-## 비동기 (UniTask)
+## Async (UniTask)
 
 ### Async suffix
 ```csharp
@@ -139,7 +139,7 @@ CancellationTokenSource source = new();
 public CancellationToken Token => source.Token;
 ```
 
-## Switch 표현식
+## Switch Expression
 
 ```csharp
 return operate switch
@@ -150,15 +150,15 @@ return operate switch
 };
 ```
 
-## Null 처리
+## Null Handling
 
-### 널 조건 연산자
+### Null-conditional operator
 ```csharp
 OnEnter?.Invoke();
 startRefresher?.Refresh();
 ```
 
-### 명시적 null 체크
+### Explicit null check
 ```csharp
 if (listener == null) return;
 ```
@@ -171,7 +171,7 @@ if (listeners.TryGetValue(key, out var listenerList))
 }
 ```
 
-## LINQ 패턴
+## LINQ Patterns
 
 ```csharp
 return traits.Where(t => typeof(T).IsAssignableFrom(t.GetType()))
@@ -187,7 +187,7 @@ return traits.Where(t => typeof(T).IsAssignableFrom(t.GetType()))
 [SerializeField] Canvas canvas;
 ```
 
-### 커스텀 Attribute + Reflection
+### Custom Attribute + Reflection
 ```csharp
 [ActorData(Type = typeof(DataType))]
 
@@ -197,16 +197,16 @@ var types = GetType()
     .Select(attr => attr.Type);
 ```
 
-## Partial 클래스
+## Partial Classes
 
-기능별 파일 분할:
+Split files by feature:
 ```
 Universe.cs
 Universe.Resources.cs
 Universe.Addressable.cs
 ```
 
-## 메모리 풀링
+## Memory Pooling
 
 ```csharp
 public class Parameter : IDisposable, MemoryPoolModule.IMemoryPool
@@ -221,48 +221,48 @@ public class Parameter : IDisposable, MemoryPoolModule.IMemoryPool
 }
 ```
 
-## Using문 정렬
+## Using Directive Ordering
 
-순서: System → System.* → 서드파티 → UnityEngine
+Order: System → System.* → third-party → UnityEngine
 ```csharp
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;      // 서드파티
+using Cysharp.Threading.Tasks;      // third-party
 using UnityEngine;                   // Unity
 ```
 
-## 주석
+## Comments
 
-- 구조적 주석: `// NOTE :`, `// TBD`
-- 기본적으로 한글 주석을 작성합니다.
-- 클래스 시작부에는 기능 목적을 읽기 쉬운 한 줄 주석으로 **필수** 명시합니다.
-- 함수 시작부에는 함수 기능을 설명하는 한 줄 주석을 **필수**로 작성합니다. (일반 메서드에 한함)
- - 단, 함수 명을 그대로 적는 주석은 피해야 하며 함수에 기능이 담겨있지 않다면, 작성하지 않아도 좋다. 
-- 함수나 문맥(중요 분기/처리 흐름)에는 추가 설명 주석을 더합니다.
-- 불필요한 주석은 피하되, 가독성을 우선합니다.
-- 한국어/영어 혼용 허용
-- XML 문서 주석은 필요시에만
+- Structural comments: `// NOTE :`, `// TBD`
+- Write comments in Korean by default.
+- At the start of a class, **must** add a single-line comment that clearly states the purpose.
+- At the start of a function, **must** add a single-line comment explaining the function's purpose (general methods only).
+- However, avoid comments that simply repeat the function name; if the function has no clear intent, it is okay to omit.
+- Add extra explanatory comments for important branches/flows.
+- Avoid unnecessary comments, but prioritize readability.
+- Mixing Korean/English is allowed.
+- XML doc comments only when needed.
 
-## 함수 구조 (오케스트레이션)
+## Function Structure (Orchestration)
 
-- 접근점에 가까울수록 **고수준/두루뭉실한 흐름**을 정의합니다.
-- 함수가 깊어질수록 **더 세분화된 구체 로직**을 담당합니다.
-- 상위 함수는 순서/흐름만 조율하고, 실제 처리는 하위 함수로 위임합니다.
+- The closer to the entry point, the more **high-level/rough flow** you define.
+- The deeper the function, the more **granular concrete logic** it handles.
+- Upper-level functions coordinate order/flow and delegate actual processing to lower-level functions.
 
-예시:
+Example:
 ```csharp
-// Session 초기화 흐름을 관리하는 오케스트레이터
+// Orchestrator that manages the session initialization flow
 public class Session
 {
-    // 외부에서 호출되는 고수준 초기화 진입점
+    // High-level initialization entry point called externally
     public void Initialize(SessionConfig config)
     {
         InitializeEnvironment(config);
         InitializeState(config);
     }
 
-    // 내부 초기화 단계의 흐름만 조율
+    // Coordinates only the flow of internal initialization steps
     void InitializeState(SessionConfig config)
     {
         AssignSessionId();
@@ -270,15 +270,15 @@ public class Session
         WireEvents();
     }
 
-    // 실제 모듈 로딩 처리
+    // Actual module loading logic
     void LoadModules(SessionConfig config)
     {
-        // 구체 로직
+        // concrete logic
     }
 }
 ```
 
-## 메서드 오버로딩
+## Method Overloading
 
 ```csharp
 public void AllocateObject(int count)
@@ -287,29 +287,29 @@ public GameObject AllocateObject()
 public GameObject AllocateObject(GameObject prefab)
 ```
 
-## 멤버 변수 선언 규칙
+## Member Variable Declaration Rules
 
-- private 키워드는 사용하지 않습니다. (암시적 private 적용)
-- 멤버 변수 선언 순서는 public → private(표기 생략) 입니다.
-- 같은 범주에서는 컨테이너(Dictionary, List 등) → 기본형(int, string, float 등) 순서로 선언합니다.
-- public 블록과 private 블록 사이에는 공백 한 줄을 둡니다.
-- 멤버 변수 초기화에서 `new`를 사용할 때는 타겟-타입 `new()`만 사용합니다. (예: `List<string> datas = new();`)
+- Do not use the private keyword (implicit private applies).
+- Member declaration order is public → private (implicit).
+- Within the same group, declare containers (Dictionary, List, etc.) before primitives (int, string, float, etc.).
+- Insert a blank line between the public and private groups.
+- When using `new` for member initialization, only use target-typed `new()` (e.g., `List<string> datas = new();`).
 
-### 멤버 변수 선언 상세
+### Member Variable Declaration Details
 
-#### 접근 한정자
-- private 키워드는 표기하지 않습니다. (클래스 멤버의 기본 접근자는 private)
-- protected/public 등 다른 접근 한정자는 기존 규칙대로 명시합니다.
+#### Access Modifiers
+- Do not write the private keyword. (Default access for class members is private.)
+- Explicitly write protected/public modifiers per existing rules.
 
-#### 선언 순서
-- 멤버 변수는 그룹을 나누어 선언합니다: `public` 그룹 → 빈 줄 → `private` 그룹(표기 생략)
-- 각 그룹 내부에서는 컨테이너(Dictionary, List, HashSet 등) → 기본형/값형(int, string, float 등) 순서로 정렬합니다.
-- 모든 멤버/로컬/파라미터 이름에 선행 언더스코어(`_`)를 사용하지 않습니다.
+#### Declaration Order
+- Split member variables into groups: `public` group → blank line → `private` group (implicit).
+- Within each group, order containers (Dictionary, List, HashSet, etc.) before primitives/value types (int, string, float, etc.).
+- Do not use a leading underscore (`_`) in any member/local/parameter name.
 
-### 언더스코어 금지 상세
-- 모든 멤버/로컬 변수/파라미터명에서 선행 언더스코어(`_`)를 사용하지 않습니다.
-- 기존 `_fieldName` 패턴은 `fieldName`으로 변경합니다.
-- 프로퍼티/백킹필드 조합에서도 언더스코어를 사용하지 않습니다. 예)
+### No-underscore Details
+- Do not use a leading underscore (`_`) in any member/local variable/parameter name.
+- Change existing `_fieldName` patterns to `fieldName`.
+- Do not use underscores in property/backing-field pairs. Example:
   ```csharp
   // before
   int _count;
@@ -320,15 +320,15 @@ public GameObject AllocateObject(GameObject prefab)
   public int Count => count;
   ```
 
-예시
+Example
 ```csharp
 public List<Foo> foos;
 public int maxCount;
 
-List<Foo> internalFoos;   // private 키워드 생략
-int currentCount;          // private 키워드 생략
+List<Foo> internalFoos;   // private keyword omitted
+int currentCount;          // private keyword omitted
 
-// 초기화 시 타겟-타입 new() 사용
+// Use target-typed new() for initialization
 List<string> datas = new();
 Dictionary<string, int> map = new();
 ```
