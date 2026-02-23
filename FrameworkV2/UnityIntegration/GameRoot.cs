@@ -8,12 +8,11 @@ public class GameRoot : MonoBehaviour
 
     [Header("Root Abilities")]
     [SerializeField] bool attachDefaultServiceAbilities = true;
+    [SerializeField] Realm rootRealmPrefab;
 
     // GameRoot의 초기화를 수행합니다.
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-
         AbilityAttributeCache.Clear();
 
         RootRealm = BuildRealmTree();
@@ -32,9 +31,15 @@ public class GameRoot : MonoBehaviour
     // 루트 Realm 트리를 구성합니다.
     protected virtual Realm BuildRealmTree()
     {
-        var rootObject = new GameObject("RootRealm");
-        rootObject.transform.SetParent(transform, false);
-        return rootObject.AddComponent<Realm>();
+        if (rootRealmPrefab == null)
+        {
+            Debug.LogWarning("GameRoot rootRealmPrefab is not assigned.", this);
+            return null;
+        }
+
+        var rootRealm = Instantiate(rootRealmPrefab, transform);
+        rootRealm.name = rootRealmPrefab.name;
+        return rootRealm;
     }
 
     // RootRealm에 기본 Ability들을 부착합니다.

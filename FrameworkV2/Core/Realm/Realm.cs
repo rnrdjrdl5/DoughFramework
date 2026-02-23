@@ -5,7 +5,6 @@ using System.Linq;
 // Realm 트리와 Ability를 보유하는 최상위 컨텍스트 컴포넌트
 [Ability(typeof(BuildRealmAbility))]
 [Ability(typeof(SpawnEntityAbility))]
-[Ability(typeof(ClockAbility))]
 public partial class Realm : Entity
 {
     public IReadOnlyList<Realm> Children => children;
@@ -100,13 +99,6 @@ public partial class Realm : Entity
         {
             children[i]?.TickTree();
         }
-    }
-
-    // Transform 자식 변경을 감지하여 캐시를 갱신합니다.
-    void OnTransformChildrenChanged()
-    {
-        RefreshChildrenCache();
-        RefreshEntitiesIfNeeded();
     }
 
     // Realm 초기화 전 작업을 수행합니다.
