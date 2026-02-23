@@ -9,6 +9,9 @@ This document summarizes the current structure/intent/usage patterns of the `Ass
 - Lifecycle management `ILifecycle`
   - `Initialize()`, `Ready()`, `Uninitialize()` + state properties (`IsInitialized`, `IsReady`).
   - Lifecycle calls are manual, not automatic.
+- Director/Element
+  - `Director` is a MonoBehaviour coordinator that assembles `Element` units and wires Abilities.
+  - `Element` is a lightweight feature unit attached to a Director, with optional lifecycle hooks.
 - The Transform hierarchy is the basis of the Realm/Entity tree.
 - Entity plays the GameObject role; the `WorldEntity` concept was removed.
 - All existing Service features were converted to Ability and are attached to RootRealm.
@@ -35,6 +38,10 @@ This document summarizes the current structure/intent/usage patterns of the `Ass
   - `CommonBuilder`: sample builder.
 - Core/Entity
   - `Entity`: holds Aliases/Abilities; the Entity itself plays the GameObject role.
+- Core/Director
+  - `Director`: resolves a Host `Entity`, builds `Element` list, and wires Abilities.
+- Core/Element
+  - `Element`: Director-attached feature unit with `Initialize/Ready/Uninitialize` hooks.
 - UnityIntegration/Service
   - `UIAbility`, `InputAbility`, `SpawnAbility`, `ObjectPoolAbility` are provided as Abilities.
   - Attach to RootRealm to use.
@@ -52,6 +59,10 @@ This document summarizes the current structure/intent/usage patterns of the `Ass
   - `Realm` refreshes child Realm/Entity caches on `OnTransformChildrenChanged()`.
 - Root Ability
   - UI/input/spawn/pool features are used via Abilities attached to RootRealm.
+- Director/Element flow
+  - `Director.Awake()` resolves Host, calls `BuildElements()` then `WireElements()`, then optionally `Initialize()`.
+  - `Director.Start()` optionally calls `Ready()`, and `OnDestroy()` optionally calls `Uninitialize()`.
+  - `Element` instances are registered via `AddElement(...)` and receive lifecycle callbacks in order.
 - Tick
   - `GameRoot.Update()` calls `RootRealm.Tick()` to update Abilities with Tick capability.
 
