@@ -6,33 +6,11 @@ using System.Linq;
 [Ability(typeof(BuildRealmAbility))]
 [Ability(typeof(SpawnEntityAbility))]
 [Ability(typeof(ClockAbility))]
-public partial class Realm : AbilityHost
+public partial class Realm : Entity
 {
-    public string Id => identity.Id;
     public IReadOnlyList<Realm> Children => children;
-    public IReadOnlyList<string> Aliases => aliases.Aliases;
 
-    readonly Identity identity = new();
     readonly List<Realm> children = new();
-    readonly AliasSet aliases = new();
-
-    // 별칭을 추가합니다.
-    public void AddAlias(string alias)
-    {
-        aliases.Add(alias);
-    }
-
-    // 별칭을 제거합니다.
-    public bool RemoveAlias(string alias)
-    {
-        return aliases.Remove(alias);
-    }
-
-    // 별칭 존재 여부를 확인합니다.
-    public bool HasAlias(string alias)
-    {
-        return aliases.Has(alias);
-    }
 
     // 별칭으로 Realm을 검색합니다.
     public IEnumerable<Realm> FindByAlias(string alias)
