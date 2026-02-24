@@ -14,7 +14,7 @@ public class Panel : Actor
     [SerializeField] Canvas canvas;
     
     EventListener interactionEvent;
-    PanelTrait parentPanelTrait;
+    PanelAbility parentPanelAbility;
 
     int panelOrder;
     int panelOrderOffset;
@@ -23,13 +23,13 @@ public class Panel : Actor
     {
         base.Initialize(parameter);
         
-        InitPanelTrait();
+        InitPanelAbility();
         InitPanelElements(parameter);
     }
 
-    void InitPanelTrait()
+    void InitPanelAbility()
     {
-        parentPanelTrait = Parent.GetTrait<PanelTrait>();
+        parentPanelAbility = Parent.GetAbility<PanelAbility>();
     }
 
     void InitPanelElements(Parameter parameter)
@@ -124,7 +124,7 @@ public class Panel : Actor
     
     public virtual void Close()
     {
-        parentPanelTrait.RemovePanel(this);
+        parentPanelAbility.RemovePanel(this);
     }
     
     public virtual void RefreshUI()

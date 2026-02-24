@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class Trait : MonoBehaviour, IData
+public abstract class Ability : MonoBehaviour, IData
 {
     public Actor Actor => actor;
     

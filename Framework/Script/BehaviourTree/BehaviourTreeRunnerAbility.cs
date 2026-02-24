@@ -1,4 +1,4 @@
-public class BehaviourTreeRunnerTrait : Trait
+public class BehaviourTreeRunnerAbility : Ability
 {
     bool activeBehaviour;
     

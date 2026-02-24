@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ObjectPoolTrait : Trait
+public class ObjectPoolAbility : Ability
 {
     Dictionary<GameObject, List<GameObject>> prefabToDeallocObjects = new();
     Dictionary<GameObject, List<GameObject>> prefabToAllocObjects = new();

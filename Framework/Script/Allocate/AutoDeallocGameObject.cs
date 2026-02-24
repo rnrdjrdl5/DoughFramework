@@ -6,14 +6,14 @@ public class AutoDeallocGameObject : MonoBehaviour
 {
     [SerializeField] float destroyTime;
     
-    TraitSet traitSet;
-    ObjectPoolTrait objectPoolTrait;
+    AbilitySet abilitySet;
+    ObjectPoolAbility objectPoolAbility;
     float duration;
 
     private void Awake()
     {
-        traitSet = Entry.RootRealm.RootTraitSet;
-        objectPoolTrait = traitSet.GetTrait<ObjectPoolTrait>();
+        abilitySet = Entry.RootRealm.RootAbilitySet;
+        objectPoolAbility = abilitySet.GetAbility<ObjectPoolAbility>();
     }
 
     public void OnEnable()
@@ -29,6 +29,6 @@ public class AutoDeallocGameObject : MonoBehaviour
             return;
         }
         
-        objectPoolTrait.DeallocateGameObject(gameObject);
+        objectPoolAbility.DeallocateGameObject(gameObject);
     }
 }

@@ -10,26 +10,26 @@ public partial class Actor : MonoBehaviour
     public Actor Parent => parent;
     public IReadOnlyList<IActorData> ActorDatas => actorDatas;
     public int UniqueId => uniqueId;
-    public TraitSet TraitSet => traitSet;
-    public TraitSet RootTraitSet => rootTraitSet;
+    public AbilitySet AbilitySet => abilitySet;
+    public AbilitySet RootAbilitySet => rootAbilitySet;
 
-    TraitSet rootTraitSet;
-    TraitSet traitSet = new();
+    AbilitySet rootAbilitySet;
+    AbilitySet abilitySet = new();
     ActorRegistry children = new();
     List<IActorData> actorDatas = new();
     
     Actor parent;
     int uniqueId;
 
-    public void Initialize(TraitSet traitSet, Parameter parameter = null)
+    public void Initialize(AbilitySet abilitySet, Parameter parameter = null)
     {
-        InitializeRootTraitSet(traitSet);
+        InitializeRootAbilitySet(abilitySet);
         Initialize(parameter);
     }
 
-    public void InitializeRootTraitSet(TraitSet rootTraitSet)
+    public void InitializeRootAbilitySet(AbilitySet rootAbilitySet)
     {
-        this.rootTraitSet = rootTraitSet;
+        this.rootAbilitySet = rootAbilitySet;
     }
     
     public virtual void Initialize(Parameter parameter)
@@ -37,7 +37,7 @@ public partial class Actor : MonoBehaviour
         NextUniqueId();
 
         InitActorDatas(parameter);
-        InitTraits(parameter);
+        InitAbilities(parameter);
     }
 
     void NextUniqueId()
@@ -62,40 +62,40 @@ public partial class Actor : MonoBehaviour
         }
     }
 
-    void InitTraits(Parameter parameter)
+    void InitAbilities(Parameter parameter)
     {
-        traitSet.Traits.Clear();
+        abilitySet.Abilities.Clear();
 
-        var components = GetComponents<Trait>();
+        var components = GetComponents<Ability>();
         if (components.Length > 0)
         {
-            traitSet.Traits.AddRange(components);
+            abilitySet.Abilities.AddRange(components);
         }
 
-        foreach (var trait in traitSet.Traits)
+        foreach (var ability in abilitySet.Abilities)
         {
-            trait.SetActor(this);
-            trait.Initialize(parameter);
+            ability.SetActor(this);
+            ability.Initialize(parameter);
         }
-        foreach (var trait in traitSet.Traits)
+        foreach (var ability in abilitySet.Abilities)
         {
-            trait.Ready();
+            ability.Ready();
         }
     }
 
     public virtual void Uninitialize()
     {
-        UninitTraits();
+        UninitAbilities();
         UninitActorDatas();
         
         RemoveChildren();
     }
 
-    void UninitTraits()
+    void UninitAbilities()
     {
-        foreach (var trait in traitSet.Traits)
+        foreach (var ability in abilitySet.Abilities)
         {
-            trait.Uninitialize();
+            ability.Uninitialize();
         }
     }
 
@@ -107,14 +107,14 @@ public partial class Actor : MonoBehaviour
         }
     }
 
-    public TraitType GetTrait<TraitType>() where TraitType : Trait
+    public AbilityType GetAbility<AbilityType>() where AbilityType : Ability
     {
-        return traitSet.GetTrait<TraitType>();
+        return abilitySet.GetAbility<AbilityType>();
     }
 
     public ActorType AddActor<ActorType>(string prefabPath, Parameter parameter = null) where ActorType : Actor, new()
     {
-        var objectPoolModule = rootTraitSet.GetTrait<ObjectPoolTrait>(); 
+        var objectPoolModule = rootAbilitySet.GetAbility<ObjectPoolAbility>(); 
         
         var actorPrefab = Realm.LoadResources<GameObject>(prefabPath);
         var actorObject = objectPoolModule.AllocateGameObject(actorPrefab);
@@ -122,7 +122,7 @@ public partial class Actor : MonoBehaviour
         
         AddChild(actor);
         
-        actor.Initialize(rootTraitSet, parameter);
+        actor.Initialize(rootAbilitySet, parameter);
         
         return actor;
     }
@@ -146,7 +146,7 @@ public partial class Actor : MonoBehaviour
         actor.Uninitialize();
         children.RemoveActor(actor);
         
-        var objectPoolModule = rootTraitSet.GetTrait<ObjectPoolTrait>();
+        var objectPoolModule = rootAbilitySet.GetAbility<ObjectPoolAbility>();
         objectPoolModule.DeallocateGameObject(actor.gameObject);
     }
 

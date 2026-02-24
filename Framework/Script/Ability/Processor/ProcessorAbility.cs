@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class ProcessorTrait : Trait
+public class ProcessorAbility : Ability
 {
     List<Processor> processors = new();
     List<UpdateProcessor> updateProcessors = new();
@@ -44,7 +44,7 @@ public class ProcessorTrait : Trait
             }
 
             updateProcessors.Add(updateProcessor);
-            updateProcessor.SetProcessorTrait(this);
+            updateProcessor.SetProcessorAbility(this);
             updateProcessor.Initialize();
         }
 
@@ -92,7 +92,7 @@ public class ProcessorTrait : Trait
 
     public void AddProcessor(Processor processor)
     {
-        processor.SetProcessorTrait(this);
+        processor.SetProcessorAbility(this);
         processors.Add(processor);
         
         processor.Initialize();

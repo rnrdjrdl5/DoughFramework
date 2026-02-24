@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 // by Claude Code, Codex
-public class RandomMapTrait : Trait
+public class RandomMapAbility : Ability
 {
     public enum DifficultyLevel
     {
@@ -418,7 +418,7 @@ public class RandomMapTrait : Trait
                 int dist = GetManhattanDistance(startRoom, endRoom);
                 if (dist < minStartEndManhattanDistance)
                 {
-                    Debug.LogWarning($"[RandomMapTrait] minStartEndManhattanDistance={minStartEndManhattanDistance}를 만족하는 가장자리 방이 없습니다. 현재 맵 크기 {mapWidth}x{mapHeight}, 최대 가능 거리 {dist}로 대체합니다.");
+                    Debug.LogWarning($"[RandomMapAbility] minStartEndManhattanDistance={minStartEndManhattanDistance}를 만족하는 가장자리 방이 없습니다. 현재 맵 크기 {mapWidth}x{mapHeight}, 최대 가능 거리 {dist}로 대체합니다.");
                 }
             }
             else

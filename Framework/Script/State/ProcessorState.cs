@@ -4,10 +4,10 @@ public class ProcessorState : State<Actor>
 {
     public Processor Processor => processor;
     public Actor Actor => processor.Actor;
-    public StateRunnerTrait StateRunnerTrait => stateRunnerTrait; 
+    public StateRunnerAbility StateRunnerAbility => stateRunnerAbility; 
 
     Processor processor;
-    StateRunnerTrait stateRunnerTrait;
+    StateRunnerAbility stateRunnerAbility;
     
     public static StateType Create<StateType>(Actor actor, Processor processor) where StateType : ProcessorState, new()
     {
@@ -22,7 +22,7 @@ public class ProcessorState : State<Actor>
     {
         this.processor = processor;
         
-        stateRunnerTrait = processor.Actor.GetTrait<StateRunnerTrait>();
+        stateRunnerAbility = processor.Actor.GetAbility<StateRunnerAbility>();
 
         return this;
     }

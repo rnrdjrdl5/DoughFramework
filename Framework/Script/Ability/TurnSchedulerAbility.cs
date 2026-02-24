@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TurnSchedulerTrait : Trait
+public class TurnSchedulerAbility : Ability
 {
-	public IReadOnlyList<TurnTrait> Turns => turns;
-	public TurnTrait ActivateTurn => activateTurn;
+	public IReadOnlyList<TurnAbility> Turns => turns;
+	public TurnAbility ActivateTurn => activateTurn;
 
-	List<TurnTrait> turns = new();
+	List<TurnAbility> turns = new();
 
-	TurnTrait activateTurn;
+	TurnAbility activateTurn;
 	
-	public void AddTurn(TurnTrait turn)
+	public void AddTurn(TurnAbility turn)
 	{ 
 		turns.Add(turn);
 	}
 
-	public void RemoveTurn(TurnTrait turn)
+	public void RemoveTurn(TurnAbility turn)
 	{
 		if (!turns.Contains(turn))
 		{

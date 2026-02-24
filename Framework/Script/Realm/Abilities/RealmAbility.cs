@@ -7,21 +7,21 @@ using UnityEngine;
 // State 형태로 스테이지를 관리한다. 
 // 스테이지 전환 시 전환 Function 호출
 
-public class RealmTrait : Trait
+public class RealmAbility : Ability
 {
     List<Realm> realms = new();
-    ObjectPoolTrait objectPoolTrait;
+    ObjectPoolAbility objectPoolAbility;
 
     public override void Ready()
     {
         base.Ready();
         
-        objectPoolTrait = Actor.RootTraitSet.GetTrait<ObjectPoolTrait>();
+        objectPoolAbility = Actor.RootAbilitySet.GetAbility<ObjectPoolAbility>();
     }
 
     public RealmType GetRealm<RealmType>() where RealmType : Realm
     {
-        return realms.Where(trait => typeof(RealmType).IsAssignableFrom(trait.GetType()))
+        return realms.Where(ability => typeof(RealmType).IsAssignableFrom(ability.GetType()))
             .Cast<RealmType>()
             .FirstOrDefault();
     }
@@ -29,10 +29,10 @@ public class RealmTrait : Trait
     public RealmType AddRealm<RealmType>(string prefabPath) where RealmType : Realm, new ()
     {
         var realmPrefab = Realm.LoadResources<GameObject>(prefabPath);
-        var realmObject = objectPoolTrait.AllocateGameObject(realmPrefab);
+        var realmObject = objectPoolAbility.AllocateGameObject(realmPrefab);
         
         var realm = realmObject.GetComponent<RealmType>();
-        realm.Initialize(Actor.RootTraitSet);
+        realm.Initialize(Actor.RootAbilitySet);
         
         realms.Add(realm);
         
@@ -44,6 +44,6 @@ public class RealmTrait : Trait
         realm.Uninitialize();
         realms.Remove(realm);
         
-        objectPoolTrait.DeallocateGameObject(realm.gameObject);
+        objectPoolAbility.DeallocateGameObject(realm.gameObject);
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class HpTrait : Trait
+public class HpAbility : Ability
 {
     public event Action<float,float,float> OnChangeHp;
     public float Hp => hp;

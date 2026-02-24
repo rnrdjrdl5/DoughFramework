@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-public class MemoryPoolTrait : Trait
+public class MemoryPoolAbility : Ability
 {
     public interface IMemoryPool
     {
-        public MemoryPoolTrait MemoryPoolTrait { get; set; }
+        public MemoryPoolAbility MemoryPoolAbility { get; set; }
 
         public void ReleasePool();
     }
@@ -18,9 +18,9 @@ public class MemoryPoolTrait : Trait
     class MemoryStorage<T> : IMemoryStorage where T : class, IMemoryPool, new()
     {
         List<T> reservedMemory = new();
-        MemoryPoolTrait memoryPoolModule;
+        MemoryPoolAbility memoryPoolModule;
 
-        public MemoryStorage(MemoryPoolTrait memoryPoolModule)
+        public MemoryStorage(MemoryPoolAbility memoryPoolModule)
         {
             this.memoryPoolModule = memoryPoolModule;
         }
@@ -30,7 +30,7 @@ public class MemoryPoolTrait : Trait
             if (reservedMemory.Count == 0)
             {
                 var newMemory = new T();
-                newMemory.MemoryPoolTrait = memoryPoolModule;
+                newMemory.MemoryPoolAbility = memoryPoolModule;
                 
                 reservedMemory.Add(newMemory);
             }
@@ -60,7 +60,7 @@ public class MemoryPoolTrait : Trait
         }
 
         var reservedData = (storage as MemoryStorage<T>).Pool();
-        reservedData.MemoryPoolTrait = this;
+        reservedData.MemoryPoolAbility = this;
         
         return reservedData;
     }

@@ -3,14 +3,14 @@
 public class Processor
 {
     public Actor Actor => actor;
-    public ProcessorTrait ProcessorTrait => processorTrait;
+    public ProcessorAbility ProcessorAbility => processorAbility;
     public Realm Realm => realm;
-    public PanelTrait PanelTrait => panelTrait;
+    public PanelAbility PanelAbility => panelAbility;
     
     Realm realm;
-    PanelTrait panelTrait;
+    PanelAbility panelAbility;
     Actor actor;
-    ProcessorTrait processorTrait;
+    ProcessorAbility processorAbility;
 
     public virtual void Initialize()
     {
@@ -32,28 +32,28 @@ public class Processor
         ProcessorType processor = new();
         processor.actor = actor;
         processor.realm = actor.GetRootParent<Realm>();
-        processor.panelTrait = processor.realm.GetTrait<PanelTrait>();
+        processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
 
         processor.Initialize();
 
         return processor;
     }
 
-    public static Processor Create(System.Type type, Actor actor, ProcessorTrait processorTrait)
+    public static Processor Create(System.Type type, Actor actor, ProcessorAbility processorAbility)
     {
         var processor = System.Activator.CreateInstance(type) as Processor;
         processor.actor = actor;
-        processor.processorTrait = processorTrait;
+        processor.processorAbility = processorAbility;
         processor.realm = actor.GetRootParent<Realm>();
-        processor.panelTrait = processor.realm.GetTrait<PanelTrait>();
+        processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
 
         processor.Initialize();
 
         return processor;
     }
 
-    public void SetProcessorTrait(ProcessorTrait processorTrait)
+    public void SetProcessorAbility(ProcessorAbility processorAbility)
     {
-        this.processorTrait = processorTrait;
+        this.processorAbility = processorAbility;
     }
 }

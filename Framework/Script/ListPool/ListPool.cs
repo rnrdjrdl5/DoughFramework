@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 
-public class ListPool<T> : IDisposable, MemoryPoolTrait.IMemoryPool
+public class ListPool<T> : IDisposable, MemoryPoolAbility.IMemoryPool
 {
-    public static ListPool<T> Create(MemoryPoolTrait memoryPoolTrait)
+    public static ListPool<T> Create(MemoryPoolAbility memoryPoolAbility)
     {
         var listPool = new ListPool<T>();
-        listPool.MemoryPoolTrait = memoryPoolTrait;
+        listPool.MemoryPoolAbility = memoryPoolAbility;
 
         return listPool;
     }
     
-    public MemoryPoolTrait MemoryPoolTrait { get; set; }
+    public MemoryPoolAbility MemoryPoolAbility { get; set; }
     public void ReleasePool()
     {
         Dispose();
@@ -23,13 +23,13 @@ public class ListPool<T> : IDisposable, MemoryPoolTrait.IMemoryPool
     {
         foreach (var item in list)
         {
-            if (item is MemoryPoolTrait.IMemoryPool memoryPool)
+            if (item is MemoryPoolAbility.IMemoryPool memoryPool)
             {
                 memoryPool.ReleasePool();
             }
         }
         
         list.Clear();
-        MemoryPoolTrait.Release(this);
+        MemoryPoolAbility.Release(this);
     }
 }

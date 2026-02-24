@@ -10,8 +10,8 @@ public class AllocGameObject : MonoBehaviour
     [SerializeField] GameObject prefab;
 
     List<GameObject> allocatedObjects = new(); 
-    TraitSet rootTraitSet;
-    ObjectPoolTrait objectPoolModule;
+    AbilitySet rootAbilitySet;
+    ObjectPoolAbility objectPoolModule;
 
     private void Awake()
     {
@@ -20,8 +20,8 @@ public class AllocGameObject : MonoBehaviour
 
     public void OnEnable()
     {
-        rootTraitSet = Entry.RootRealm.TraitSet;
-        objectPoolModule = rootTraitSet.GetTrait<ObjectPoolTrait>();
+        rootAbilitySet = Entry.RootRealm.AbilitySet;
+        objectPoolModule = rootAbilitySet.GetAbility<ObjectPoolAbility>();
     }
 
     public void AllocateObject(int count)

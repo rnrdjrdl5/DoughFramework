@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-public class FlowRunnerTrait : Trait
+public class FlowRunnerAbility : Ability
 {
     public Flow Flow => flow;
 

@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class CoordTrait : Trait
+public class CoordAbility : Ability
 {
     [SerializeField] Tilemap tileMap;
 

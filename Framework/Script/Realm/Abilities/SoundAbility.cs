@@ -1,40 +1,40 @@
 using UnityEngine;
 
-public class SoundTrait : Trait
+public class SoundAbility : Ability
 {
     public static string BgmSource = nameof(BgmSource);
     public static string SfxSource = nameof(SfxSource);
     
-    ObjectPoolTrait objectPoolTrait;
+    ObjectPoolAbility objectPoolAbility;
     SoundPlayer bgmSound;
     
     public override void Initialize(Parameter parameter)
     {
         base.Initialize(parameter);
         
-        objectPoolTrait = Actor.RootTraitSet.GetTrait<ObjectPoolTrait>();
+        objectPoolAbility = Actor.RootAbilitySet.GetAbility<ObjectPoolAbility>();
     }
     
     public void PlaySfx(AudioClip clip)
     {
         var sfxPrefab = GetSfxPrefab();
-        var sfxObject = objectPoolTrait.AllocateGameObject(sfxPrefab);
+        var sfxObject = objectPoolAbility.AllocateGameObject(sfxPrefab);
         
         var sfxSound = sfxObject.GetComponent<SoundPlayer>();
         sfxSound.AudioSource.loop = false;
         
-        sfxSound.Initialize(Actor.RootTraitSet, clip);
+        sfxSound.Initialize(Actor.RootAbilitySet, clip);
     }
     
     public void PlayBgm(AudioClip clip)
     {
         var bgmPrefab = GetBgmPrefab();
-        var bgmObject = objectPoolTrait.AllocateGameObject(bgmPrefab);
+        var bgmObject = objectPoolAbility.AllocateGameObject(bgmPrefab);
         
         bgmSound = bgmObject.GetComponent<SoundPlayer>();
         bgmSound.AudioSource.loop = true;
         
-        bgmSound.Initialize(Actor.RootTraitSet, clip);
+        bgmSound.Initialize(Actor.RootAbilitySet, clip);
     }
 
     public void ResumeBgm()

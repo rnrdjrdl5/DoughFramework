@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 
-public class PanelTrait : Trait
+public class PanelAbility : Ability
 {
     public Panel Panel => panels.LastOrDefault();
     public event Action<Panel> OnAddPanel;

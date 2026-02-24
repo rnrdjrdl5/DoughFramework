@@ -2,7 +2,7 @@
 using UnityEngine;
 
 // PanelType 을 고려한 Order 재설정
-public class PanelOrderByTypeTrait : Trait
+public class PanelOrderByTypeAbility : Ability
 {
     // TODO : Scriptable Object에서 관리되어야 한다.
     static int HUDOrder = 0;
@@ -10,7 +10,7 @@ public class PanelOrderByTypeTrait : Trait
     static int PopupOrder = 2000;
     static int OverlayOrder = 5000;
     
-    [SerializeField] PanelTrait panelTrait;
+    [SerializeField] PanelAbility panelAbility;
 
     public override void Initialize(Parameter parameter)
     {
@@ -28,22 +28,22 @@ public class PanelOrderByTypeTrait : Trait
 
     void InitializeEvent()
     {
-        if (panelTrait == null)
+        if (panelAbility == null)
         {
             return;
         }
 
-        panelTrait.OnAddPanel += OnAddPanel;
+        panelAbility.OnAddPanel += OnAddPanel;
     }
 
     void UninitializeEvent()
     {
-        if (panelTrait == null)
+        if (panelAbility == null)
         {
             return;
         }
 
-        panelTrait.OnAddPanel -= OnAddPanel;
+        panelAbility.OnAddPanel -= OnAddPanel;
     }
 
     void OnAddPanel(Panel panel)

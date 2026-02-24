@@ -1,15 +1,15 @@
 using UnityEngine;
 
 
-public class HpTextEffectTrait : Trait
+public class HpTextEffectAbility : Ability
 {
     [SerializeField] GameObject damagePrefab;
     [SerializeField] GameObject healPrefab;
     [SerializeField] Transform effectPosition;
     [SerializeField] Transform parent;
 
-    ObjectPoolTrait objectPoolModule;
-    HpTrait hpTrait;
+    ObjectPoolAbility objectPoolModule;
+    HpAbility hpAbility;
     
     public override void Ready()
     {
@@ -17,19 +17,19 @@ public class HpTextEffectTrait : Trait
 
         if (objectPoolModule == null)
         {
-            objectPoolModule = Actor.RootTraitSet.GetTrait<ObjectPoolTrait>();
+            objectPoolModule = Actor.RootAbilitySet.GetAbility<ObjectPoolAbility>();
         }
-        if (hpTrait == null)
+        if (hpAbility == null)
         {
-            hpTrait = Actor.GetTrait<HpTrait>();
+            hpAbility = Actor.GetAbility<HpAbility>();
         }
         
-        hpTrait.OnChangeHp += OnChangeHp;
+        hpAbility.OnChangeHp += OnChangeHp;
     }
 
     public override void Uninitialize()
     {
-        hpTrait.OnChangeHp -= OnChangeHp;
+        hpAbility.OnChangeHp -= OnChangeHp;
         
         base.Uninitialize();
     }

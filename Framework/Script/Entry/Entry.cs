@@ -21,7 +21,7 @@ public abstract class Entry : MonoBehaviour
         var realmPrefab = Realm.LoadResources<GameObject>(rootRealmPath);
         var realmObject = Instantiate(realmPrefab);
         rootRealm = realmObject.GetComponent<Realm>();
-        rootRealm.Initialize(rootRealm.TraitSet);
+        rootRealm.Initialize(rootRealm.AbilitySet);
     }
 
     protected virtual void Ready()

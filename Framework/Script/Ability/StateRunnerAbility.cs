@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class StateRunnerTrait : Trait
+public class StateRunnerAbility : Ability
 {
     public ActorStateBehaviour StateBehaviour => stateBehaviour;
     
