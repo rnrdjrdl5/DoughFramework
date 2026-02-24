@@ -1,40 +1,40 @@
 using UnityEngine;
 
-public class SoundModule : Module
+public class SoundTrait : Trait
 {
     public static string BgmSource = nameof(BgmSource);
     public static string SfxSource = nameof(SfxSource);
     
-    ObjectPoolModule objectPoolModule;
+    ObjectPoolTrait objectPoolTrait;
     SoundPlayer bgmSound;
     
-    protected override void Initialize(GameObject universeObject, Environment environment)
+    public override void Initialize(Parameter parameter)
     {
-        base.Initialize(universeObject, environment);
+        base.Initialize(parameter);
         
-        objectPoolModule = Environment.GetModule<ObjectPoolModule>();
+        objectPoolTrait = Actor.RootTraitSet.GetTrait<ObjectPoolTrait>();
     }
     
     public void PlaySfx(AudioClip clip)
     {
         var sfxPrefab = GetSfxPrefab();
-        var sfxObject = objectPoolModule.AllocateGameObject(sfxPrefab);
+        var sfxObject = objectPoolTrait.AllocateGameObject(sfxPrefab);
         
         var sfxSound = sfxObject.GetComponent<SoundPlayer>();
         sfxSound.AudioSource.loop = false;
         
-        sfxSound.Initialize(Environment, clip);
+        sfxSound.Initialize(Actor.RootTraitSet, clip);
     }
     
     public void PlayBgm(AudioClip clip)
     {
         var bgmPrefab = GetBgmPrefab();
-        var bgmObject = objectPoolModule.AllocateGameObject(bgmPrefab);
+        var bgmObject = objectPoolTrait.AllocateGameObject(bgmPrefab);
         
         bgmSound = bgmObject.GetComponent<SoundPlayer>();
         bgmSound.AudioSource.loop = true;
         
-        bgmSound.Initialize(Environment, clip);
+        bgmSound.Initialize(Actor.RootTraitSet, clip);
     }
 
     public void ResumeBgm()
@@ -55,11 +55,11 @@ public class SoundModule : Module
 
     GameObject GetBgmPrefab()
     {
-        return Universe.LoadResources<GameObject>(BgmSource);
+        return Realm.LoadResources<GameObject>(BgmSource);
     }
     
     GameObject GetSfxPrefab()
     {
-        return Universe.LoadResources<GameObject>(SfxSource);
+        return Realm.LoadResources<GameObject>(SfxSource);
     }
 }

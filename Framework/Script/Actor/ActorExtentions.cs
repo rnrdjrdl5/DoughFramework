@@ -15,7 +15,7 @@ public static class ActorExtensions
 
     public static IEnumerable<IData> ToData(this Actor actor)
     {
-        return actor.Traits
+        return actor.TraitSet.Traits
             .Select(trait => trait as IData)
             .Concat(actor.ActorDatas.Select(actorData => actorData as IData))
             .Where(d => d != null);

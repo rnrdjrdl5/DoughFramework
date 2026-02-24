@@ -8,9 +8,9 @@ public class SoundPlayer : MonoBehaviour
     [SerializeField] UpdateType updateType;
     [SerializeField] AudioSource audioSource;
     [SerializeField] float delay;
-
-    Environment environment;
-    ObjectPoolModule objectPoolModule;
+    
+    ObjectPoolTrait objectPoolModule;
+    TraitSet rootTraitSet;
 
     float elapsedTime;
     float elapsedDestroyTime;
@@ -18,10 +18,10 @@ public class SoundPlayer : MonoBehaviour
     bool isPlaying;
     
     
-    public void Initialize(Environment environment, AudioClip clip)
+    public void Initialize(TraitSet rootTraitSet, AudioClip clip)
     {
-        this.environment = environment;
-        objectPoolModule = environment.GetModule<ObjectPoolModule>();
+        this.rootTraitSet = rootTraitSet;
+        objectPoolModule = rootTraitSet.GetTrait<ObjectPoolTrait>();
 
         audioSource.clip = clip;
     }

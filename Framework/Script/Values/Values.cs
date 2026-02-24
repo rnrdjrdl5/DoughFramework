@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class Values : IDisposable, MemoryPoolModule.IMemoryPool
+public class Values : IDisposable, MemoryPoolTrait.IMemoryPool
 {
     interface IValue
     {
@@ -37,14 +37,14 @@ public class Values : IDisposable, MemoryPoolModule.IMemoryPool
         }
     }
     
-    public static Values Create(MemoryPoolModule memoryPoolModule)
+    public static Values Create(MemoryPoolTrait memoryPoolTrait)
     {
-        var values = memoryPoolModule.Pool<Values>();
+        var values = memoryPoolTrait.Pool<Values>();
         
         return values;
     }
     
-    public MemoryPoolModule MemoryPoolModule { get; set; }
+    public MemoryPoolTrait MemoryPoolTrait { get; set; }
     
     Dictionary<Type, IValue> values = new();
     
@@ -65,7 +65,7 @@ public class Values : IDisposable, MemoryPoolModule.IMemoryPool
         var valueData = iValue as ValueData<T>;
         if (valueData.values == null)
         {
-            var listPool = MemoryPoolModule.Pool<ListPool<T>>();
+            var listPool = MemoryPoolTrait.Pool<ListPool<T>>();
             valueData.values = listPool;
         }
         
@@ -91,6 +91,6 @@ public class Values : IDisposable, MemoryPoolModule.IMemoryPool
         
         values.Clear();
         
-        MemoryPoolModule.Release(this);
+        MemoryPoolTrait.Release(this);
     }
 }

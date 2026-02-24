@@ -8,7 +8,7 @@ public class HpTextEffectTrait : Trait
     [SerializeField] Transform effectPosition;
     [SerializeField] Transform parent;
 
-    ObjectPoolModule objectPoolModule;
+    ObjectPoolTrait objectPoolModule;
     HpTrait hpTrait;
     
     public override void Ready()
@@ -17,7 +17,7 @@ public class HpTextEffectTrait : Trait
 
         if (objectPoolModule == null)
         {
-            objectPoolModule = Actor.Environment.GetModule<ObjectPoolModule>();
+            objectPoolModule = Actor.RootTraitSet.GetTrait<ObjectPoolTrait>();
         }
         if (hpTrait == null)
         {

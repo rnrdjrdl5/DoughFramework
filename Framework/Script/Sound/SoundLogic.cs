@@ -2,16 +2,16 @@ using UnityEngine;
 
 public static class SoundLogic
 {
-    public static void PlaySfx(SoundModule soundModule, string sfxPath)
+    public static void PlaySfx(SoundTrait soundModule, string sfxPath)
     {
-        var audioClip = Universe.LoadResources<AudioClip>(sfxPath);
+        var audioClip = Realm.LoadResources<AudioClip>(sfxPath);
         
         soundModule.PlaySfx(audioClip);
     }
 
-    public static void PlayBgm(SoundModule soundModule, string bgmPath)
+    public static void PlayBgm(SoundTrait soundModule, string bgmPath)
     {
-        var audioClip = Universe.LoadResources<AudioClip>(bgmPath);
+        var audioClip = Realm.LoadResources<AudioClip>(bgmPath);
         
         soundModule.PlayBgm(audioClip);
     }

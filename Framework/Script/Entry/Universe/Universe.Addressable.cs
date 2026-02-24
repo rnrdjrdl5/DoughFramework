@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 // TODO : 추후 Addressable로 교체 필요
-public partial class Universe
+public partial class Realm
 {
     public static ResourcesType LoadResources<ResourcesType> (string resourcePath) where ResourcesType : UnityEngine.Object
     {

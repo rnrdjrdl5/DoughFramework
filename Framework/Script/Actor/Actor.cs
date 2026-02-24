@@ -2,33 +2,34 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public partial class Actor : MonoBehaviour, IEnvironment
+public partial class Actor : MonoBehaviour
 {
     static int nextUniqueId = 0;
     static int DefaultHierarchyLevel = 0;
     
-    public Environment Environment { get; private set; }
     public Actor Parent => parent;
     public IReadOnlyList<IActorData> ActorDatas => actorDatas;
-    public IReadOnlyList<Trait> Traits => traits;
     public int UniqueId => uniqueId;
-    
+    public TraitSet TraitSet => traitSet;
+    public TraitSet RootTraitSet => rootTraitSet;
+
+    TraitSet rootTraitSet;
+    TraitSet traitSet;
     ActorRegistry children = new();
-    List<Trait> traits = new();
     List<IActorData> actorDatas = new();
     
     Actor parent;
     int uniqueId;
 
-    public void Initialize(Environment environment, Parameter parameter = null)
+    public void Initialize(TraitSet traitSet, Parameter parameter = null)
     {
-        InitializeEnvironment(environment);
+        InitializeRootTraitSet(traitSet);
         Initialize(parameter);
     }
 
-    public void InitializeEnvironment(Environment environment)
+    public void InitializeRootTraitSet(TraitSet rootTraitSet)
     {
-        Environment = environment;
+        this.rootTraitSet = rootTraitSet;
     }
     
     public virtual void Initialize(Parameter parameter)
@@ -63,20 +64,20 @@ public partial class Actor : MonoBehaviour, IEnvironment
 
     void InitTraits(Parameter parameter)
     {
-        traits.Clear();
+        traitSet.Traits.Clear();
 
         var components = GetComponents<Trait>();
         if (components.Length > 0)
         {
-            traits.AddRange(components);
+            traitSet.Traits.AddRange(components);
         }
 
-        foreach (var trait in traits)
+        foreach (var trait in traitSet.Traits)
         {
             trait.SetActor(this);
             trait.Initialize(parameter);
         }
-        foreach (var trait in traits)
+        foreach (var trait in traitSet.Traits)
         {
             trait.Ready();
         }
@@ -92,7 +93,7 @@ public partial class Actor : MonoBehaviour, IEnvironment
 
     void UninitTraits()
     {
-        foreach (var trait in traits)
+        foreach (var trait in traitSet.Traits)
         {
             trait.Uninitialize();
         }
@@ -108,22 +109,20 @@ public partial class Actor : MonoBehaviour, IEnvironment
 
     public TraitType GetTrait<TraitType>() where TraitType : Trait
     {
-        return traits.Where(trait => typeof(TraitType).IsAssignableFrom(trait.GetType()))
-            .Cast<TraitType>()
-            .FirstOrDefault();
+        return traitSet.GetTrait<TraitType>();
     }
 
     public ActorType AddActor<ActorType>(string prefabPath, Parameter parameter = null) where ActorType : Actor, new()
     {
-        var objectPoolModule = Environment.GetModule<ObjectPoolModule>(); 
+        var objectPoolModule = rootTraitSet.GetTrait<ObjectPoolTrait>(); 
         
-        var actorPrefab = Universe.LoadResources<GameObject>(prefabPath);
+        var actorPrefab = Realm.LoadResources<GameObject>(prefabPath);
         var actorObject = objectPoolModule.AllocateGameObject(actorPrefab);
         var actor = actorObject.GetComponent<ActorType>();
         
         AddChild(actor);
         
-        actor.Initialize(Environment, parameter);
+        actor.Initialize(rootTraitSet, parameter);
         
         return actor;
     }
@@ -147,7 +146,7 @@ public partial class Actor : MonoBehaviour, IEnvironment
         actor.Uninitialize();
         children.RemoveActor(actor);
         
-        var objectPoolModule = Environment.GetModule<ObjectPoolModule>();
+        var objectPoolModule = rootTraitSet.GetTrait<ObjectPoolTrait>();
         objectPoolModule.DeallocateGameObject(actor.gameObject);
     }
 

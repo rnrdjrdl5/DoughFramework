@@ -1,9 +1,5 @@
 using UnityEngine;
 
-public class GameDataModule : Module
+public class GameDataTrait : Trait
 {
-    protected override void Initialize(GameObject universeObject, Environment environment)
-    {
-        base.Initialize(universeObject, environment);
-    }
 }

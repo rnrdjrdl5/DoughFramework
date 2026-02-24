@@ -5,7 +5,10 @@ using UnityEngine;
 // Application 시작구간 , 첫 초기화 시점
 public abstract class Entry : MonoBehaviour
 {
-    List<Universe> universes = new();
+    public static Realm RootRealm => rootRealm;
+    
+    static Realm rootRealm;
+    [SerializeField] string rootRealmPath;
     
     void Awake()
     {
@@ -15,19 +18,11 @@ public abstract class Entry : MonoBehaviour
 
     protected virtual void Initialize()
     {
-        Universe.universes.Clear();
+        rootRealm = Realm.LoadResources<Realm>(rootRealmPath);
     }
 
     protected virtual void Ready()
     {
-        foreach (var universe in universes)
-        {
-            universe.Ready();
-        }
-    }
-
-    protected void AddUniverse(Universe universe)
-    {
-        universes.Add(universe);
+        
     }
 }

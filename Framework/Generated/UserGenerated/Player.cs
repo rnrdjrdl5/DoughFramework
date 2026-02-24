@@ -9,7 +9,7 @@ namespace Tables
 
         public Sprite GetSprite()
         {
-            return Universe.LoadImageFromAtlas(atlasPath, spritePath);
+            return Realm.LoadImageFromAtlas(atlasPath, spritePath);
         }
     }
 }

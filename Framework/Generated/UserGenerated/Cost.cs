@@ -10,6 +10,6 @@ namespace Tables
             return Table.FirstOrDefault(kv => kv.Value.jobType == jobType).Value.GetSprite();
         }
         
-        public Sprite GetSprite() => Universe.LoadImageFromAtlas(atlasPath, iconPath);
+        public Sprite GetSprite() => Realm.LoadImageFromAtlas(atlasPath, iconPath);
     }
 }

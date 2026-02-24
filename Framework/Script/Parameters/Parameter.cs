@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Parameter : IDisposable, MemoryPoolModule.IMemoryPool
+public class Parameter : IDisposable, MemoryPoolTrait.IMemoryPool
 {
     interface IParameter
     {
@@ -15,21 +15,21 @@ public class Parameter : IDisposable, MemoryPoolModule.IMemoryPool
 
         public void Clear()
         {
-            if (Data is MemoryPoolModule.IMemoryPool memoryPool)
+            if (Data is MemoryPoolTrait.IMemoryPool memoryPool)
             {
                 memoryPool.ReleasePool();
             }
         }
     }
     
-    public static Parameter Create(MemoryPoolModule memoryPoolModule)
+    public static Parameter Create(MemoryPoolTrait memoryPoolTrait)
     {
-        var parameter = memoryPoolModule.Pool<Parameter>();
+        var parameter = memoryPoolTrait.Pool<Parameter>();
         
         return parameter;
     }
     
-    public MemoryPoolModule MemoryPoolModule { get; set; }
+    public MemoryPoolTrait MemoryPoolTrait { get; set; }
     public int Count => parameters.Count;
     
     Dictionary<string, IParameter> parameters = new();
@@ -106,6 +106,6 @@ public class Parameter : IDisposable, MemoryPoolModule.IMemoryPool
         }
         
         parameters.Clear();
-        MemoryPoolModule.Release(this);
+        MemoryPoolTrait.Release(this);
     }
 }

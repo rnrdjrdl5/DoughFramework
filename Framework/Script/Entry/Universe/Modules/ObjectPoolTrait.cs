@@ -3,22 +3,20 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ObjectPoolModule : Module
+public class ObjectPoolTrait : Trait
 {
     Dictionary<GameObject, List<GameObject>> prefabToDeallocObjects = new();
     Dictionary<GameObject, List<GameObject>> prefabToAllocObjects = new();
-    
     Dictionary<GameObject, GameObject> allocObjectToPrefab = new();
-
     GameObject rootDeallocObject;
-
-    protected override void Initialize(GameObject universeObject, Environment environment)
+    
+    public override void Initialize(Parameter parameter)
     {
-        base.Initialize(universeObject, environment);
-
+        base.Initialize(parameter);
+        
         rootDeallocObject = new();
         rootDeallocObject.name = "DellocObject";
-        rootDeallocObject.transform.parent = universeObject.transform;
+        rootDeallocObject.transform.parent = Actor.transform;
         rootDeallocObject.SetActive(false);
     }
 
