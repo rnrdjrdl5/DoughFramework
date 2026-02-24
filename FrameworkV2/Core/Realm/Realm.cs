@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 // Realm 트리와 Ability를 보유하는 최상위 컨텍스트 컴포넌트
-[Ability(typeof(BuildRealmAbility))]
 [Ability(typeof(SpawnEntityAbility))]
 public partial class Realm : Entity
 {
