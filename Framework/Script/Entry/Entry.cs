@@ -18,8 +18,10 @@ public abstract class Entry : MonoBehaviour
 
     protected virtual void Initialize()
     {
-        rootRealm = Realm.LoadResources<Realm>(rootRealmPath);
-        rootRealm.Initialize(rootRealm.RootTraitSet);
+        var realmPrefab = Realm.LoadResources<GameObject>(rootRealmPath);
+        var realmObject = Instantiate(realmPrefab);
+        rootRealm = realmObject.GetComponent<Realm>();
+        rootRealm.Initialize(rootRealm.TraitSet);
     }
 
     protected virtual void Ready()

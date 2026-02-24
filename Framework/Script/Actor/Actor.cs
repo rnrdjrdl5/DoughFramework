@@ -14,7 +14,7 @@ public partial class Actor : MonoBehaviour
     public TraitSet RootTraitSet => rootTraitSet;
 
     TraitSet rootTraitSet;
-    TraitSet traitSet;
+    TraitSet traitSet = new();
     ActorRegistry children = new();
     List<IActorData> actorDatas = new();
     
