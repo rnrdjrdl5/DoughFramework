@@ -7,11 +7,9 @@ using UnityEngine;
 // State 형태로 스테이지를 관리한다. 
 // 스테이지 전환 시 전환 Function 호출
 
-public class StageTrait : Trait
+public class RealmTrait : Trait
 {
-    public Stage TopStage => stages.Count == 0 ? null : stages[^1]; 
-    
-    List<Stage> stages = new();
+    List<Realm> realms = new();
     ObjectPoolTrait objectPoolTrait;
 
     public override void Ready()
@@ -21,31 +19,31 @@ public class StageTrait : Trait
         objectPoolTrait = Actor.RootTraitSet.GetTrait<ObjectPoolTrait>();
     }
 
-    public StageType GetStage<StageType>() where StageType : Stage
+    public RealmType GetRealm<RealmType>() where RealmType : Realm
     {
-        return stages.Where(trait => typeof(StageType).IsAssignableFrom(trait.GetType()))
-            .Cast<StageType>()
+        return realms.Where(trait => typeof(RealmType).IsAssignableFrom(trait.GetType()))
+            .Cast<RealmType>()
             .FirstOrDefault();
     }
 
-    public StageType AddStage<StageType>(string prefabPath) where StageType : Stage, new ()
+    public RealmType AddRealm<RealmType>(string prefabPath) where RealmType : Realm, new ()
     {
-        var stagePrefab = Realm.LoadResources<GameObject>(prefabPath);
-        var stageObject = objectPoolTrait.AllocateGameObject(stagePrefab);
+        var realmPrefab = Realm.LoadResources<GameObject>(prefabPath);
+        var realmObject = objectPoolTrait.AllocateGameObject(realmPrefab);
         
-        var stage = stageObject.GetComponent<StageType>();
-        stage.Initialize(Actor.RootTraitSet);
+        var realm = realmObject.GetComponent<RealmType>();
+        realm.Initialize(Actor.RootTraitSet);
         
-        stages.Add(stage);
+        realms.Add(realm);
         
-        return stage;
+        return realm;
     }
 
-    public void RemoveStage(Stage stage)
+    public void RemoveRealm(Realm realm)
     {
-        stage.Uninitialize();
-        stages.Remove(stage);
+        realm.Uninitialize();
+        realms.Remove(realm);
         
-        objectPoolTrait.DeallocateGameObject(stage.gameObject);
+        objectPoolTrait.DeallocateGameObject(realm.gameObject);
     }
 }

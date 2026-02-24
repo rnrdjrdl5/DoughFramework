@@ -3,5 +3,5 @@ using UnityEngine;
 
 public abstract partial class Realm : Actor
 {
-    public List<Realm> Realms = new();
+    [SerializeField] RealmTrait realmTrait;
 }

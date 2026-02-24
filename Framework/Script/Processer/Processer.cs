@@ -4,11 +4,11 @@ public class Processer
 {
     public Actor Actor => actor;
     public ProcesserTrait ProcesserTrait => processerTrait;
-    public Stage Stage => stage;
-    public PanelTrait StagePanelTrait => stagePanelTrait;
+    public Realm Realm => realm;
+    public PanelTrait PanelTrait => panelTrait;
     
-    Stage stage;
-    PanelTrait stagePanelTrait;
+    Realm realm;
+    PanelTrait panelTrait;
     Actor actor;
     ProcesserTrait processerTrait;
 
@@ -31,8 +31,8 @@ public class Processer
     {
         ProcesserType processer = new();
         processer.actor = actor;
-        processer.stage = actor.GetRootParent<Stage>();
-        processer.stagePanelTrait = processer.stage.GetTrait<PanelTrait>();
+        processer.realm = actor.GetRootParent<Realm>();
+        processer.panelTrait = processer.realm.GetTrait<PanelTrait>();
 
         processer.Initialize();
 
@@ -44,8 +44,8 @@ public class Processer
         var processer = System.Activator.CreateInstance(type) as Processer;
         processer.actor = actor;
         processer.processerTrait = processerTrait;
-        processer.stage = actor.GetRootParent<Stage>();
-        processer.stagePanelTrait = processer.stage.GetTrait<PanelTrait>();
+        processer.realm = actor.GetRootParent<Realm>();
+        processer.panelTrait = processer.realm.GetTrait<PanelTrait>();
 
         processer.Initialize();
 
