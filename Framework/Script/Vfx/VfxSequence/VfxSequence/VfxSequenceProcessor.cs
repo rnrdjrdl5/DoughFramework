@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 // Sequence를 플레이하고 관리하는 곳
-public class VfxSequenceProcesser : MonoBehaviour
+public class VfxSequenceProcessor : MonoBehaviour
 {
     public event Action<int> onStart;
     public event Action<int,int> onFinish;

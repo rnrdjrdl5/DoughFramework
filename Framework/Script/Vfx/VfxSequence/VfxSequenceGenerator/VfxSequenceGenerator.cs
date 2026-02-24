@@ -23,7 +23,7 @@ public class VfxSequenceGenerator : MonoBehaviour
                 sequenceObject.StartPosition = startPosition;
                 sequenceObject.EndPosition = endPosition;
 
-                var sequenceProcess = createdObject.GetComponent<VfxSequenceProcesser>();
+                var sequenceProcess = createdObject.GetComponent<VfxSequenceProcessor>();
                 sequenceProcess.StartSequence();
                 
                 await UniTask.WaitForSeconds(delay, ignoreTimeScale: ignoreTimeScale, cancellationToken:this.GetCancellationTokenOnDestroy());

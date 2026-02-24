@@ -1,4 +1,4 @@
-﻿public class UpdateProcesser : Processer
+﻿public class UpdateProcessor : Processor
 {
     public virtual void Update()
     {
