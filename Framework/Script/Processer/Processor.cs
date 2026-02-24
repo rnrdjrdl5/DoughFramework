@@ -2,14 +2,14 @@
 
 public class Processor
 {
-    public Actor Actor => actor;
+    public Entity Entity => entity;
     public ProcessorAbility ProcessorAbility => processorAbility;
     public Realm Realm => realm;
     public PanelAbility PanelAbility => panelAbility;
     
     Realm realm;
     PanelAbility panelAbility;
-    Actor actor;
+    Entity entity;
     ProcessorAbility processorAbility;
 
     public virtual void Initialize()
@@ -27,11 +27,11 @@ public class Processor
         
     }
 
-    public static ProcessorType Create<ProcessorType>(Actor actor) where ProcessorType : Processor, new()
+    public static ProcessorType Create<ProcessorType>(Entity entity) where ProcessorType : Processor, new()
     {
         ProcessorType processor = new();
-        processor.actor = actor;
-        processor.realm = actor.GetRootParent<Realm>();
+        processor.entity = entity;
+        processor.realm = entity.GetRootParent<Realm>();
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
 
         processor.Initialize();
@@ -39,12 +39,12 @@ public class Processor
         return processor;
     }
 
-    public static Processor Create(System.Type type, Actor actor, ProcessorAbility processorAbility)
+    public static Processor Create(System.Type type, Entity entity, ProcessorAbility processorAbility)
     {
         var processor = System.Activator.CreateInstance(type) as Processor;
-        processor.actor = actor;
+        processor.entity = entity;
         processor.processorAbility = processorAbility;
-        processor.realm = actor.GetRootParent<Realm>();
+        processor.realm = entity.GetRootParent<Realm>();
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
 
         processor.Initialize();

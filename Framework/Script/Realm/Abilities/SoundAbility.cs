@@ -12,7 +12,7 @@ public class SoundAbility : Ability
     {
         base.Initialize(parameter);
         
-        objectPoolAbility = Actor.RootAbilitySet.GetAbility<ObjectPoolAbility>();
+        objectPoolAbility = Entity.RootAbilitySet.GetAbility<ObjectPoolAbility>();
     }
     
     public void PlaySfx(AudioClip clip)
@@ -23,7 +23,7 @@ public class SoundAbility : Ability
         var sfxSound = sfxObject.GetComponent<SoundPlayer>();
         sfxSound.AudioSource.loop = false;
         
-        sfxSound.Initialize(Actor.RootAbilitySet, clip);
+        sfxSound.Initialize(Entity.RootAbilitySet, clip);
     }
     
     public void PlayBgm(AudioClip clip)
@@ -34,7 +34,7 @@ public class SoundAbility : Ability
         bgmSound = bgmObject.GetComponent<SoundPlayer>();
         bgmSound.AudioSource.loop = true;
         
-        bgmSound.Initialize(Actor.RootAbilitySet, clip);
+        bgmSound.Initialize(Entity.RootAbilitySet, clip);
     }
 
     public void ResumeBgm()

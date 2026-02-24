@@ -13,7 +13,7 @@ public class HpAbility : Ability
         base.Initialize(parameter);
     }
 
-    public bool TryApplyDamage(Actor caster, float damage)
+    public bool TryApplyDamage(Entity caster, float damage)
     {
         if (damage < 0)
         {
@@ -28,7 +28,7 @@ public class HpAbility : Ability
         return true;
     }
 
-    public void Heal(Actor caster, float point)
+    public void Heal(Entity caster, float point)
     {
         var prevHp = hp;
         hp += point;

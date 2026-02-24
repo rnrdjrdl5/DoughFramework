@@ -1,18 +1,18 @@
 using System;
 
-// Actor에서 관리하는 내부 Data
-public interface IActorData : IData
+// Entity에서 관리하는 내부 Data
+public interface IEntityData : IData
 {
     void Initialize(Parameter parameter);
     void Uninitialize();
 }
 
 [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
-public class ActorDataAttribute : Attribute
+public class EntityDataAttribute : Attribute
 {
     public Type Type;
 
-    public ActorDataAttribute(Type type)
+    public EntityDataAttribute(Type type)
     {
         Type = type;
     }

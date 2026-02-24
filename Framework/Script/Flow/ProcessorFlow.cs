@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public class ProcessorFlow : Flow
 {
     public Processor Processor => processor;
-    public Actor Actor => processor.Actor;
+    public Entity Entity => processor.Entity;
 
     Processor processor;
 

@@ -14,14 +14,14 @@ public class PanelAbility : Ability
     
     List<Panel> panels = new();
     
-    public PanelType CreatePanel<PanelType>(string prefabPath, Parameter parameter = null, Actor ownerActor = null) where PanelType : Panel, new()
+    public PanelType CreatePanel<PanelType>(string prefabPath, Parameter parameter = null, Entity ownerEntity = null) where PanelType : Panel, new()
     {
-        if (ownerActor ==null)
+        if (ownerEntity ==null)
         {
-            ownerActor = Actor;
+            ownerEntity = Entity;
         }
         
-        var panel = ownerActor.AddActor<PanelType>(prefabPath, parameter);
+        var panel = ownerEntity.AddEntity<PanelType>(prefabPath, parameter);
         panels.Add(panel);
 
         if (autoRefreshPanelOrder)
@@ -51,11 +51,11 @@ public class PanelAbility : Ability
         }
     }
 
-    public bool RemovePanel<PanelType>(Actor ownerActor = null)
+    public bool RemovePanel<PanelType>(Entity ownerEntity = null)
     {
-        if (ownerActor == null)
+        if (ownerEntity == null)
         {
-            ownerActor = Actor;
+            ownerEntity = Entity;
         }
 
         var panel = panels.FirstOrDefault(panel => panel.GetType() == typeof(PanelType));
@@ -65,7 +65,7 @@ public class PanelAbility : Ability
         }
 
         panels.Remove(panel);
-        ownerActor.RemoveChild(panel);
+        ownerEntity.RemoveChild(panel);
 
         if (autoRefreshPanelOrder)
         {
@@ -77,11 +77,11 @@ public class PanelAbility : Ability
         return true;
     }
 
-    public bool RemovePanel(Panel panel, Actor ownerActor = null)
+    public bool RemovePanel(Panel panel, Entity ownerEntity = null)
     {
-        if (ownerActor == null)
+        if (ownerEntity == null)
         {
-            ownerActor = Actor;
+            ownerEntity = Entity;
         }
 
         if (!panels.Contains(panel))
@@ -90,7 +90,7 @@ public class PanelAbility : Ability
         }
 
         panels.Remove(panel);
-        ownerActor.RemoveChild(panel);
+        ownerEntity.RemoveChild(panel);
 
         RefreshPanelOrder();
         

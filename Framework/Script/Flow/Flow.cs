@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Flow : Flow<Actor>
+public class Flow : Flow<Entity>
 {
     public event System.Action OnEnter;
     public Flow Parent => parent;
@@ -18,10 +18,10 @@ public class Flow : Flow<Actor>
         this.isLoop = isLoop;
     }
 
-    public static FlowType Create<FlowType>(Actor actor) where FlowType : Flow, new()
+    public static FlowType Create<FlowType>(Entity entity) where FlowType : Flow, new()
     {
         FlowType flowType = new();
-        flowType.SetOwner(actor);
+        flowType.SetOwner(entity);
 
         return flowType;
     }

@@ -1,18 +1,18 @@
 using UnityEngine;
 
-public class ProcessorState : State<Actor>
+public class ProcessorState : State<Entity>
 {
     public Processor Processor => processor;
-    public Actor Actor => processor.Actor;
+    public Entity Entity => processor.Entity;
     public StateRunnerAbility StateRunnerAbility => stateRunnerAbility; 
 
     Processor processor;
     StateRunnerAbility stateRunnerAbility;
     
-    public static StateType Create<StateType>(Actor actor, Processor processor) where StateType : ProcessorState, new()
+    public static StateType Create<StateType>(Entity entity, Processor processor) where StateType : ProcessorState, new()
     {
         StateType stateType = new();
-        stateType.SetOwner(actor);
+        stateType.SetOwner(entity);
         stateType.SetProcessor(processor);
 
         return stateType;
@@ -22,7 +22,7 @@ public class ProcessorState : State<Actor>
     {
         this.processor = processor;
         
-        stateRunnerAbility = processor.Actor.GetAbility<StateRunnerAbility>();
+        stateRunnerAbility = processor.Entity.GetAbility<StateRunnerAbility>();
 
         return this;
     }

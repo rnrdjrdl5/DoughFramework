@@ -16,7 +16,7 @@ public class RealmAbility : Ability
     {
         base.Ready();
         
-        objectPoolAbility = Actor.RootAbilitySet.GetAbility<ObjectPoolAbility>();
+        objectPoolAbility = Entity.RootAbilitySet.GetAbility<ObjectPoolAbility>();
     }
 
     public RealmType GetRealm<RealmType>() where RealmType : Realm
@@ -32,7 +32,7 @@ public class RealmAbility : Ability
         var realmObject = objectPoolAbility.AllocateGameObject(realmPrefab);
         
         var realm = realmObject.GetComponent<RealmType>();
-        realm.Initialize(Actor.RootAbilitySet);
+        realm.Initialize(Entity.RootAbilitySet);
         
         realms.Add(realm);
         

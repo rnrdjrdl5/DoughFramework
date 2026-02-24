@@ -20,7 +20,7 @@ public class ProcessorAbility : Ability
         
         foreach (var processorType in processorTypes)
         {
-            var processor = Processor.Create(processorType, Actor, this);
+            var processor = Processor.Create(processorType, Entity, this);
             if (processor == null)
             {
                 continue;
@@ -38,7 +38,7 @@ public class ProcessorAbility : Ability
         
         foreach (var updateProcessorType in updateProcessorTypes)
         {
-            if (Processor.Create(updateProcessorType, Actor, this) is not UpdateProcessor updateProcessor)
+            if (Processor.Create(updateProcessorType, Entity, this) is not UpdateProcessor updateProcessor)
             {
                 continue;
             }

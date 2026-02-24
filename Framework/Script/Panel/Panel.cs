@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class Panel : Actor
+public class Panel : Entity
 {
     public EventListener InteractionEvent => interactionEvent;
     public Canvas Canvas => canvas;
@@ -55,9 +55,9 @@ public class Panel : Actor
         }
     }
 
-    public void SetPanelData(Actor actor, EventListener interactionEvent)
+    public void SetPanelData(Entity entity, EventListener interactionEvent)
     {
-        SetTargetPanelDatas(actor.ToData());
+        SetTargetPanelDatas(entity.ToData());
         SetInteractionEvent(interactionEvent);
     }
     

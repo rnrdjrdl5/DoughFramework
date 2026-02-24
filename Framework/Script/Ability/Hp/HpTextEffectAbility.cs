@@ -17,11 +17,11 @@ public class HpTextEffectAbility : Ability
 
         if (objectPoolModule == null)
         {
-            objectPoolModule = Actor.RootAbilitySet.GetAbility<ObjectPoolAbility>();
+            objectPoolModule = Entity.RootAbilitySet.GetAbility<ObjectPoolAbility>();
         }
         if (hpAbility == null)
         {
-            hpAbility = Actor.GetAbility<HpAbility>();
+            hpAbility = Entity.GetAbility<HpAbility>();
         }
         
         hpAbility.OnChangeHp += OnChangeHp;

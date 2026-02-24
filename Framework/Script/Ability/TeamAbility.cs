@@ -37,9 +37,9 @@ public class TeamAbility : Ability
         return true;
     }
 
-    public bool IsAlly(Actor targetActor)
+    public bool IsAlly(Entity targetEntity)
     {
-        var teamAbility = targetActor.GetAbility<TeamAbility>();
+        var teamAbility = targetEntity.GetAbility<TeamAbility>();
         if (teamAbility == null)
         {
             return false;
@@ -53,9 +53,9 @@ public class TeamAbility : Ability
         return alliance.Contains(teamAbility);
     }
 
-    public bool IsTeammate(Actor targetActor)
+    public bool IsTeammate(Entity targetEntity)
     {
-        var teamAbility = targetActor.GetAbility<TeamAbility>();
+        var teamAbility = targetEntity.GetAbility<TeamAbility>();
         if (teamAbility == null)
         {
             return false;

@@ -2,9 +2,9 @@
 
 public abstract class Ability : MonoBehaviour, IData
 {
-    public Actor Actor => actor;
+    public Entity Entity => entity;
     
-    Actor actor;
+    Entity entity;
 
     public virtual void Initialize(Parameter parameter)
     {
@@ -21,8 +21,8 @@ public abstract class Ability : MonoBehaviour, IData
         
     }
 
-    public void SetActor(Actor actor)
+    public void SetEntity(Entity entity)
     {
-        this.actor = actor;
+        this.entity = entity;
     }
 }

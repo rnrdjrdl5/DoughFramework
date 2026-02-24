@@ -16,7 +16,7 @@ public class ObjectPoolAbility : Ability
         
         rootDeallocObject = new();
         rootDeallocObject.name = "DellocObject";
-        rootDeallocObject.transform.parent = Actor.transform;
+        rootDeallocObject.transform.parent = Entity.transform;
         rootDeallocObject.SetActive(false);
     }
 

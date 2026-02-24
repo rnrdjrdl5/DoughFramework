@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract partial class Realm : Actor
+public abstract partial class Realm : Entity
 {
     [SerializeField] RealmAbility realmAbility;
 }

@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Brain : Actor
+public class Brain : Entity
 {
     public EventListener InteractionEvent => interactionEvent;
-    public event System.Action<Actor> OnSetControlActor;
-    public event System.Action<Actor> OnUnsetControlActor;
+    public event System.Action<Entity> OnSetControlEntity;
+    public event System.Action<Entity> OnUnsetControlEntity;
     
     protected int[] eventIds;
     
     EventListener interactionEvent = new();
-    Actor controlledActor; // TODO : 두 개 이상의 Actor를 조종해야한다면, 수정 필요
+    Entity controlledEntity; // TODO : 두 개 이상의 Entity를 조종해야한다면, 수정 필요
     
     public override void Initialize(Parameter parameter)
     {
@@ -23,7 +23,7 @@ public class Brain : Actor
     {
         foreach (var eventId in eventIds)
         {
-            interactionEvent.AddListener(eventId, RelayToActor);
+            interactionEvent.AddListener(eventId, RelayToEntity);
         }
     }
 
@@ -38,40 +38,40 @@ public class Brain : Actor
     {
         foreach (var eventId in eventIds)
         {
-            interactionEvent.RemoveListener(eventId, RelayToActor);
+            interactionEvent.RemoveListener(eventId, RelayToEntity);
         }
     }
 
-    public void SetControlledActor(Actor actor)
+    public void SetControlledEntity(Entity entity)
     {
-        if (controlledActor != null)
+        if (controlledEntity != null)
         {
-            UnsetControlledActor();
+            UnsetControlledEntity();
         }
 
-        controlledActor = actor;
-        OnSetControlActor?.Invoke(controlledActor);
+        controlledEntity = entity;
+        OnSetControlEntity?.Invoke(controlledEntity);
     }
 
-    public void UnsetControlledActor()
+    public void UnsetControlledEntity()
     {
-        if (controlledActor == null)
+        if (controlledEntity == null)
         {
             return;
         }
 
-        OnUnsetControlActor?.Invoke(controlledActor);
-        controlledActor = null;
+        OnUnsetControlEntity?.Invoke(controlledEntity);
+        controlledEntity = null;
     }
     
-    public void RelayToActor(int eventId, Values values)
+    public void RelayToEntity(int eventId, Values values)
     {
-        if (controlledActor == null)
+        if (controlledEntity == null)
         {
             return;
         }
         
-        var eventListener = controlledActor.GetActorData<EventListener>();
+        var eventListener = controlledEntity.GetEntityData<EventListener>();
         if (eventListener != null)
         {
             eventListener.ExecuteListeners(eventId, values);

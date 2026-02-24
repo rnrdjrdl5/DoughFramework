@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EventListener : IActorData
+public class EventListener : IEntityData
 {
     Dictionary<int, List<Action<int, Values>>> listeners = new();
 

@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class StateRunnerAbility : Ability
 {
-    public ActorStateBehaviour StateBehaviour => stateBehaviour;
+    public EntityStateBehaviour StateBehaviour => stateBehaviour;
     
-    ActorStateBehaviour stateBehaviour;
+    EntityStateBehaviour stateBehaviour;
     
     void Update()
     {
@@ -22,8 +22,8 @@ public class StateRunnerAbility : Ability
         }
     }
 
-    public void SetStateBehaviour(ActorStateBehaviour actorStateBehaviour)
+    public void SetStateBehaviour(EntityStateBehaviour entityStateBehaviour)
     {
-        this.stateBehaviour = actorStateBehaviour;
+        this.stateBehaviour = entityStateBehaviour;
     }
 }

@@ -2,23 +2,23 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public partial class Actor : MonoBehaviour
+public partial class Entity : MonoBehaviour
 {
     static int nextUniqueId = 0;
     static int DefaultHierarchyLevel = 0;
     
-    public Actor Parent => parent;
-    public IReadOnlyList<IActorData> ActorDatas => actorDatas;
+    public Entity Parent => parent;
+    public IReadOnlyList<IEntityData> EntityDatas => entityDatas;
     public int UniqueId => uniqueId;
     public AbilitySet AbilitySet => abilitySet;
     public AbilitySet RootAbilitySet => rootAbilitySet;
 
     AbilitySet rootAbilitySet;
     AbilitySet abilitySet = new();
-    ActorRegistry children = new();
-    List<IActorData> actorDatas = new();
+    EntityRegistry children = new();
+    List<IEntityData> entityDatas = new();
     
-    Actor parent;
+    Entity parent;
     int uniqueId;
 
     public void Initialize(AbilitySet abilitySet, Parameter parameter = null)
@@ -36,7 +36,7 @@ public partial class Actor : MonoBehaviour
     {
         NextUniqueId();
 
-        InitActorDatas(parameter);
+        InitEntityDatas(parameter);
         InitAbilities(parameter);
     }
 
@@ -45,20 +45,20 @@ public partial class Actor : MonoBehaviour
         uniqueId = ++nextUniqueId;
     }
 
-    void InitActorDatas(Parameter parameter)
+    void InitEntityDatas(Parameter parameter)
     {
-        actorDatas.Clear();
+        entityDatas.Clear();
         
         var innerTypes = GetType()
-            .GetCustomAttributes(typeof(ActorDataAttribute), true)
-            .Cast<ActorDataAttribute>()
+            .GetCustomAttributes(typeof(EntityDataAttribute), true)
+            .Cast<EntityDataAttribute>()
             .Select(attr => attr.Type);
         
         foreach (var type in innerTypes)
         {
-            var actorData = System.Activator.CreateInstance(type) as IActorData;
-            actorDatas.Add(actorData);
-            actorData.Initialize(parameter);
+            var entityData = System.Activator.CreateInstance(type) as IEntityData;
+            entityDatas.Add(entityData);
+            entityData.Initialize(parameter);
         }
     }
 
@@ -74,7 +74,7 @@ public partial class Actor : MonoBehaviour
 
         foreach (var ability in abilitySet.Abilities)
         {
-            ability.SetActor(this);
+            ability.SetEntity(this);
             ability.Initialize(parameter);
         }
         foreach (var ability in abilitySet.Abilities)
@@ -86,7 +86,7 @@ public partial class Actor : MonoBehaviour
     public virtual void Uninitialize()
     {
         UninitAbilities();
-        UninitActorDatas();
+        UninitEntityDatas();
         
         RemoveChildren();
     }
@@ -99,11 +99,11 @@ public partial class Actor : MonoBehaviour
         }
     }
 
-    void UninitActorDatas()
+    void UninitEntityDatas()
     {
-        foreach (var actorData in actorDatas)
+        foreach (var entityData in entityDatas)
         {
-            actorData.Uninitialize();
+            entityData.Uninitialize();
         }
     }
 
@@ -112,72 +112,72 @@ public partial class Actor : MonoBehaviour
         return abilitySet.GetAbility<AbilityType>();
     }
 
-    public ActorType AddActor<ActorType>(string prefabPath, Parameter parameter = null) where ActorType : Actor, new()
+    public EntityType AddEntity<EntityType>(string prefabPath, Parameter parameter = null) where EntityType : Entity, new()
     {
         var objectPoolModule = rootAbilitySet.GetAbility<ObjectPoolAbility>(); 
         
-        var actorPrefab = Realm.LoadResources<GameObject>(prefabPath);
-        var actorObject = objectPoolModule.AllocateGameObject(actorPrefab);
-        var actor = actorObject.GetComponent<ActorType>();
+        var entityPrefab = Realm.LoadResources<GameObject>(prefabPath);
+        var entityObject = objectPoolModule.AllocateGameObject(entityPrefab);
+        var entity = entityObject.GetComponent<EntityType>();
         
-        AddChild(actor);
+        AddChild(entity);
         
-        actor.Initialize(rootAbilitySet, parameter);
+        entity.Initialize(rootAbilitySet, parameter);
         
-        return actor;
+        return entity;
     }
 
-    public void AddChild(Actor actor)
+    public void AddChild(Entity entity)
     {
-        actor.parent = this;
+        entity.parent = this;
         
-        children.AddActor(actor);
+        children.AddEntity(entity);
     }
 
-    public IEnumerable<ActorType> GetChildren<ActorType>() where ActorType : Actor
+    public IEnumerable<EntityType> GetChildren<EntityType>() where EntityType : Entity
     {
-        return children.GetActor<ActorType>();
+        return children.GetEntity<EntityType>();
     }
 
-    public Actor GetChild(int uniqueId) => children.GetActor(uniqueId);
+    public Entity GetChild(int uniqueId) => children.GetEntity(uniqueId);
 
-    public void RemoveChild(Actor actor)
+    public void RemoveChild(Entity entity)
     {
-        actor.Uninitialize();
-        children.RemoveActor(actor);
+        entity.Uninitialize();
+        children.RemoveEntity(entity);
         
         var objectPoolModule = rootAbilitySet.GetAbility<ObjectPoolAbility>();
-        objectPoolModule.DeallocateGameObject(actor.gameObject);
+        objectPoolModule.DeallocateGameObject(entity.gameObject);
     }
 
     public void RemoveChildren()
     {
-        for (int i = children.Actors.Count - 1; i >= 0; i--)
+        for (int i = children.Entities.Count - 1; i >= 0; i--)
         {
-            RemoveChild(children.Actors[i]);
+            RemoveChild(children.Entities[i]);
         }
     }
     
-    public ActorType GetRootParent<ActorType>() where ActorType : Actor
+    public EntityType GetRootParent<EntityType>() where EntityType : Entity
     {
         var current = this;
-        var lastValidActor = this;
+        var lastValidEntity = this;
 
         while (current != null)
         {
-            if (current is ActorType targetType)
+            if (current is EntityType targetType)
             {
                 return targetType;
             }
             
-            lastValidActor = current;
+            lastValidEntity = current;
             current = current.parent;
         }
         
-        return lastValidActor as ActorType;
+        return lastValidEntity as EntityType;
     }
 
-    public Actor GetRootParent()
+    public Entity GetRootParent()
     {
         var current = this;
         while (current.parent != null)
@@ -188,15 +188,15 @@ public partial class Actor : MonoBehaviour
         return current;
     }
     
-    public TActorData GetActorData<TActorData>() where TActorData : class, IActorData
+    public TEntityData GetEntityData<TEntityData>() where TEntityData : class, IEntityData
     {
-        if (ActorDatas == null)
+        if (EntityDatas == null)
         {
             return null;
         }
         
-        return ActorDatas.Where(actor => typeof(TActorData).IsAssignableFrom(actor.GetType()))
-            .Cast<TActorData>()
+        return EntityDatas.Where(entity => typeof(TEntityData).IsAssignableFrom(entity.GetType()))
+            .Cast<TEntityData>()
             .FirstOrDefault();
     }
 }

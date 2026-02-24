@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public static class ActorLogic
+public static class EntityLogic
 {
     
 }
