@@ -30,7 +30,7 @@ public class Flow : Flow<Entity>
     {
         FlowType flow = new();
         flow.parent = this;
-        flow.SetOwner(flow.Owner);
+        flow.SetOwner(Owner);
         
         children.Add(flow);
 
@@ -119,7 +119,10 @@ public class Flow : Flow<Entity>
 
     void ActivateChildFlow(Flow flow)
     {
-        activatedChildFlow.OnExitFlow();
+        if (activatedChildFlow != null)
+        {
+            activatedChildFlow.OnExitFlow();
+        }
 
         activatedChildFlow = flow;
         activatedChildFlow.OnEnterFlow();

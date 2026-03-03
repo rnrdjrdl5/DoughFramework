@@ -16,4 +16,16 @@ public static class MathUtils
     {
         return (index % count + count) % count;
     }
+
+    public static bool Roll(float minRange, float maxRange, float threshold)
+    {
+        if (maxRange <= minRange)
+        {
+            return true;
+        }
+
+        var clampedThreshold = Mathf.Clamp(threshold, minRange, maxRange);
+        var roll = Random.Range(minRange, maxRange);
+        return roll < clampedThreshold;
+    }
 }

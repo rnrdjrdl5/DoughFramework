@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public partial class Entity : MonoBehaviour
+[EntityData(typeof(MessageBus))]
+public partial class Entity : MonoBehaviour , IControlled
 {
     static int nextUniqueId = 0;
     static int DefaultHierarchyLevel = 0;
@@ -114,10 +115,10 @@ public partial class Entity : MonoBehaviour
 
     public EntityType AddEntity<EntityType>(string prefabPath, Parameter parameter = null) where EntityType : Entity, new()
     {
-        var objectPoolModule = rootAbilitySet.GetAbility<ObjectPoolAbility>(); 
+        var objectPoolAbility = rootAbilitySet.GetAbility<ObjectPoolAbility>(); 
         
         var entityPrefab = Realm.LoadResources<GameObject>(prefabPath);
-        var entityObject = objectPoolModule.AllocateGameObject(entityPrefab);
+        var entityObject = objectPoolAbility.AllocateGameObject(entityPrefab);
         var entity = entityObject.GetComponent<EntityType>();
         
         AddChild(entity);
@@ -129,9 +130,14 @@ public partial class Entity : MonoBehaviour
 
     public void AddChild(Entity entity)
     {
-        entity.parent = this;
+        SetParent(entity);
         
         children.AddEntity(entity);
+    }
+
+    public void SetParent(Entity entity)
+    {
+        entity.parent = this;
     }
 
     public IEnumerable<EntityType> GetChildren<EntityType>() where EntityType : Entity

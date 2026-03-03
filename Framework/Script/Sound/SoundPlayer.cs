@@ -9,7 +9,7 @@ public class SoundPlayer : MonoBehaviour
     [SerializeField] AudioSource audioSource;
     [SerializeField] float delay;
     
-    ObjectPoolAbility objectPoolModule;
+    ObjectPoolAbility objectPoolAbility;
     AbilitySet rootAbilitySet;
 
     float elapsedTime;
@@ -21,7 +21,7 @@ public class SoundPlayer : MonoBehaviour
     public void Initialize(AbilitySet rootAbilitySet, AudioClip clip)
     {
         this.rootAbilitySet = rootAbilitySet;
-        objectPoolModule = rootAbilitySet.GetAbility<ObjectPoolAbility>();
+        objectPoolAbility = rootAbilitySet.GetAbility<ObjectPoolAbility>();
 
         audioSource.clip = clip;
     }
@@ -79,7 +79,7 @@ public class SoundPlayer : MonoBehaviour
     {
         Uninitialize();
         
-        objectPoolModule.DeallocateGameObject(gameObject);
+        objectPoolAbility.DeallocateGameObject(gameObject);
     }
     
     float GetUpdateTime()

@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PanelElement : MonoBehaviour
 {
-    public EventListener InteractionEvent => interactionEvent;
+    public MessageBus MessageBus => messageBus;
 
     DataSet targetDataSet = new();
-    EventListener interactionEvent;
+    MessageBus messageBus;
 
     public virtual void Initialize(Parameter parameter)
     {
@@ -19,14 +19,14 @@ public class PanelElement : MonoBehaviour
         
     }
 
-    public void SetInteractionEvent(EventListener interactionEvent)
+    public void SetInteractionEvent(MessageBus messageBus)
     {
-        this.interactionEvent = interactionEvent;
+        this.messageBus = messageBus;
     }
 
     public void UnsetInteractionEvent()
     {
-        interactionEvent = null;
+        messageBus = null;
     }
     
     public void SetTargetPanelDatas(IEnumerable<IData> datas)

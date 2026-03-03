@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Panel : Entity
 {
-    public EventListener InteractionEvent => interactionEvent;
+    public MessageBus MessageBus => messageBus;
     public Canvas Canvas => canvas;
     public virtual int PanelCustomOffset { get; protected set; }
     public int PanelOrder => panelOrder + panelOrderOffset + PanelCustomOffset;
@@ -13,7 +13,7 @@ public class Panel : Entity
     [SerializeField] List<PanelElement> panelElements;
     [SerializeField] Canvas canvas;
     
-    EventListener interactionEvent;
+    MessageBus messageBus;
     PanelAbility parentPanelAbility;
 
     int panelOrder;
@@ -55,19 +55,19 @@ public class Panel : Entity
         }
     }
 
-    public void SetPanelData(Entity entity, EventListener interactionEvent)
+    public void SetPanelData(Entity entity, MessageBus messageBus)
     {
         SetTargetPanelDatas(entity.ToData());
-        SetInteractionEvent(interactionEvent);
+        SetInteractionEvent(messageBus);
     }
     
-    public void SetInteractionEvent(EventListener interactionEvent)
+    public void SetInteractionEvent(MessageBus messageBus)
     {
-        this.interactionEvent = interactionEvent;
+        this.messageBus = messageBus;
 
         foreach (var panelElement in panelElements)
         {
-            panelElement.SetInteractionEvent(interactionEvent);
+            panelElement.SetInteractionEvent(messageBus);
         }
     }
 
@@ -78,7 +78,7 @@ public class Panel : Entity
             panelElement.UnsetInteractionEvent();
         }
         
-        interactionEvent = null;
+        messageBus = null;
     }
 
     public void SetPanelOrder(int order)

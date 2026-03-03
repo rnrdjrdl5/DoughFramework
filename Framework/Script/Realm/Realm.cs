@@ -3,5 +3,6 @@ using UnityEngine;
 
 public abstract partial class Realm : Entity
 {
-    [SerializeField] RealmAbility realmAbility;
+    
 }
+

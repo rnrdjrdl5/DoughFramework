@@ -11,7 +11,7 @@ public class AllocGameObject : MonoBehaviour
 
     List<GameObject> allocatedObjects = new(); 
     AbilitySet rootAbilitySet;
-    ObjectPoolAbility objectPoolModule;
+    ObjectPoolAbility objectPoolAbility;
 
     private void Awake()
     {
@@ -21,7 +21,7 @@ public class AllocGameObject : MonoBehaviour
     public void OnEnable()
     {
         rootAbilitySet = Entry.RootRealm.AbilitySet;
-        objectPoolModule = rootAbilitySet.GetAbility<ObjectPoolAbility>();
+        objectPoolAbility = rootAbilitySet.GetAbility<ObjectPoolAbility>();
     }
 
     public void AllocateObject(int count)
@@ -44,7 +44,7 @@ public class AllocGameObject : MonoBehaviour
 
     public GameObject AllocateObject(GameObject prefab)
     {
-        var allocateObject = objectPoolModule.AllocateGameObject(prefab, parent);
+        var allocateObject = objectPoolAbility.AllocateGameObject(prefab, parent);
         allocateObject.SetActive(true);
         
         allocatedObjects.Add(allocateObject);
@@ -56,7 +56,7 @@ public class AllocGameObject : MonoBehaviour
     {
         foreach (var allocatedObject in allocatedObjects)
         {
-            objectPoolModule.DeallocateGameObject(allocatedObject);
+            objectPoolAbility.DeallocateGameObject(allocatedObject);
         }
         
         allocatedObjects.Clear();
@@ -69,7 +69,7 @@ public class AllocGameObject : MonoBehaviour
             return false;
         }
         
-        objectPoolModule.DeallocateGameObject(allocatedObjects[index]);
+        objectPoolAbility.DeallocateGameObject(allocatedObjects[index]);
         allocatedObjects.RemoveAt(index);
 
         return true;
