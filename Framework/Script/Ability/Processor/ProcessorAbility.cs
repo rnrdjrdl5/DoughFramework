@@ -20,13 +20,13 @@ public partial class ProcessorAbility : Ability
         
         foreach (var processorType in processorTypes)
         {
-            var processor = Processor.Create(processorType, Entity, this);
+            var processor = Processor.Create(processorType, Entity, this, parameter: parameter);
             if (processor == null)
             {
                 continue;
             }
-
-            processorSet.AddProcessor(processor, this, parameter);
+            
+            AddProcessor(processor, parameter);
         }
         
         var updateProcessorTypes = GetType()
@@ -43,30 +43,20 @@ public partial class ProcessorAbility : Ability
                 continue;
             }
 
-            updateProcessorSet.AddProcessor(updateProcessor, this, parameter);
-        }
-
-        foreach (var processor in processorSet.Processors)
-        {
-            processor.Ready();
-        }
-
-        foreach (var processor in updateProcessorSet.Processors)
-        {
-            processor.Ready();
+            AddProcessor(updateProcessor, parameter);
         }
     }
 
     public override void Uninitialize()
     {
-        foreach (var processor in processorSet.Processors)
+        for (var i = processorSet.Processors.Count - 1; i >= 0; i--)
         {
-            processor.Uninitialize();
+            processorSet.RemoveProcessor(processorSet.Processors[i]);
         }
-
-        foreach (var updateProcessor in updateProcessorSet.Processors)
+        
+        for (var i = updateProcessorSet.Processors.Count - 1; i >= 0; i--)
         {
-            updateProcessor.Uninitialize();
+            updateProcessorSet.RemoveProcessor(updateProcessorSet.Processors[i]);
         }
 
         base.Uninitialize();

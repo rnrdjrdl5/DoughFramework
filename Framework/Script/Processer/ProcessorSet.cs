@@ -3,7 +3,7 @@ using System.Linq;
 
 public class ProcessorSet<TProcessor>  where TProcessor : Processor, new()
 {
-    public IReadOnlyList<Processor> Processors => processors;
+    public IReadOnlyList<TProcessor> Processors => processors;
 
     List<TProcessor> processors = new();
     
@@ -13,7 +13,6 @@ public class ProcessorSet<TProcessor>  where TProcessor : Processor, new()
         processors.Add(processor);
         
         processor.Initialize(parameter);
-        processor.Ready();
     }
     
     public Processor AddProcessor<ProcessorType>(Entity entity, ProcessorAbility processorAbility, Parameter parameter = null) where ProcessorType : TProcessor, new()
@@ -32,7 +31,7 @@ public class ProcessorSet<TProcessor>  where TProcessor : Processor, new()
             return false;
         }
         
-        processors.Remove(processor);
+        RemoveProcessor(processor);
         
         return true;
     }
@@ -44,7 +43,9 @@ public class ProcessorSet<TProcessor>  where TProcessor : Processor, new()
             return false;
         }
 
+        processor.Uninitialize();
         processors.Remove(processor);
+        
         return true;
     }
     

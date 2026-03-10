@@ -25,11 +25,6 @@ public partial class Processor
 
     }
 
-    public virtual void Ready()
-    {
-        
-    }
-
     public virtual void Update()
     {
         foreach (var processor in processorSet.Processors)
@@ -55,8 +50,6 @@ public partial class Processor
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
         processor.isDynamic = isDynamic;
 
-        processor.Initialize(paramter);
-
         return processor;
     }
 
@@ -68,8 +61,6 @@ public partial class Processor
         processor.realm = entity.GetRootParent<Realm>();
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
         processor.isDynamic = isDynamic;
-        
-        processor.Initialize(parameter);
 
         return processor;
     }
