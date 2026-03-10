@@ -8,14 +8,14 @@ public partial class Processor
     public Realm Realm => realm;
     public PanelAbility PanelAbility => panelAbility;
 
-    ProcessorSet<Processor> processorSet;
+    ProcessorSet<Processor> processorSet = new();
     Realm realm;
     PanelAbility panelAbility;
     Entity entity;
     ProcessorAbility processorAbility;
     bool isDynamic;
 
-    public virtual void Initialize()
+    public virtual void Initialize(Parameter parameter)
     {
         
     }
@@ -46,7 +46,7 @@ public partial class Processor
         }
     }
 
-    public static ProcessorType Create<ProcessorType>(Entity entity, ProcessorAbility processorAbility, bool isDynamic = false) where ProcessorType : Processor, new()
+    public static ProcessorType Create<ProcessorType>(Entity entity, ProcessorAbility processorAbility, bool isDynamic = false, Parameter paramter = null) where ProcessorType : Processor, new()
     {
         var processor = new ProcessorType();
         processor.entity = entity;
@@ -55,12 +55,12 @@ public partial class Processor
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
         processor.isDynamic = isDynamic;
 
-        processor.Initialize();
+        processor.Initialize(paramter);
 
         return processor;
     }
 
-    public static Processor Create(System.Type type, Entity entity, ProcessorAbility processorAbility, bool isDynamic = false)
+    public static Processor Create(System.Type type, Entity entity, ProcessorAbility processorAbility, bool isDynamic = false, Parameter parameter = null)
     {
         var processor = System.Activator.CreateInstance(type) as Processor;
         processor.entity = entity;
@@ -69,7 +69,7 @@ public partial class Processor
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
         processor.isDynamic = isDynamic;
         
-        processor.Initialize();
+        processor.Initialize(parameter);
 
         return processor;
     }

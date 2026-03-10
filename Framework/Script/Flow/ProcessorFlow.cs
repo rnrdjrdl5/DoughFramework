@@ -17,6 +17,12 @@ public class ProcessorFlow : Flow
 
         return this;
     }
+
+    public ProcessorType GetProcessor<ProcessorType>() where ProcessorType : Processor
+    {
+        return processor as ProcessorType;
+    }
+    
     public FlowType AddChild<FlowType>(Processor processor) where FlowType : ProcessorFlow, new()
     {
         FlowType flow = new();

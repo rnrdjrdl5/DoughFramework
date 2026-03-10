@@ -26,7 +26,7 @@ public partial class ProcessorAbility : Ability
                 continue;
             }
 
-            processorSet.AddProcessor(processor, this);
+            processorSet.AddProcessor(processor, this, parameter);
         }
         
         var updateProcessorTypes = GetType()
@@ -43,7 +43,7 @@ public partial class ProcessorAbility : Ability
                 continue;
             }
 
-            updateProcessorSet.AddProcessor(updateProcessor, this);
+            updateProcessorSet.AddProcessor(updateProcessor, this, parameter);
         }
 
         foreach (var processor in processorSet.Processors)

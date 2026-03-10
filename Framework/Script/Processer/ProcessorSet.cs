@@ -7,23 +7,24 @@ public class ProcessorSet<TProcessor>  where TProcessor : Processor, new()
 
     List<TProcessor> processors = new();
     
-    public void AddProcessor(TProcessor processor, ProcessorAbility processorAbility)
+    public void AddProcessor(TProcessor processor, ProcessorAbility processorAbility, Parameter parameter = null)
     {
         processor.SetProcessorAbility(processorAbility);
         processors.Add(processor);
         
-        processor.Initialize();
+        processor.Initialize(parameter);
+        processor.Ready();
     }
     
-    public Processor AddProcessor<ProcessorType>(Entity entity, ProcessorAbility processorAbility) where ProcessorType : Processor, new()
+    public Processor AddProcessor<ProcessorType>(Entity entity, ProcessorAbility processorAbility, Parameter parameter = null) where ProcessorType : TProcessor, new()
     {
         var processor = Processor.Create<ProcessorType>(entity, processorAbility) as TProcessor;
-        AddProcessor(processor, processorAbility);
+        AddProcessor(processor, processorAbility, parameter);
 
         return processor;
     }
 
-    public bool RemoveProcessor<ProcessorType>() where ProcessorType : Processor
+    public bool RemoveProcessor<ProcessorType>() where ProcessorType : TProcessor
     {
         var processor = GetProcessor<ProcessorType>();
         if (processor == null)
@@ -47,11 +48,18 @@ public class ProcessorSet<TProcessor>  where TProcessor : Processor, new()
         return true;
     }
     
-    public TProcessor GetProcessor<ProcessorType>() where ProcessorType : Processor
+    public ProcessorType GetProcessor<ProcessorType>() where ProcessorType : TProcessor
     {
         var processor = processors.FirstOrDefault(updateProcessor => typeof(ProcessorType).IsAssignableFrom(updateProcessor.GetType()));
-        return processor;
+        return processor as ProcessorType;
     }
+
+    public IEnumerable<ProcessorType> GetProcessors<ProcessorType>() where ProcessorType : TProcessor
+    {
+        var processor = processors.Where(updateProcessor => typeof(ProcessorType).IsAssignableFrom(updateProcessor.GetType()));
+        return processor.Select(processor => processor as ProcessorType);
+    }
+    
 
     public void Clear()
     {

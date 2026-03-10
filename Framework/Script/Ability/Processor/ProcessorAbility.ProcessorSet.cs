@@ -1,8 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 public partial class ProcessorAbility
 {
-    public Processor AddProcessor<ProcessorType>() where ProcessorType : Processor, new()
+    public ProcessorType AddProcessor<ProcessorType>() where ProcessorType : Processor, new()
     {
         var processor = Processor.Create<ProcessorType>(Entity, this);
         if (processor is UpdateProcessor updateProcessor)
@@ -72,5 +74,15 @@ public partial class ProcessorAbility
         }
 
         return null;
+    }
+
+    public IEnumerable<ProcessorType> GetUpdateProcessors<ProcessorType>() where ProcessorType : UpdateProcessor
+    {
+        return updateProcessorSet.GetProcessors<ProcessorType>();
+    }
+
+    public IEnumerable<ProcessorType> GetProcessors<ProcessorType>() where ProcessorType : Processor
+    {
+        return processorSet.GetProcessors<ProcessorType>();
     }
 }
