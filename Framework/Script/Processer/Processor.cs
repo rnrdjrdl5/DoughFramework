@@ -1,20 +1,23 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-public class Processor
+public partial class Processor
 {
     public Entity Entity => entity;
     public ProcessorAbility ProcessorAbility => processorAbility;
     public Realm Realm => realm;
     public PanelAbility PanelAbility => panelAbility;
-    
+
+    ProcessorSet<Processor> processorSet;
     Realm realm;
     PanelAbility panelAbility;
     Entity entity;
     ProcessorAbility processorAbility;
+    bool isDynamic;
 
     public virtual void Initialize()
     {
-
+        
     }
 
     public virtual void Uninitialize()
@@ -27,26 +30,45 @@ public class Processor
         
     }
 
-    public static ProcessorType Create<ProcessorType>(Entity entity) where ProcessorType : Processor, new()
+    public virtual void Update()
     {
-        ProcessorType processor = new();
+        foreach (var processor in processorSet.Processors)
+        {
+            processor.Update();
+        }
+    }
+
+    public virtual void FixedUpdate()
+    {
+        foreach (var processor in processorSet.Processors)
+        {
+            processor.FixedUpdate();
+        }
+    }
+
+    public static ProcessorType Create<ProcessorType>(Entity entity, ProcessorAbility processorAbility, bool isDynamic = false) where ProcessorType : Processor, new()
+    {
+        var processor = new ProcessorType();
         processor.entity = entity;
+        processor.processorAbility = processorAbility;
         processor.realm = entity.GetRootParent<Realm>();
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
+        processor.isDynamic = isDynamic;
 
         processor.Initialize();
 
         return processor;
     }
 
-    public static Processor Create(System.Type type, Entity entity, ProcessorAbility processorAbility)
+    public static Processor Create(System.Type type, Entity entity, ProcessorAbility processorAbility, bool isDynamic = false)
     {
         var processor = System.Activator.CreateInstance(type) as Processor;
         processor.entity = entity;
         processor.processorAbility = processorAbility;
         processor.realm = entity.GetRootParent<Realm>();
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
-
+        processor.isDynamic = isDynamic;
+        
         processor.Initialize();
 
         return processor;

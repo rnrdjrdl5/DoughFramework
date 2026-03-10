@@ -10,9 +10,12 @@ public class Flow : Flow<Entity>
     protected List<Flow> children = new();
     protected Flow parent;
     protected Flow activatedChildFlow;
+    
+    protected float elapsedTime;
+    protected float elapsedFixedTime;
 
     bool isLoop;
-
+    
     public void SetLoop(bool isLoop)
     {
         this.isLoop = isLoop;
@@ -179,17 +182,28 @@ public class Flow : Flow<Entity>
 
     public virtual void OnEnterFlow()
     {
+        elapsedTime = 0.0f;
+        elapsedFixedTime = 0.0f;
+        
         OnEnter?.Invoke();
     }
 
     public virtual void OnUpdateFlow()
     {
-
+        elapsedTime += Time.deltaTime;
+        if (activatedChildFlow != null)
+        {
+            activatedChildFlow.OnUpdateFlow();
+        }
     }
 
     public virtual void OnFixedUpdateFlow()
     {
-
+        elapsedFixedTime += Time.fixedDeltaTime;
+        if (activatedChildFlow != null)
+        {
+            activatedChildFlow.OnFixedUpdateFlow();
+        }
     }
 
     public virtual void OnExitFlow()

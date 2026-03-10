@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ExcelProcessorSettings
   m_EditorClassIdentifier: 
   excelFilePath: Generated/GameData.xlsx
-  generatedCodePath: Assets/Scripts/Generated/Generated
-  userCodePath: Assets/Scripts/Generated/UserGenerated
-  gameDataZipFolderPath: Assets/Resource/Resources/Generated
+  generatedCodePath: Assets/Generated/Generated
+  userCodePath: Assets/Generated/UserGenerated
+  gameDataZipFolderPath: Assets/Contents/Core/BuiltIn
   gameDataZipFileName: GameData.zip
   executablePath: Generated/ExcelToCodeGenerator

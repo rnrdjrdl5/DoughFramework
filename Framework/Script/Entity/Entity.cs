@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -113,7 +114,7 @@ public partial class Entity : MonoBehaviour , IControlled
         return abilitySet.GetAbility<AbilityType>();
     }
 
-    public EntityType AddEntity<EntityType>(string prefabPath, Parameter parameter = null) where EntityType : Entity, new()
+    public EntityType AddEntity<EntityType>(string prefabPath, Parameter parameter = null, Action<EntityType> OnCreate = null) where EntityType : Entity, new()
     {
         var objectPoolAbility = rootAbilitySet.GetAbility<ObjectPoolAbility>(); 
         
@@ -122,6 +123,7 @@ public partial class Entity : MonoBehaviour , IControlled
         var entity = entityObject.GetComponent<EntityType>();
         
         AddChild(entity);
+        OnCreate?.Invoke(entity);
         
         entity.Initialize(rootAbilitySet, parameter);
         

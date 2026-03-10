@@ -19,4 +19,9 @@ public static class VectorExtensions
         var v3 =  new Vector3(vector.x, vector.y, z);
         return v3;
     }
+
+    public static Vector3 ToVector3(this Vector2 vector)
+    {
+        return new Vector3(vector.x, vector.y, 0);
+    }
 }

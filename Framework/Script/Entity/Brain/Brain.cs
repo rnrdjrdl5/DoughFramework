@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Brain : Entity
 {
+    public static string PrefabPath = "Player/PlayerBrain";
+    
     public IControlled Controll => controlled;
 
     public event Action<IControlled> OnAttachControll;

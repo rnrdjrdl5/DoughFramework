@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class ProcessorAbility : Ability
+public partial class ProcessorAbility : Ability
 {
-    List<Processor> processors = new();
-    List<UpdateProcessor> updateProcessors = new();
+    ProcessorSet<Processor> processorSet = new();
+    ProcessorSet<UpdateProcessor> updateProcessorSet = new();
 
     public override void Initialize(Parameter parameter)
     {
@@ -16,7 +16,7 @@ public class ProcessorAbility : Ability
             .Cast<ProcessorAttribute>()
             .Select(attr => attr.Type);
         
-        processors.Clear();
+        processorSet.Clear();
         
         foreach (var processorType in processorTypes)
         {
@@ -26,7 +26,7 @@ public class ProcessorAbility : Ability
                 continue;
             }
 
-            processors.Add(processor);
+            processorSet.AddProcessor(processor, this);
         }
         
         var updateProcessorTypes = GetType()
@@ -34,7 +34,7 @@ public class ProcessorAbility : Ability
             .Cast<UpdateProcessorAttribute>()
             .Select(attr => attr.Type);
         
-        updateProcessors.Clear();
+        updateProcessorSet.Clear();
         
         foreach (var updateProcessorType in updateProcessorTypes)
         {
@@ -43,17 +43,15 @@ public class ProcessorAbility : Ability
                 continue;
             }
 
-            updateProcessors.Add(updateProcessor);
-            updateProcessor.SetProcessorAbility(this);
-            updateProcessor.Initialize();
+            updateProcessorSet.AddProcessor(updateProcessor, this);
         }
 
-        foreach (var processor in processors)
+        foreach (var processor in processorSet.Processors)
         {
             processor.Ready();
         }
 
-        foreach (var processor in updateProcessors)
+        foreach (var processor in updateProcessorSet.Processors)
         {
             processor.Ready();
         }
@@ -61,12 +59,12 @@ public class ProcessorAbility : Ability
 
     public override void Uninitialize()
     {
-        foreach (var processor in processors)
+        foreach (var processor in processorSet.Processors)
         {
             processor.Uninitialize();
         }
 
-        foreach (var updateProcessor in updateProcessors)
+        foreach (var updateProcessor in updateProcessorSet.Processors)
         {
             updateProcessor.Uninitialize();
         }
@@ -76,7 +74,7 @@ public class ProcessorAbility : Ability
 
     void FixedUpdate()
     {
-        foreach (var updateProcessor in updateProcessors)
+        foreach (var updateProcessor in updateProcessorSet.Processors)
         {
             updateProcessor.FixedUpdate();
         }
@@ -84,42 +82,10 @@ public class ProcessorAbility : Ability
 
     void Update()
     {
-        foreach (var updateProcessor in updateProcessors)
+        foreach (var updateProcessor in updateProcessorSet.Processors)
         {
             updateProcessor.Update();
         }
-    }
-
-    public void AddProcessor(Processor processor)
-    {
-        processor.SetProcessorAbility(this);
-        processors.Add(processor);
-        
-        processor.Initialize();
-    }
-
-    public void AddProcessor(UpdateProcessor processor)
-    {
-        updateProcessors.Add(processor);
-
-        processor.Initialize();
-    }
-
-    public ProcessorType GetProcessor<ProcessorType>() where ProcessorType : Processor
-    {
-        var processor = updateProcessors.FirstOrDefault(updateProcessor => typeof(ProcessorType).IsAssignableFrom(updateProcessor.GetType()));
-        if (processor != null)
-        {
-            return processor as ProcessorType;
-        }
-
-        var updateProcessor = processors.FirstOrDefault(updateProcessor => typeof(ProcessorType).IsAssignableFrom(updateProcessor.GetType()));
-        if (updateProcessor != null)
-        {
-            return updateProcessor as ProcessorType;
-        }
-
-        return null;
     }
 }
 

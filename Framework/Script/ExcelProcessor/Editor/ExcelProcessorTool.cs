@@ -8,7 +8,7 @@ using MyEditorTools;
 
 public class ExcelProcessorTool
 {
-    private const string SettingsPath = "Assets/Scripts/Common/ExcelProcessor/ExcelProcessorSettings.asset";
+    private const string SettingsPath = "Assets/DoughFramework/Framework/Script/ExcelProcessor/ExcelProcessorSettings.asset";
 
     [MenuItem("Dough/Tools/Excel Processor/Run")]
     public static void RunExcelProcessor()
