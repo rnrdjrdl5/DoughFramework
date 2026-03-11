@@ -34,7 +34,7 @@ public class HpTextEffectAbility : Ability
         base.Uninitialize();
     }
 
-    void OnChangeHp(float prevHp, float hp, float point)
+    void OnChangeHp(float prevHp, float hp)
     {
         var effectObject = objectPoolModule.AllocateGameObject(prevHp - hp > 0 ? damagePrefab : healPrefab, parent);
         effectObject.transform.position = effectPosition == null ? effectPosition.position : transform.position;

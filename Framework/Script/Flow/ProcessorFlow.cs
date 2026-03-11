@@ -8,6 +8,7 @@ public class ProcessorFlow : Flow
 {
     public Processor Processor => processor;
     public Entity Entity => processor.Entity;
+    public Realm Realm => processor.Realm;
 
     Processor processor;
 

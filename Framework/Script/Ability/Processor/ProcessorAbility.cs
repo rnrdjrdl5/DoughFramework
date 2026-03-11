@@ -65,17 +65,17 @@ public partial class ProcessorAbility : Ability
 
     void FixedUpdate()
     {
-        foreach (var updateProcessor in updateProcessorSet.Processors)
+        for (int i = 0; i < updateProcessorSet.Processors.Count; i++)
         {
-            updateProcessor.FixedUpdate();
+            updateProcessorSet.Processors[i].FixedUpdate();
         }
     }
 
     void Update()
     {
-        foreach (var updateProcessor in updateProcessorSet.Processors)
+        for (int i = 0; i < updateProcessorSet.Processors.Count; i++)
         {
-            updateProcessor.Update();
+            updateProcessorSet.Processors[i].Update();
         }
     }
 }
