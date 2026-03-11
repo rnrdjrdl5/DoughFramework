@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class MathUtils
@@ -27,5 +28,69 @@ public static class MathUtils
         var clampedThreshold = Mathf.Clamp(threshold, minRange, maxRange);
         var roll = Random.Range(minRange, maxRange);
         return roll < clampedThreshold;
+    }
+
+    public static int SelectRandomIndexByWeight(List<float> weights)
+    {
+        if (weights == null || weights.Count == 0)
+        {
+            return -1;
+        }
+
+        var total = 0f;
+        for (int i = 0; i < weights.Count; i++)
+        {
+            total += Mathf.Max(0f, weights[i]);
+        }
+
+        if (total <= 0f)
+        {
+            return -1;
+        }
+
+        var roll = Random.Range(0f, total);
+        var cumulative = 0f;
+        for (int i = 0; i < weights.Count; i++)
+        {
+            cumulative += Mathf.Max(0f, weights[i]);
+            if (roll < cumulative)
+            {
+                return i;
+            }
+        }
+
+        return weights.Count - 1;
+    }
+
+    public static int SelectRandomIndexByWeight(List<int> weights)
+    {
+        if (weights == null || weights.Count == 0)
+        {
+            return -1;
+        }
+
+        int total = 0;
+        for (int i = 0; i < weights.Count; i++)
+        {
+            total += Mathf.Max(0, weights[i]);
+        }
+
+        if (total <= 0)
+        {
+            return -1;
+        }
+
+        int roll = Random.Range(0, total);
+        int cumulative = 0;
+        for (int i = 0; i < weights.Count; i++)
+        {
+            cumulative += Mathf.Max(0, weights[i]);
+            if (roll < cumulative)
+            {
+                return i;
+            }
+        }
+
+        return weights.Count - 1;
     }
 }
