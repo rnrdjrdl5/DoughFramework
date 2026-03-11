@@ -8,9 +8,9 @@ public class SoundAbility : Ability
     ObjectPoolAbility objectPoolAbility;
     SoundPlayer bgmSound;
     
-    public override void Initialize(Parameter parameter)
+    public override void Initialize(IInitData initData = null)
     {
-        base.Initialize(parameter);
+        base.Initialize(initData);
         
         objectPoolAbility = Entity.RootAbilitySet.GetAbility<ObjectPoolAbility>();
     }

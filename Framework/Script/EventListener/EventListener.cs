@@ -6,7 +6,7 @@ public class EventListener : IEntityData
 {
     Dictionary<int, List<Action<int, Values>>> listeners = new();
 
-    public void Initialize(Parameter parameter)
+    public void Initialize(IInitData initData = null)
     {
         listeners.Clear();
     }

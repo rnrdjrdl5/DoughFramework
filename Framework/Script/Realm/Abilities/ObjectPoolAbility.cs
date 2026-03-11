@@ -10,9 +10,9 @@ public class ObjectPoolAbility : Ability
     Dictionary<GameObject, GameObject> allocObjectToPrefab = new();
     GameObject rootDeallocObject;
     
-    public override void Initialize(Parameter parameter)
+    public override void Initialize(IInitData initData = null)
     {
-        base.Initialize(parameter);
+        base.Initialize(initData);
         
         rootDeallocObject = new();
         rootDeallocObject.name = "DellocObject";

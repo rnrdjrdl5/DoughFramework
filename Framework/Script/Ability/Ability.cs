@@ -6,9 +6,9 @@ public abstract class Ability : MonoBehaviour, IData
     
     Entity entity;
 
-    public virtual void Initialize(Parameter parameter)
+    public virtual void Initialize(IInitData initData = null)
     {
-
+        initData ??= EmptyInitData.Instance;
     }
 
     public virtual void Uninitialize()

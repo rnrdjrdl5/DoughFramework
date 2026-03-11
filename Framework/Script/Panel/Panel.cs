@@ -19,12 +19,13 @@ public class Panel : Entity
     int panelOrder;
     int panelOrderOffset;
 
-    public override void Initialize(Parameter parameter)
+    public override void Initialize(IInitData initData = null)
     {
-        base.Initialize(parameter);
+        initData ??= EmptyInitData.Instance;
+        base.Initialize(initData);
         
         InitPanelAbility();
-        InitPanelElements(parameter);
+        InitPanelElements(initData);
     }
 
     void InitPanelAbility()
@@ -32,11 +33,11 @@ public class Panel : Entity
         parentPanelAbility = Parent.GetAbility<PanelAbility>();
     }
 
-    void InitPanelElements(Parameter parameter)
+    void InitPanelElements(IInitData initData)
     {
         foreach (var element in panelElements)
         {
-            element.Initialize(parameter);
+            element.Initialize(initData);
         }
     }
 

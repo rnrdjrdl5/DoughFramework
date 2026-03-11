@@ -23,10 +23,10 @@ public partial class Entity : MonoBehaviour , IControlled
     Entity parent;
     int uniqueId;
 
-    public void Initialize(AbilitySet abilitySet, Parameter parameter = null)
+    public void Initialize(AbilitySet abilitySet, IInitData initData = null)
     {
         InitializeRootAbilitySet(abilitySet);
-        Initialize(parameter);
+        Initialize(initData);
     }
 
     public void InitializeRootAbilitySet(AbilitySet rootAbilitySet)
@@ -34,12 +34,13 @@ public partial class Entity : MonoBehaviour , IControlled
         this.rootAbilitySet = rootAbilitySet;
     }
     
-    public virtual void Initialize(Parameter parameter)
+    public virtual void Initialize(IInitData initData = null)
     {
+        initData ??= EmptyInitData.Instance;
         NextUniqueId();
 
-        InitEntityDatas(parameter);
-        InitAbilities(parameter);
+        InitEntityDatas(initData);
+        InitAbilities(initData);
     }
 
     void NextUniqueId()
@@ -47,7 +48,7 @@ public partial class Entity : MonoBehaviour , IControlled
         uniqueId = ++nextUniqueId;
     }
 
-    void InitEntityDatas(Parameter parameter)
+    void InitEntityDatas(IInitData initData)
     {
         entityDatas.Clear();
         
@@ -60,11 +61,11 @@ public partial class Entity : MonoBehaviour , IControlled
         {
             var entityData = System.Activator.CreateInstance(type) as IEntityData;
             entityDatas.Add(entityData);
-            entityData.Initialize(parameter);
+            entityData.Initialize(initData);
         }
     }
 
-    void InitAbilities(Parameter parameter)
+    void InitAbilities(IInitData initData)
     {
         abilitySet.Abilities.Clear();
 
@@ -77,7 +78,7 @@ public partial class Entity : MonoBehaviour , IControlled
         foreach (var ability in abilitySet.Abilities)
         {
             ability.SetEntity(this);
-            ability.Initialize(parameter);
+            ability.Initialize(initData);
         }
         foreach (var ability in abilitySet.Abilities)
         {
@@ -114,7 +115,7 @@ public partial class Entity : MonoBehaviour , IControlled
         return abilitySet.GetAbility<AbilityType>();
     }
 
-    public EntityType AddEntity<EntityType>(string prefabPath, Parameter parameter = null, Action<EntityType> OnCreate = null) where EntityType : Entity, new()
+    public EntityType AddEntity<EntityType>(string prefabPath, IInitData initData = null, Action<EntityType> OnCreate = null) where EntityType : Entity, new()
     {
         var objectPoolAbility = rootAbilitySet.GetAbility<ObjectPoolAbility>(); 
         
@@ -125,7 +126,7 @@ public partial class Entity : MonoBehaviour , IControlled
         AddChild(entity);
         OnCreate?.Invoke(entity);
         
-        entity.Initialize(rootAbilitySet, parameter);
+        entity.Initialize(rootAbilitySet, initData);
         
         return entity;
     }

@@ -6,7 +6,7 @@ public class MessageBus : IEntityData
 {
     readonly Dictionary<Type, List<Delegate>> handlers = new();
 
-    public void Initialize(Parameter parameter)
+    public void Initialize(IInitData initData = null)
     {
         handlers.Clear();
     }

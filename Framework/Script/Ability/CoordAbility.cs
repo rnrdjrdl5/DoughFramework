@@ -9,9 +9,9 @@ public class CoordAbility : Ability
 
     Dictionary<Vector3Int, TileInfo> tileInfos = new();
 
-    public override void Initialize(Parameter parameter)
+    public override void Initialize(IInitData initData = null)
     {
-        base.Initialize(parameter);
+        base.Initialize(initData);
 
         tileInfos.Clear();
 

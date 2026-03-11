@@ -3,7 +3,7 @@ using System;
 // Entity에서 관리하는 내부 Data
 public interface IEntityData : IData
 {
-    void Initialize(Parameter parameter);
+    void Initialize(IInitData initData = null);
     void Uninitialize();
 }
 

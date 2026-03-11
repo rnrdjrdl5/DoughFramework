@@ -8,9 +8,9 @@ public class HpAbility : Ability
     
     float hp;
 
-    public override void Initialize(Parameter parameter)
+    public override void Initialize(IInitData initData = null)
     {
-        base.Initialize(parameter);
+        base.Initialize(initData);
     }
 
     public bool TryApplyDamage(Entity caster, float damage)

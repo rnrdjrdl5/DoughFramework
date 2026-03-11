@@ -14,14 +14,14 @@ public class PanelAbility : Ability
     
     List<Panel> panels = new();
     
-    public PanelType CreatePanel<PanelType>(string prefabPath, Parameter parameter = null, Entity ownerEntity = null) where PanelType : Panel, new()
+    public PanelType CreatePanel<PanelType>(string prefabPath, IInitData initData = null, Entity ownerEntity = null) where PanelType : Panel, new()
     {
         if (ownerEntity ==null)
         {
             ownerEntity = Entity;
         }
         
-        var panel = ownerEntity.AddEntity<PanelType>(prefabPath, parameter);
+        var panel = ownerEntity.AddEntity<PanelType>(prefabPath, initData);
         panels.Add(panel);
 
         if (autoRefreshPanelOrder)

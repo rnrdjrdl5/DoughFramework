@@ -10,7 +10,7 @@ C# coding conventions for the DoughFramework project.
 | Method | PascalCase | `OnEnterNode()`, `GetModule<T>()` |
 | Property | PascalCase | `Environment`, `Canvas`, `Parent` |
 | Private field | camelCase | `parentNode`, `targetDataSet` |
-| Parameter | camelCase | `prefabPath`, `parameter` |
+| Parameter | camelCase | `prefabPath`, `initData` |
 | Constant | PascalCase | `DefaultHierarchyLevel` |
 | Enum | PascalCase | `BTNodeState.Running` |
 
@@ -208,18 +208,8 @@ Universe.Addressable.cs
 
 ## Memory Pooling
 
-```csharp
-public class Parameter : IDisposable, MemoryPoolModule.IMemoryPool
-{
-    public void ReleasePool() => Dispose();
-
-    public void Dispose()
-    {
-        parameters.Clear();
-        MemoryPoolModule.Release(this);
-    }
-}
-```
+- Use pooling for frequently allocated gameplay objects.
+- `IInitData` is lightweight; prefer `EmptyInitData.Instance` when no data is required.
 
 ## Using Directive Ordering
 

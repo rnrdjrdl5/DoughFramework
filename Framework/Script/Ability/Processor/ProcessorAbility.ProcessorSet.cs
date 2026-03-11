@@ -4,29 +4,29 @@ using System.Linq;
 
 public partial class ProcessorAbility
 {
-    public ProcessorType AddProcessor<ProcessorType>(Parameter parameter = null) where ProcessorType : Processor, new()
+    public ProcessorType AddProcessor<ProcessorType>(IInitData initData = null) where ProcessorType : Processor, new()
     {
         var processor = Processor.Create<ProcessorType>(Entity, this);
         if (processor is UpdateProcessor updateProcessor)
         {
-            AddProcessor(updateProcessor, parameter);
+            AddProcessor(updateProcessor, initData);
         }
         else
         {
-            AddProcessor(processor, parameter);
+            AddProcessor(processor, initData);
         }
 
         return processor;
     }
     
-    public void AddProcessor(Processor processor, Parameter parameter = null)
+    public void AddProcessor(Processor processor, IInitData initData = null)
     {
-        processorSet.AddProcessor(processor, this, parameter);
+        processorSet.AddProcessor(processor, this, initData);
     }
     
-    public void AddProcessor(UpdateProcessor processor, Parameter parameter = null)
+    public void AddProcessor(UpdateProcessor processor, IInitData initData = null)
     {
-        updateProcessorSet.AddProcessor(processor, this, parameter);
+        updateProcessorSet.AddProcessor(processor, this, initData);
     }
     
     public bool RemoveProcessor<ProcessorType>() where ProcessorType : Processor

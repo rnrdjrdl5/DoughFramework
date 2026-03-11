@@ -7,9 +7,10 @@ public partial class ProcessorAbility : Ability
     ProcessorSet<Processor> processorSet = new();
     ProcessorSet<UpdateProcessor> updateProcessorSet = new();
 
-    public override void Initialize(Parameter parameter)
+    public override void Initialize(IInitData initData = null)
     {
-        base.Initialize(parameter);
+        initData ??= EmptyInitData.Instance;
+        base.Initialize(initData);
         
         var processorTypes = GetType()
             .GetCustomAttributes(typeof(ProcessorAttribute), true)
@@ -20,13 +21,13 @@ public partial class ProcessorAbility : Ability
         
         foreach (var processorType in processorTypes)
         {
-            var processor = Processor.Create(processorType, Entity, this, parameter: parameter);
+            var processor = Processor.Create(processorType, Entity, this);
             if (processor == null)
             {
                 continue;
             }
             
-            AddProcessor(processor, parameter);
+            AddProcessor(processor, initData);
         }
         
         var updateProcessorTypes = GetType()
@@ -43,7 +44,7 @@ public partial class ProcessorAbility : Ability
                 continue;
             }
 
-            AddProcessor(updateProcessor, parameter);
+            AddProcessor(updateProcessor, initData);
         }
     }
 

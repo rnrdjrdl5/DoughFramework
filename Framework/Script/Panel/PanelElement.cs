@@ -9,9 +9,9 @@ public class PanelElement : MonoBehaviour
     DataSet targetDataSet = new();
     MessageBus messageBus;
 
-    public virtual void Initialize(Parameter parameter)
+    public virtual void Initialize(IInitData initData = null)
     {
-        
+        initData ??= EmptyInitData.Instance;
     }
 
     public virtual void Uninitialize()

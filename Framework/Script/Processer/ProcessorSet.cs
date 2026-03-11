@@ -7,18 +7,18 @@ public class ProcessorSet<TProcessor>  where TProcessor : Processor, new()
 
     List<TProcessor> processors = new();
     
-    public void AddProcessor(TProcessor processor, ProcessorAbility processorAbility, Parameter parameter = null)
+    public void AddProcessor(TProcessor processor, ProcessorAbility processorAbility, IInitData initData = null)
     {
         processor.SetProcessorAbility(processorAbility);
         processors.Add(processor);
         
-        processor.Initialize(parameter);
+        processor.Initialize(initData);
     }
     
-    public Processor AddProcessor<ProcessorType>(Entity entity, ProcessorAbility processorAbility, Parameter parameter = null) where ProcessorType : TProcessor, new()
+    public Processor AddProcessor<ProcessorType>(Entity entity, ProcessorAbility processorAbility, IInitData initData = null) where ProcessorType : TProcessor, new()
     {
         var processor = Processor.Create<ProcessorType>(entity, processorAbility) as TProcessor;
-        AddProcessor(processor, processorAbility, parameter);
+        AddProcessor(processor, processorAbility, initData);
 
         return processor;
     }

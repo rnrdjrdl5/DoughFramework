@@ -15,9 +15,9 @@ public partial class Processor
     ProcessorAbility processorAbility;
     bool isDynamic;
 
-    public virtual void Initialize(Parameter parameter)
+    public virtual void Initialize(IInitData initData = null)
     {
-        
+        initData ??= EmptyInitData.Instance;
     }
 
     public virtual void Uninitialize()
@@ -41,7 +41,7 @@ public partial class Processor
         }
     }
 
-    public static ProcessorType Create<ProcessorType>(Entity entity, ProcessorAbility processorAbility, bool isDynamic = false, Parameter paramter = null) where ProcessorType : Processor, new()
+    public static ProcessorType Create<ProcessorType>(Entity entity, ProcessorAbility processorAbility, bool isDynamic = false) where ProcessorType : Processor, new()
     {
         var processor = new ProcessorType();
         processor.entity = entity;
@@ -53,7 +53,7 @@ public partial class Processor
         return processor;
     }
 
-    public static Processor Create(System.Type type, Entity entity, ProcessorAbility processorAbility, bool isDynamic = false, Parameter parameter = null)
+    public static Processor Create(System.Type type, Entity entity, ProcessorAbility processorAbility, bool isDynamic = false)
     {
         var processor = System.Activator.CreateInstance(type) as Processor;
         processor.entity = entity;
