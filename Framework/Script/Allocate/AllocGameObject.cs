@@ -12,10 +12,12 @@ public class AllocGameObject : MonoBehaviour
     List<GameObject> allocatedObjects = new(); 
     AbilitySet rootAbilitySet;
     ObjectPoolAbility objectPoolAbility;
+    Transform selectedParent;
 
     private void Awake()
     {
         prefab.SetActive(false);
+        selectedParent = prefab == null ? transform : parent;
     }
 
     public void OnEnable()
@@ -44,7 +46,7 @@ public class AllocGameObject : MonoBehaviour
 
     public GameObject AllocateObject(GameObject prefab)
     {
-        var allocateObject = objectPoolAbility.AllocateGameObject(prefab, parent);
+        var allocateObject = objectPoolAbility.AllocateGameObject(prefab, selectedParent);
         allocateObject.SetActive(true);
         
         allocatedObjects.Add(allocateObject);
