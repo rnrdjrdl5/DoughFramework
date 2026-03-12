@@ -11,14 +11,29 @@ public class ProcessorSet<TProcessor>  where TProcessor : Processor, new()
     {
         processor.SetProcessorAbility(processorAbility);
         processors.Add(processor);
+    }
+
+    public void AddDynamicProcessor(TProcessor processor, ProcessorAbility processorAbility, IInitData initData = null)
+    {
+        processor.SetProcessorAbility(processorAbility);
+        processors.Add(processor);
         
         processor.Initialize(initData);
+        processor.Ready();
     }
     
     public Processor AddProcessor<ProcessorType>(Entity entity, ProcessorAbility processorAbility, IInitData initData = null) where ProcessorType : TProcessor, new()
     {
         var processor = Processor.Create<ProcessorType>(entity, processorAbility) as TProcessor;
         AddProcessor(processor, processorAbility, initData);
+
+        return processor;
+    }
+
+    public Processor AddDynamicProcessor<ProcessorType>(Entity entity, ProcessorAbility processorAbility, IInitData initData = null) where ProcessorType : TProcessor, new()
+    {
+        var processor = Processor.Create<ProcessorType>(entity, processorAbility) as TProcessor;
+        AddDynamicProcessor(processor, processorAbility, initData);
 
         return processor;
     }

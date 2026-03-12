@@ -3,6 +3,9 @@ using UnityEngine;
 
 public static class MathUtils
 {
+    public const float MinRange = 0;
+    public const float MaxRange = 100;
+    
     public static Vector3 Bezier(Vector3 p0, Vector3 p1, Vector3 p2, float t)
     {
         t = Mathf.Clamp(t, 0.0f, 1.0f);

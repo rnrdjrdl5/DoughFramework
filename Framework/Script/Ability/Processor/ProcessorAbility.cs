@@ -46,6 +46,24 @@ public partial class ProcessorAbility : Ability
 
             AddProcessor(updateProcessor, initData);
         }
+
+        foreach (var processor in processorSet.Processors)
+        {
+            processor.Initialize(initData);
+        }
+        foreach (var updateProcessor in updateProcessorSet.Processors)
+        {
+            updateProcessor.Initialize(initData);
+        }
+        
+        foreach (var processor in processorSet.Processors)
+        {
+            processor.Ready();
+        }
+        foreach (var updateProcessor in updateProcessorSet.Processors)
+        {
+            updateProcessor.Ready();
+        }
     }
 
     public override void Uninitialize()

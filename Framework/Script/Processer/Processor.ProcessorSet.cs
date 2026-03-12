@@ -7,10 +7,23 @@ public partial class Processor
         
         return processor;
     }
+
+    public Processor AddDynamicProcessor<ProcessorType>() where ProcessorType : Processor, new()
+    {
+        var processor = Create<ProcessorType>(Entity, ProcessorAbility);
+        AddDynamicProcessor(processor);
+        
+        return processor;
+    }
     
     public void AddProcessor(Processor processor)
     {
         processorSet.AddProcessor(processor, processorAbility);
+    }
+    
+    public void AddDynamicProcessor(Processor processor)
+    {
+        processorSet.AddDynamicProcessor(processor, processorAbility);
     }
     
     

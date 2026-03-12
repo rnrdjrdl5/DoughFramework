@@ -25,6 +25,11 @@ public partial class Processor
 
     }
 
+    public virtual void Ready()
+    {
+        
+    }
+
     public virtual void Update()
     {
         foreach (var processor in processorSet.Processors)

@@ -18,6 +18,21 @@ public partial class ProcessorAbility
 
         return processor;
     }
+
+    public ProcessorType AddDynamicProcessor<ProcessorType>(IInitData initData = null) where ProcessorType : Processor, new()
+    {
+        var processor = Processor.Create<ProcessorType>(Entity, this);
+        if (processor is UpdateProcessor updateProcessor)
+        {
+            AddDynamicProcessor(updateProcessor, initData);
+        }
+        else
+        {
+            AddDynamicProcessor(processor, initData);
+        }
+
+        return processor;
+    }
     
     public void AddProcessor(Processor processor, IInitData initData = null)
     {
@@ -27,6 +42,16 @@ public partial class ProcessorAbility
     public void AddProcessor(UpdateProcessor processor, IInitData initData = null)
     {
         updateProcessorSet.AddProcessor(processor, this, initData);
+    }
+
+    public void AddDynamicProcessor(Processor processor, IInitData initData = null)
+    {
+        processorSet.AddDynamicProcessor(processor, this, initData);
+    }
+    
+    public void AddDynamicProcessor(UpdateProcessor processor, IInitData initData = null)
+    {
+        updateProcessorSet.AddDynamicProcessor(processor, this, initData);
     }
     
     public bool RemoveProcessor<ProcessorType>() where ProcessorType : Processor
