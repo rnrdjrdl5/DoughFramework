@@ -43,6 +43,11 @@ public partial class Entity : MonoBehaviour , IControlled
         InitAbilities(initData);
     }
 
+    public virtual void Ready()
+    {
+        
+    }
+
     void NextUniqueId()
     {
         uniqueId = ++nextUniqueId;
@@ -127,6 +132,7 @@ public partial class Entity : MonoBehaviour , IControlled
         OnCreate?.Invoke(entity);
         
         entity.Initialize(rootAbilitySet, initData);
+        entity.Ready();
         
         return entity;
     }
@@ -145,11 +151,16 @@ public partial class Entity : MonoBehaviour , IControlled
 
     public IEnumerable<EntityType> GetChildren<EntityType>() where EntityType : Entity
     {
+        return children.GetEntities<EntityType>();
+    }
+    
+    public EntityType GetChild<EntityType>() where EntityType : Entity
+    {
         return children.GetEntity<EntityType>();
     }
 
     public Entity GetChild(int uniqueId) => children.GetEntity(uniqueId);
-
+    
     public void RemoveChild(Entity entity)
     {
         entity.Uninitialize();

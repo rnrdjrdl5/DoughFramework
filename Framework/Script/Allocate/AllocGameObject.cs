@@ -16,7 +16,11 @@ public class AllocGameObject : MonoBehaviour
 
     private void Awake()
     {
-        prefab.SetActive(false);
+        if (prefab.scene.IsValid())
+        {
+            prefab.SetActive(false);
+        }
+
         selectedParent = prefab == null ? transform : parent;
     }
 

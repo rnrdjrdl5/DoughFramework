@@ -8,6 +8,7 @@ public abstract class Entry : MonoBehaviour
     public static Realm RootRealm => rootRealm;
     
     static Realm rootRealm;
+    
     [SerializeField] string rootRealmPath;
     
     void Awake()
@@ -22,6 +23,7 @@ public abstract class Entry : MonoBehaviour
         var realmObject = Instantiate(realmPrefab);
         rootRealm = realmObject.GetComponent<Realm>();
         rootRealm.Initialize(rootRealm.AbilitySet);
+        rootRealm.Ready();
     }
 
     protected virtual void Ready()

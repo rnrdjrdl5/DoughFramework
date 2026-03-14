@@ -31,11 +31,16 @@ public class EntityRegistry
         OnRemoveEntity?.Invoke(entity);
     }
 
-    public IEnumerable<EntityType> GetEntity<EntityType>() where EntityType : Entity
+    public IEnumerable<EntityType> GetEntities<EntityType>() where EntityType : Entity
     {
         return entities.Where(entity => typeof(EntityType).IsAssignableFrom(entity.GetType()))
             .Cast<EntityType>();
     }
 
     public Entity GetEntity(int uniqueId) => entities.First(entity => entity.UniqueId == uniqueId);
+
+    public EntityType GetEntity<EntityType>() where EntityType : Entity
+    {
+        return entities.FirstOrDefault(entity => typeof(EntityType).IsAssignableFrom(entity.GetType())) as EntityType;
+    }
 }

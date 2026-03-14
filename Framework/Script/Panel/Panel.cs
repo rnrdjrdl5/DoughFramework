@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class Panel : Entity
+public abstract class Panel : Entity
 {
     public MessageBus MessageBus => messageBus;
     public Canvas Canvas => canvas;
@@ -59,10 +59,10 @@ public class Panel : Entity
     public void SetPanelData(Entity entity, MessageBus messageBus)
     {
         SetTargetPanelDatas(entity.ToData());
-        SetInteractionEvent(messageBus);
+        SetMessageBus(messageBus);
     }
     
-    public void SetInteractionEvent(MessageBus messageBus)
+    public void SetMessageBus(MessageBus messageBus)
     {
         this.messageBus = messageBus;
 
