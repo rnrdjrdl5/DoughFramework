@@ -37,7 +37,7 @@ public abstract class Panel : Entity
     {
         foreach (var element in panelElements)
         {
-            element.Initialize(initData);
+            element.Initialize(this, initData);
         }
     }
 

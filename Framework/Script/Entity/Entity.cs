@@ -49,7 +49,10 @@ public partial class Entity : MonoBehaviour , IControlled
 
     public virtual void Ready()
     {
-        
+        foreach (var ability in abilitySet.Abilities)
+        {
+            ability.Ready();
+        }
     }
 
     void NextUniqueId()
@@ -88,10 +91,6 @@ public partial class Entity : MonoBehaviour , IControlled
         {
             ability.SetEntity(this);
             ability.Initialize(initData);
-        }
-        foreach (var ability in abilitySet.Abilities)
-        {
-            ability.Ready();
         }
     }
 

@@ -5,12 +5,15 @@ using UnityEngine;
 public class PanelElement : MonoBehaviour
 {
     public MessageBus TargetMessageBus => targetMessageBus;
+    public Panel Panel => panel;
 
+    Panel panel;
     DataSet targetDataSet = new();
     MessageBus targetMessageBus;
 
-    public virtual void Initialize(IInitData initData = null)
+    public virtual void Initialize(Panel panel, IInitData initData = null)
     {
+        this.panel = panel;
         initData ??= EmptyInitData.Instance;
     }
 

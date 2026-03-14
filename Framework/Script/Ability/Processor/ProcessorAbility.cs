@@ -55,6 +55,11 @@ public partial class ProcessorAbility : Ability
         {
             updateProcessor.Initialize(initData);
         }
+    }
+
+    public override void Ready()
+    {
+        base.Ready();
         
         foreach (var processor in processorSet.Processors)
         {
