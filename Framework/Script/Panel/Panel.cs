@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Panel : Entity
 {
-    public MessageBus MessageBus => messageBus;
+    public MessageBus TargetMessageBus => targetMessageBus;
     public Canvas Canvas => canvas;
     public virtual int PanelCustomOffset { get; protected set; }
     public int PanelOrder => panelOrder + panelOrderOffset + PanelCustomOffset;
@@ -13,7 +13,7 @@ public abstract class Panel : Entity
     [SerializeField] List<PanelElement> panelElements;
     [SerializeField] Canvas canvas;
     
-    MessageBus messageBus;
+    MessageBus targetMessageBus;
     PanelAbility parentPanelAbility;
 
     int panelOrder;
@@ -43,9 +43,29 @@ public abstract class Panel : Entity
 
     public override void Uninitialize()
     {
-        base.Uninitialize();
-
+        UnsetTargetPanelDatas();
+        UnsetTargetMessageBus();
         UninitPanelElements();
+        
+        base.Uninitialize();
+    }
+    
+    void UnsetTargetPanelDatas()
+    {
+        foreach (var element in panelElements)
+        {
+            element.UnsetTargetPanelDatas();
+        }
+    }
+    
+    void UnsetTargetMessageBus()
+    {
+        foreach (var panelElement in panelElements)
+        {
+            panelElement.UnsetTargetMessageBus();
+        }
+        
+        targetMessageBus = null;
     }
 
     void UninitPanelElements()
@@ -56,30 +76,28 @@ public abstract class Panel : Entity
         }
     }
 
-    public void SetPanelData(Entity entity, MessageBus messageBus)
+    public void SetTargetData(Entity entity, MessageBus targetMessageBus)
     {
         SetTargetPanelDatas(entity.ToData());
-        SetMessageBus(messageBus);
+        SetTargetMessageBus(targetMessageBus);
     }
     
-    public void SetMessageBus(MessageBus messageBus)
+    public void SetTargetPanelDatas(IEnumerable<IData> elements)
     {
-        this.messageBus = messageBus;
-
-        foreach (var panelElement in panelElements)
+        foreach (var element in panelElements)
         {
-            panelElement.SetInteractionEvent(messageBus);
+            element.SetTargetPanelDatas(elements);
         }
     }
-
-    public void UnsetInteractionEvent()
+    
+    public void SetTargetMessageBus(MessageBus targetMessageBus)
     {
+        this.targetMessageBus = targetMessageBus;
+
         foreach (var panelElement in panelElements)
         {
-            panelElement.UnsetInteractionEvent();
+            panelElement.SetTargetMessageBus(targetMessageBus);
         }
-        
-        messageBus = null;
     }
 
     public void SetPanelOrder(int order)
@@ -93,22 +111,6 @@ public abstract class Panel : Entity
         panelOrderOffset = offset;
         
         RefreshCanvasOrder();
-    }
-    
-    public void SetTargetPanelDatas(IEnumerable<IData> elements)
-    {
-        foreach (var element in panelElements)
-        {
-            element.SetTargetPanelDatas(elements);
-        }
-    }
-    
-    public void UnsetTargetPanelDatas()
-    {
-        foreach (var element in panelElements)
-        {
-            element.UnsetTargetPanelDatas();
-        }
     }
 
     public void RefreshCanvasOrder()

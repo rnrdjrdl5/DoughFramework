@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class EventListener : IEntityData
 {
+    public event Action OnChanged;
+    
     Dictionary<int, List<Action<int, Values>>> listeners = new();
-
+    
     public void Initialize(IInitData initData = null)
     {
         listeners.Clear();
@@ -31,6 +33,8 @@ public class EventListener : IEntityData
         {
             listenerList.Add(listener);
         }
+        
+        OnChanged?.Invoke();
     }
     
     public void RemoveListener(int key, Action<int, Values> listener)
@@ -44,6 +48,8 @@ public class EventListener : IEntityData
                 listeners.Remove(key);
             }
         }
+        
+        OnChanged?.Invoke();
     }
     
     public void ExecuteListeners(int key, Values param = null)
@@ -55,5 +61,7 @@ public class EventListener : IEntityData
         {
             listener.Invoke(key, param);
         }
+        
+        OnChanged?.Invoke();
     }
 }

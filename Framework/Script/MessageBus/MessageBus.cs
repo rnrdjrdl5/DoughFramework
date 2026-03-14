@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class MessageBus : IEntityData
 {
+    public event Action OnChanged;
+    
     readonly Dictionary<Type, List<Delegate>> handlers = new();
 
     public void Initialize(IInitData initData = null)
@@ -51,8 +53,7 @@ public class MessageBus : IEntityData
         var type = typeof(T);
         if (!handlers.TryGetValue(type, out var list))
             return;
-
-        // Snapshot to avoid modification during iteration.
+        
         var snapshot = list.ToArray();
         for (int i = 0; i < snapshot.Length; i++)
         {

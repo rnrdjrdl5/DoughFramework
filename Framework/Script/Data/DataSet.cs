@@ -9,18 +9,17 @@ public class DataSet
     
     public void SetTargetDatas(IEnumerable<IData> datas)
     {
-        if (targetDatas != null)
-        {
-            TryUnsetTargetDatas();
-        }
-        
         targetDatas = datas;
     }
     
     public bool TryUnsetTargetDatas()
     {
-        targetDatas = null;
+        if (targetDatas == null)
+        {
+            return false;
+        }
         
+        targetDatas = null;
         return true;
     }
 

@@ -14,11 +14,13 @@ public partial class Entity : MonoBehaviour , IControlled
     public int UniqueId => uniqueId;
     public AbilitySet AbilitySet => abilitySet;
     public AbilitySet RootAbilitySet => rootAbilitySet;
+    public MessageBus MessageBus => messageBus;
 
     AbilitySet rootAbilitySet;
     AbilitySet abilitySet = new();
     EntityRegistry children = new();
     List<IEntityData> entityDatas = new();
+    MessageBus messageBus;
     
     Entity parent;
     int uniqueId;
@@ -41,6 +43,8 @@ public partial class Entity : MonoBehaviour , IControlled
 
         InitEntityDatas(initData);
         InitAbilities(initData);
+
+        messageBus = GetEntityData<MessageBus>();
     }
 
     public virtual void Ready()

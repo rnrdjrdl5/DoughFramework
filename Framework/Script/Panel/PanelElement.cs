@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PanelElement : MonoBehaviour
 {
-    public MessageBus MessageBus => messageBus;
+    public MessageBus TargetMessageBus => targetMessageBus;
 
     DataSet targetDataSet = new();
-    MessageBus messageBus;
+    MessageBus targetMessageBus;
 
     public virtual void Initialize(IInitData initData = null)
     {
@@ -19,18 +19,19 @@ public class PanelElement : MonoBehaviour
         
     }
 
-    public void SetInteractionEvent(MessageBus messageBus)
+    public void SetTargetMessageBus(MessageBus messageBus)
     {
-        this.messageBus = messageBus;
+        this.targetMessageBus = messageBus;
     }
 
-    public void UnsetInteractionEvent()
+    public void UnsetTargetMessageBus()
     {
-        messageBus = null;
+        targetMessageBus = null;
     }
     
     public void SetTargetPanelDatas(IEnumerable<IData> datas)
     {
+        targetDataSet.TryUnsetTargetDatas();
         targetDataSet.SetTargetDatas(datas);
 
         OnSetPanelDatas();
@@ -38,6 +39,8 @@ public class PanelElement : MonoBehaviour
 
     public void UnsetTargetPanelDatas()
     {
+        targetDataSet.TryUnsetTargetDatas();
+        
         OnUnsetPanelDatas();
     }
     
