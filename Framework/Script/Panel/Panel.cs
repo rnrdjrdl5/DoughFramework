@@ -78,7 +78,10 @@ public abstract class Panel : Entity
 
     public void SetTargetData(Entity entity, MessageBus targetMessageBus)
     {
+        UnsetTargetPanelDatas();
         SetTargetPanelDatas(entity.ToData());
+        
+        UnsetTargetMessageBus();
         SetTargetMessageBus(targetMessageBus);
     }
     
