@@ -51,7 +51,7 @@ public partial class Processor
         var processor = new ProcessorType();
         processor.entity = entity;
         processor.processorAbility = processorAbility;
-        processor.realm = entity.GetRootParent<Realm>();
+        processor.realm = entity.GetParent<Realm>();
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
         processor.isDynamic = isDynamic;
 
@@ -63,7 +63,7 @@ public partial class Processor
         var processor = System.Activator.CreateInstance(type) as Processor;
         processor.entity = entity;
         processor.processorAbility = processorAbility;
-        processor.realm = entity.GetRootParent<Realm>();
+        processor.realm = entity.GetParent<Realm>();
         processor.panelAbility = processor.realm.GetAbility<PanelAbility>();
         processor.isDynamic = isDynamic;
 

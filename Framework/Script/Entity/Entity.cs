@@ -203,7 +203,7 @@ public partial class Entity : MonoBehaviour , IControlled
         }
     }
     
-    public EntityType GetRootParent<EntityType>() where EntityType : Entity
+    public EntityType GetParent<EntityType>() where EntityType : Entity
     {
         var current = this;
         var lastValidEntity = this;
