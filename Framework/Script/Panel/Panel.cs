@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,10 +10,12 @@ public abstract class Panel : Entity
     public virtual int PanelCustomOffset { get; protected set; }
     public int PanelOrder => panelOrder + panelOrderOffset + PanelCustomOffset;
     public int PanelOrderOffset => panelOrderOffset;
+    public event Action OnUnsetPanelDatas;
+    public event Action OnSetPanelDatas;
     
     [SerializeField] List<PanelElement> panelElements;
     [SerializeField] Canvas canvas;
-
+    
     DataSet targetDataSet = new();
     MessageBus targetMessageBus;
     PanelAbility parentPanelAbility;
@@ -54,11 +57,17 @@ public abstract class Panel : Entity
     void UnsetTargetPanelDatas()
     {
         targetDataSet.TryUnsetTargetDatas();
+        UnsetPanelDatas();
         
         foreach (var element in panelElements)
         {
             element.UnsetTargetPanelDatas();
         }
+    }
+
+    protected virtual void UnsetPanelDatas()
+    {
+        OnUnsetPanelDatas?.Invoke();
     }
     
     void UnsetTargetMessageBus()
@@ -91,11 +100,17 @@ public abstract class Panel : Entity
     public void SetTargetPanelDatas(IEnumerable<IData> elements)
     {
         targetDataSet.SetTargetDatas(elements);
+        SetPanelDatas();
         
         foreach (var element in panelElements)
         {
             element.SetTargetPanelDatas(elements);
         }
+    }
+
+    protected virtual void SetPanelDatas()
+    {
+        OnSetPanelDatas?.Invoke();
     }
     
     public void SetTargetMessageBus(MessageBus targetMessageBus)

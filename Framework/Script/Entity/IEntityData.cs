@@ -5,8 +5,6 @@ public interface IEntityData : IData
 {
     void Initialize(IInitData initData = null);
     void Uninitialize();
-    
-    event Action OnChanged;
 }
 
 [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]

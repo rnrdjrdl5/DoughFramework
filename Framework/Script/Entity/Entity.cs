@@ -15,6 +15,7 @@ public partial class Entity : MonoBehaviour , IControlled
     public AbilitySet AbilitySet => abilitySet;
     public AbilitySet RootAbilitySet => rootAbilitySet;
     public MessageBus MessageBus => messageBus;
+    public bool IsReady => isReady;
 
     AbilitySet rootAbilitySet;
     AbilitySet abilitySet = new();
@@ -24,6 +25,8 @@ public partial class Entity : MonoBehaviour , IControlled
     
     Entity parent;
     int uniqueId;
+
+    bool isReady;
 
     public void Initialize(AbilitySet abilitySet, IInitData initData = null)
     {
@@ -53,6 +56,8 @@ public partial class Entity : MonoBehaviour , IControlled
         {
             ability.Ready();
         }
+
+        isReady = true;
     }
 
     void NextUniqueId()
