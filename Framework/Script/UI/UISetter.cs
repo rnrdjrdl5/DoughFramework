@@ -23,4 +23,14 @@ public abstract class UISetter : MonoBehaviour
         
         text.text = str;
     }
+
+    protected void SetObject(GameObject obj, bool isActive)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+
+        obj.SetActive(isActive);
+    }
 }

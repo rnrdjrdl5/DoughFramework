@@ -12,7 +12,8 @@ public abstract class Panel : Entity
     
     [SerializeField] List<PanelElement> panelElements;
     [SerializeField] Canvas canvas;
-    
+
+    DataSet targetDataSet = new();
     MessageBus targetMessageBus;
     PanelAbility parentPanelAbility;
 
@@ -52,6 +53,8 @@ public abstract class Panel : Entity
     
     void UnsetTargetPanelDatas()
     {
+        targetDataSet.TryUnsetTargetDatas();
+        
         foreach (var element in panelElements)
         {
             element.UnsetTargetPanelDatas();
@@ -87,6 +90,8 @@ public abstract class Panel : Entity
     
     public void SetTargetPanelDatas(IEnumerable<IData> elements)
     {
+        targetDataSet.SetTargetDatas(elements);
+        
         foreach (var element in panelElements)
         {
             element.SetTargetPanelDatas(elements);
@@ -126,6 +131,11 @@ public abstract class Panel : Entity
         return panelElements.Where(element => typeof(TElement).IsAssignableFrom(element.GetType()))
             .Cast<TElement>()
             .FirstOrDefault();
+    }
+    
+    public TElement GetTargetPanelDatas<TElement>() where TElement : class, IData
+    {
+        return targetDataSet.GetTargetDatas<TElement>();
     }
     
     public virtual void Close()
