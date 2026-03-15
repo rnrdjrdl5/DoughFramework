@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class PanelElement : MonoBehaviour
 {
-    public MessageBus TargetMessageBus => targetMessageBus;
+    public MessageBus ExternalMessageBus => externalMessageBus;
     public Panel Panel => panel;
 
     Panel panel;
     DataSet targetDataSet = new();
-    MessageBus targetMessageBus;
+    MessageBus externalMessageBus;
 
     public virtual void Initialize(Panel panel, IInitData initData = null)
     {
@@ -22,14 +22,14 @@ public class PanelElement : MonoBehaviour
         
     }
 
-    public void SetTargetMessageBus(MessageBus messageBus)
+    public void SetExternalMessageBus(MessageBus messageBus)
     {
-        this.targetMessageBus = messageBus;
+        this.externalMessageBus = messageBus;
     }
 
-    public void UnsetTargetMessageBus()
+    public void UnsetExternalMessageBus()
     {
-        targetMessageBus = null;
+        externalMessageBus = null;
     }
     
     public void SetTargetPanelDatas(IEnumerable<IData> datas)

@@ -45,9 +45,8 @@ public partial class Entity : MonoBehaviour , IControlled
         NextUniqueId();
 
         InitEntityDatas(initData);
+        InitMessageBus();
         InitAbilities(initData);
-
-        messageBus = GetEntityData<MessageBus>();
     }
 
     public virtual void Ready()
@@ -79,6 +78,24 @@ public partial class Entity : MonoBehaviour , IControlled
             var entityData = System.Activator.CreateInstance(type) as IEntityData;
             entityDatas.Add(entityData);
             entityData.Initialize(initData);
+        }
+    }
+
+    void InitMessageBus()
+    {
+        messageBus = GetEntityData<MessageBus>();
+        if (messageBus == null)
+        {
+            return;
+        }
+
+        foreach (var entityData in entityDatas)
+        {
+            if (entityData is IMessageBus messageBusOwner)
+            {
+                messageBusOwner.MessageBus = messageBus;
+                messageBusOwner.OnSetMessageBus();
+            }
         }
     }
 

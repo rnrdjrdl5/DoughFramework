@@ -170,7 +170,7 @@ public class Flow : Flow<Entity>
 
         return null;
     }
-ㅑ
+
     public bool IsActivateFlow<FlowType>() where FlowType : Flow
     {
         return typeof(FlowType) == activatedChildFlow.GetType();

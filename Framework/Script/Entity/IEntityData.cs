@@ -7,6 +7,12 @@ public interface IEntityData : IData
     void Uninitialize();
 }
 
+public interface IMessageBus
+{
+    MessageBus MessageBus { get; set; }
+    void OnSetMessageBus();
+}
+
 [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
 public class EntityDataAttribute : Attribute
 {

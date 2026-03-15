@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class Panel : Entity
 {
-    public MessageBus TargetMessageBus => targetMessageBus;
+    public MessageBus ExternalMessageBus => externalMessageBus;
     public Canvas Canvas => canvas;
     public virtual int PanelCustomOffset { get; protected set; }
     public int PanelOrder => panelOrder + panelOrderOffset + PanelCustomOffset;
@@ -17,7 +17,7 @@ public abstract class Panel : Entity
     [SerializeField] Canvas canvas;
     
     DataSet targetDataSet = new();
-    MessageBus targetMessageBus;
+    MessageBus externalMessageBus;
     PanelAbility parentPanelAbility;
 
     int panelOrder;
@@ -48,7 +48,7 @@ public abstract class Panel : Entity
     public override void Uninitialize()
     {
         UnsetTargetPanelDatas();
-        UnsetTargetMessageBus();
+        UnsetExternalMessageBus();
         UninitPanelElements();
         
         base.Uninitialize();
@@ -70,14 +70,14 @@ public abstract class Panel : Entity
         OnUnsetPanelDatas?.Invoke();
     }
     
-    void UnsetTargetMessageBus()
+    void UnsetExternalMessageBus()
     {
         foreach (var panelElement in panelElements)
         {
-            panelElement.UnsetTargetMessageBus();
+            panelElement.UnsetExternalMessageBus();
         }
         
-        targetMessageBus = null;
+        externalMessageBus = null;
     }
 
     void UninitPanelElements()
@@ -88,13 +88,13 @@ public abstract class Panel : Entity
         }
     }
 
-    public void SetTargetData(Entity entity, MessageBus targetMessageBus)
+    public void SetTargetData(Entity entity, MessageBus externalMessageBus)
     {
+        UnsetExternalMessageBus();
+        SetExternalMessageBus(externalMessageBus);
+        
         UnsetTargetPanelDatas();
         SetTargetPanelDatas(entity.ToData());
-        
-        UnsetTargetMessageBus();
-        SetTargetMessageBus(targetMessageBus);
     }
     
     public void SetTargetPanelDatas(IEnumerable<IData> elements)
@@ -113,13 +113,13 @@ public abstract class Panel : Entity
         OnSetPanelDatas?.Invoke();
     }
     
-    public void SetTargetMessageBus(MessageBus targetMessageBus)
+    public void SetExternalMessageBus(MessageBus externalMessageBus)
     {
-        this.targetMessageBus = targetMessageBus;
+        this.externalMessageBus = externalMessageBus;
 
         foreach (var panelElement in panelElements)
         {
-            panelElement.SetTargetMessageBus(targetMessageBus);
+            panelElement.SetExternalMessageBus(externalMessageBus);
         }
     }
 

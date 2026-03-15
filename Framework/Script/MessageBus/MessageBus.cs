@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class MessageBus : IEntityData
 {
-    public event Action OnChanged;
-    
     readonly Dictionary<Type, List<Delegate>> handlers = new();
 
     public void Initialize(IInitData initData = null)
