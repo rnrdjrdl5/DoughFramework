@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Data;
 
-public class FormulaParser : MonoBehaviour
+public class FormulaParser
 {
     static string OperateStr = "+-*/()";
     
