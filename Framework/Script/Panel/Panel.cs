@@ -10,8 +10,8 @@ public abstract class Panel : Entity
     public virtual int PanelCustomOffset { get; protected set; }
     public int PanelOrder => panelOrder + panelOrderOffset + PanelCustomOffset;
     public int PanelOrderOffset => panelOrderOffset;
-    public event Action OnUnsetPanelDatas;
-    public event Action OnSetPanelDatas;
+    public event Action OnUnsetPanelDatasAction;
+    public event Action OnSetPanelDatasAction;
     
     [SerializeField] List<PanelElement> panelElements;
     [SerializeField] Canvas canvas;
@@ -56,8 +56,10 @@ public abstract class Panel : Entity
     
     void UnsetTargetPanelDatas()
     {
-        targetDataSet.TryUnsetTargetDatas();
-        UnsetPanelDatas();
+        if (targetDataSet.TryUnsetTargetDatas())
+        {
+            OnUnsetPanelDatas();
+        }
         
         foreach (var element in panelElements)
         {
@@ -65,9 +67,9 @@ public abstract class Panel : Entity
         }
     }
 
-    protected virtual void UnsetPanelDatas()
+    protected virtual void OnUnsetPanelDatas()
     {
-        OnUnsetPanelDatas?.Invoke();
+        OnUnsetPanelDatasAction?.Invoke();
     }
     
     void UnsetExternalMessageBus()
@@ -100,7 +102,7 @@ public abstract class Panel : Entity
     public void SetTargetPanelDatas(IEnumerable<IData> elements)
     {
         targetDataSet.SetTargetDatas(elements);
-        SetPanelDatas();
+        OnSetPanelDatas();
         
         foreach (var element in panelElements)
         {
@@ -108,9 +110,9 @@ public abstract class Panel : Entity
         }
     }
 
-    protected virtual void SetPanelDatas()
+    protected virtual void OnSetPanelDatas()
     {
-        OnSetPanelDatas?.Invoke();
+        OnSetPanelDatasAction?.Invoke();
     }
     
     public void SetExternalMessageBus(MessageBus externalMessageBus)
