@@ -4,32 +4,31 @@ using System.Linq;
 using UnityEngine;
 
 [EntityData(typeof(MessageBus))]
-public partial class Entity : MonoBehaviour , IControlled
+public partial class Entity : MonoBehaviour , IControlled, IUniqueId
 {
-    static int nextUniqueId = 0;
     static int DefaultHierarchyLevel = 0;
     
     public Entity Parent => parent;
     public IReadOnlyList<IEntityData> EntityDatas => entityDatas;
-    public int UniqueId => uniqueId;
+    public long UniqueId { get; set; }
     public AbilitySet AbilitySet => abilitySet;
     public AbilitySet RootAbilitySet => rootAbilitySet;
     public MessageBus MessageBus => messageBus;
     public bool IsReady => isReady;
-
+    
+    List<IEntityData> entityDatas = new();
+    List<IEntityData> overrideEntityDatas = new();
     AbilitySet rootAbilitySet;
     AbilitySet abilitySet = new();
     EntityRegistry children = new();
-    List<IEntityData> entityDatas = new();
     MessageBus messageBus;
-    
     Entity parent;
-    int uniqueId;
-
     bool isReady;
 
     public void Initialize(AbilitySet abilitySet, IInitData initData = null)
     {
+        PreInitialize(initData);
+        
         InitializeRootAbilitySet(abilitySet);
         Initialize(initData);
     }
@@ -38,12 +37,19 @@ public partial class Entity : MonoBehaviour , IControlled
     {
         this.rootAbilitySet = rootAbilitySet;
     }
-    
-    public virtual void Initialize(IInitData initData = null)
+
+    protected virtual void PreInitialize(IInitData initData = null)
     {
         initData ??= EmptyInitData.Instance;
-        NextUniqueId();
-
+        
+        if (initData is IUniqueId uniqueId)
+        {
+            SetUniqueId(uniqueId.UniqueId);
+        }
+    }
+    
+    protected virtual void Initialize(IInitData initData = null)
+    {
         InitEntityDatas(initData);
         InitMessageBus();
         InitAbilities(initData);
@@ -59,11 +65,11 @@ public partial class Entity : MonoBehaviour , IControlled
         isReady = true;
     }
 
-    void NextUniqueId()
+    void SetUniqueId(long uid = 0)
     {
-        uniqueId = ++nextUniqueId;
+        UniqueId = uid == 0 ? IDLogic.NewUniqueId() : uid;
     }
-
+    
     void InitEntityDatas(IInitData initData)
     {
         entityDatas.Clear();
@@ -75,6 +81,13 @@ public partial class Entity : MonoBehaviour , IControlled
         
         foreach (var type in innerTypes)
         {
+            var overrideEntityData = overrideEntityDatas.FirstOrDefault(entityData => entityData.Equals(type));
+            if (overrideEntityData != null)
+            {
+                entityDatas.Add(overrideEntityData);
+                continue;
+            }
+            
             var entityData = System.Activator.CreateInstance(type) as IEntityData;
             entityDatas.Add(entityData);
             entityData.Initialize(initData);
@@ -243,5 +256,15 @@ public partial class Entity : MonoBehaviour , IControlled
         return EntityDatas.Where(entity => typeof(TEntityData).IsAssignableFrom(entity.GetType()))
             .Cast<TEntityData>()
             .FirstOrDefault();
+    }
+
+    public void AddOverrideEntityData(IEntityData entityData)
+    {
+        overrideEntityDatas.Add(entityData);
+    }
+
+    public void ClearOverrideEntityData()
+    {
+        overrideEntityDatas.Clear();
     }
 }

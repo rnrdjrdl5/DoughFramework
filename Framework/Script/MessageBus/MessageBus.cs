@@ -1,10 +1,11 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
+[JsonObject(MemberSerialization.OptIn)]
 public class MessageBus : IEntityData
 {
-    readonly Dictionary<Type, List<Delegate>> handlers = new();
+    [JsonIgnore] readonly Dictionary<Type, List<Delegate>> handlers = new();
 
     public void Initialize(IInitData initData = null)
     {

@@ -23,9 +23,8 @@ public abstract class Panel : Entity
     int panelOrder;
     int panelOrderOffset;
 
-    public override void Initialize(IInitData initData = null)
+    protected override void Initialize(IInitData initData = null)
     {
-        initData ??= EmptyInitData.Instance;
         base.Initialize(initData);
         
         InitPanelAbility();

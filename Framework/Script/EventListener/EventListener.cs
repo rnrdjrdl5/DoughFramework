@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
+[JsonObject(MemberSerialization.OptIn)]
 public class EventListener : IEntityData
 {
-    public MessageBus MessageBus { get; set; }
+    [JsonIgnore] public MessageBus MessageBus { get; set; }
 
-    Dictionary<int, List<Action<int, Values>>> listeners = new();
+    [JsonIgnore] Dictionary<int, List<Action<int, Values>>> listeners = new();
     
     public void Initialize(IInitData initData = null)
     {
