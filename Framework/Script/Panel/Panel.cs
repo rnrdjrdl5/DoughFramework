@@ -91,15 +91,14 @@ public abstract class Panel : Entity
 
     public void SetTargetData(Entity entity, MessageBus externalMessageBus)
     {
-        UnsetExternalMessageBus();
         SetExternalMessageBus(externalMessageBus);
-        
-        UnsetTargetPanelDatas();
         SetTargetPanelDatas(entity.ToData());
     }
     
     public void SetTargetPanelDatas(IEnumerable<IData> elements)
     {
+        UnsetTargetPanelDatas();
+        
         targetDataSet.SetTargetDatas(elements);
         OnSetPanelDatas();
         
@@ -116,8 +115,9 @@ public abstract class Panel : Entity
     
     public void SetExternalMessageBus(MessageBus externalMessageBus)
     {
+        UnsetExternalMessageBus();
+        
         this.externalMessageBus = externalMessageBus;
-
         foreach (var panelElement in panelElements)
         {
             panelElement.SetExternalMessageBus(externalMessageBus);
