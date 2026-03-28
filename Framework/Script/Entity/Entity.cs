@@ -46,6 +46,11 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
         {
             SetUniqueId(uniqueId.UniqueId);
         }
+
+        if (initData is IPositionData positionData)
+        {
+            transform.position = positionData.Position;
+        }
     }
     
     protected virtual void Initialize(IInitData initData = null)
