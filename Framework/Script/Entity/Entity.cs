@@ -86,7 +86,7 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
         
         foreach (var type in innerTypes)
         {
-            var overrideEntityData = overrideEntityDatas.FirstOrDefault(entityData => entityData.Equals(type));
+            var overrideEntityData = overrideEntityDatas.FirstOrDefault(entityData => entityData.GetType() == type);
             if (overrideEntityData != null)
             {
                 entityDatas.Add(overrideEntityData);
