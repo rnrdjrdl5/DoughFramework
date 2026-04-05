@@ -250,6 +250,46 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
         
         return current;
     }
+
+    public EntityType GetFromRoot<EntityType>() where EntityType : Entity
+    {
+        var rootParent = GetRootParent();
+        return rootParent?.GetInChildrenRecursive<EntityType>();
+    }
+
+    public EntityType GetInChildrenRecursive<EntityType>() where EntityType : Entity
+    {
+        if (this is EntityType self)
+        {
+            return self;
+        }
+
+        return GetInChildrenRecursive<EntityType>(this);
+    }
+
+    static EntityType GetInChildrenRecursive<EntityType>(Entity entity) where EntityType : Entity
+    {
+        if (entity == null)
+        {
+            return null;
+        }
+
+        for (var i = 0; i < entity.children.Entities.Count; i++)
+        {
+            var child = entity.children.Entities[i];
+            if (child is EntityType target)
+            {
+                return target;
+            }
+
+            if (GetInChildrenRecursive<EntityType>(child) is EntityType nestedTarget)
+            {
+                return nestedTarget;
+            }
+        }
+
+        return null;
+    }
     
     public TEntityData GetEntityData<TEntityData>() where TEntityData : class, IEntityData
     {

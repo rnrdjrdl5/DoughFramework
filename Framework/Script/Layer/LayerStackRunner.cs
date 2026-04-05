@@ -1,34 +1,10 @@
-using System.Collections.Generic;
-
-public class LayerStackRunner<TLayer, TInput>
-    where TLayer : struct, System.Enum
+public class LayerStackRunner<TInput>
 {
-    readonly Dictionary<TLayer, ILayerProcessor<TLayer, TInput>> registeredProcessors = new();
-    readonly LayerStack<TLayer> activeLayerStack;
+    readonly LayerStack<TInput> activeLayerStack;
 
-    public LayerStackRunner(LayerStack<TLayer> activeLayerStack)
+    public LayerStackRunner(LayerStack<TInput> activeLayerStack)
     {
         this.activeLayerStack = activeLayerStack;
-    }
-
-    public void RegisterProcessor(ILayerProcessor<TLayer, TInput> layerProcessor)
-    {
-        if (layerProcessor == null)
-        {
-            return;
-        }
-
-        registeredProcessors[layerProcessor.LayerType] = layerProcessor;
-    }
-
-    public bool UnregisterProcessor(ILayerProcessor<TLayer, TInput> layerProcessor)
-    {
-        if (layerProcessor == null)
-        {
-            return false;
-        }
-
-        return registeredProcessors.Remove(layerProcessor.LayerType);
     }
 
     public LayerResult ProcessInput(TInput input)
@@ -38,9 +14,9 @@ public class LayerStackRunner<TLayer, TInput>
             return LayerResult.Pass;
         }
 
-        foreach (var layerType in activeLayerStack.GetLayersTopFirst())
+        foreach (var layerProcessor in activeLayerStack.GetLayersTopFirst())
         {
-            if (!registeredProcessors.TryGetValue(layerType, out var layerProcessor) || layerProcessor == null)
+            if (layerProcessor == null)
             {
                 continue;
             }

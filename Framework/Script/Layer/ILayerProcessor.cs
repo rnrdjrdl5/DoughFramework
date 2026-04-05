@@ -1,6 +1,4 @@
-public interface ILayerProcessor<TLayer, TInput>
-    where TLayer : struct, System.Enum
+public interface ILayerProcessor<TInput>
 {
-    TLayer LayerType { get; }
     LayerResult ProcessInput(TInput input);
 }

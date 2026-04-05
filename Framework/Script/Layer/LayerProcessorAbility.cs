@@ -1,18 +1,17 @@
-public abstract class LayerProcessorAbility<TLayer, TInput> : ProcessorAbility
-    where TLayer : struct, System.Enum
+public abstract class LayerProcessorAbility<TInput> : ProcessorAbility
 {
-    public LayerStack<TLayer> LayerStack => layerStack;
-    public LayerStackRunner<TLayer, TInput> LayerStackRunner => layerStackRunner;
+    public LayerStack<TInput> LayerStack => layerStack;
+    public LayerStackRunner<TInput> LayerStackRunner => layerStackRunner;
 
-    LayerStack<TLayer> layerStack;
-    LayerStackRunner<TLayer, TInput> layerStackRunner;
+    LayerStack<TInput> layerStack;
+    LayerStackRunner<TInput> layerStackRunner;
 
     public override void Initialize(IInitData initData = null)
     {
         initData ??= EmptyInitData.Instance;
 
-        layerStack = new LayerStack<TLayer>();
-        layerStackRunner = new LayerStackRunner<TLayer, TInput>(layerStack);
+        layerStack = new LayerStack<TInput>();
+        layerStackRunner = new LayerStackRunner<TInput>(layerStack);
 
         base.Initialize(initData);
     }
@@ -26,40 +25,30 @@ public abstract class LayerProcessorAbility<TLayer, TInput> : ProcessorAbility
         base.Uninitialize();
     }
 
-    public void PushLayer(TLayer layerType)
+    public void PushLayer(ILayerProcessor<TInput> layerProcessor)
     {
-        layerStack?.PushLayer(layerType);
+        layerStack?.PushLayer(layerProcessor);
     }
 
-    public bool RemoveLayer(TLayer layerType)
+    public bool RemoveLayer(ILayerProcessor<TInput> layerProcessor)
     {
-        return layerStack?.RemoveLayer(layerType) ?? false;
+        return layerStack?.RemoveLayer(layerProcessor) ?? false;
     }
 
-    public bool ContainsLayer(TLayer layerType)
+    public bool ContainsLayer(ILayerProcessor<TInput> layerProcessor)
     {
-        return layerStack?.ContainsLayer(layerType) ?? false;
+        return layerStack?.ContainsLayer(layerProcessor) ?? false;
     }
 
-    public bool TryGetTopLayer(out TLayer layerType)
+    public bool TryGetTopLayer(out ILayerProcessor<TInput> layerProcessor)
     {
         if (layerStack != null)
         {
-            return layerStack.TryGetTopLayer(out layerType);
+            return layerStack.TryGetTopLayer(out layerProcessor);
         }
 
-        layerType = default;
+        layerProcessor = default;
         return false;
-    }
-
-    public void RegisterLayerProcessor(ILayerProcessor<TLayer, TInput> layerProcessor)
-    {
-        layerStackRunner?.RegisterProcessor(layerProcessor);
-    }
-
-    public bool UnregisterLayerProcessor(ILayerProcessor<TLayer, TInput> layerProcessor)
-    {
-        return layerStackRunner?.UnregisterProcessor(layerProcessor) ?? false;
     }
 
     public LayerResult ProcessInput(TInput input)
