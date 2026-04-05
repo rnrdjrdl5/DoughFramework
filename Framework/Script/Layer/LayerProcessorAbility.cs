@@ -57,9 +57,9 @@ public abstract class LayerProcessorAbility<TLayer, TInput> : ProcessorAbility
         layerStackRunner?.RegisterProcessor(layerProcessor);
     }
 
-    public bool UnregisterLayerProcessor(TLayer layerType)
+    public bool UnregisterLayerProcessor(ILayerProcessor<TLayer, TInput> layerProcessor)
     {
-        return layerStackRunner?.UnregisterProcessor(layerType) ?? false;
+        return layerStackRunner?.UnregisterProcessor(layerProcessor) ?? false;
     }
 
     public LayerResult ProcessInput(TInput input)

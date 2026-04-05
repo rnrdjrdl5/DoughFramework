@@ -21,9 +21,14 @@ public class LayerStackRunner<TLayer, TInput>
         registeredProcessors[layerProcessor.LayerType] = layerProcessor;
     }
 
-    public bool UnregisterProcessor(TLayer layerType)
+    public bool UnregisterProcessor(ILayerProcessor<TLayer, TInput> layerProcessor)
     {
-        return registeredProcessors.Remove(layerType);
+        if (layerProcessor == null)
+        {
+            return false;
+        }
+
+        return registeredProcessors.Remove(layerProcessor.LayerType);
     }
 
     public LayerResult ProcessInput(TInput input)
