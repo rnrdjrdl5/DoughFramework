@@ -8,6 +8,9 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
 {
     static int DefaultHierarchyLevel = 0;
     
+    public event Action<Entity> OnChildAdded;
+    public event Action<Entity> OnChildRemoved;
+
     public Entity Parent => parent;
     public IReadOnlyList<IEntityData> EntityDatas => entityDatas;
     public long UniqueId { get; set; }
@@ -185,6 +188,7 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
         SetParent(entity);
         
         children.AddEntity(entity);
+        OnChildAdded?.Invoke(entity);
     }
 
     public void SetParent(Entity entity)
@@ -206,6 +210,7 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
     
     public void RemoveChild(Entity entity)
     {
+        OnChildRemoved?.Invoke(entity);
         entity.Uninitialize();
         children.RemoveEntity(entity);
         
