@@ -6,6 +6,12 @@ using UnityEngine;
 [EntityData(typeof(MessageBus))]
 public partial class Entity : MonoBehaviour , IControlled, IUniqueId
 {
+    class OwnedEntityData
+    {
+        public IEntityData Data;
+        public bool IsOwned;
+    }
+
     static int DefaultHierarchyLevel = 0;
     
     public event Action<Entity> OnChildAdded;
@@ -19,8 +25,9 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
     public MessageBus MessageBus => messageBus;
     public bool IsReady => isReady;
     
-    List<IEntityData> entityDatas = new();
-    List<IEntityData> overrideEntityDatas = new();
+    readonly List<IEntityData> entityDatas = new();
+    readonly List<OwnedEntityData> ownedEntityDatas = new();
+    readonly List<OwnedEntityData> overrideEntityDatas = new();
     AbilitySet rootAbilitySet;
     AbilitySet abilitySet = new();
     EntityRegistry children = new();
@@ -80,6 +87,7 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
     
     void InitEntityDatas(IInitData initData)
     {
+        ownedEntityDatas.Clear();
         entityDatas.Clear();
         
         var innerTypes = GetType()
@@ -89,17 +97,32 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
         
         foreach (var type in innerTypes)
         {
-            var overrideEntityData = overrideEntityDatas.FirstOrDefault(entityData => entityData.GetType() == type);
-            if (overrideEntityData != null)
+            var overrideEntry = overrideEntityDatas.FirstOrDefault(entry => entry.Data.GetType() == type);
+            if (overrideEntry != null)
             {
-                entityDatas.Add(overrideEntityData);
+                AddOwnedEntityData(overrideEntry);
                 continue;
             }
             
             var entityData = System.Activator.CreateInstance(type) as IEntityData;
-            entityDatas.Add(entityData);
+            AddOwnedEntityData(new OwnedEntityData
+            {
+                Data = entityData,
+                IsOwned = true
+            });
             entityData.Initialize(initData);
         }
+    }
+
+    void AddOwnedEntityData(OwnedEntityData ownedEntityData)
+    {
+        if (ownedEntityData?.Data == null)
+        {
+            return;
+        }
+
+        ownedEntityDatas.Add(ownedEntityData);
+        entityDatas.Add(ownedEntityData.Data);
     }
 
     void InitMessageBus()
@@ -155,9 +178,12 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
 
     void UninitEntityDatas()
     {
-        foreach (var entityData in entityDatas)
+        foreach (var ownedEntityData in ownedEntityDatas)
         {
-            entityData.Uninitialize();
+            if (ownedEntityData.IsOwned)
+            {
+                ownedEntityData.Data.Uninitialize();
+            }
         }
     }
 
@@ -308,9 +334,18 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
             .FirstOrDefault();
     }
 
-    public void AddOverrideEntityData(IEntityData entityData)
+    public void AddOverrideEntityData(IEntityData entityData, bool isOwned = false)
     {
-        overrideEntityDatas.Add(entityData);
+        if (entityData == null)
+        {
+            return;
+        }
+
+        overrideEntityDatas.Add(new OwnedEntityData
+        {
+            Data = entityData,
+            IsOwned = isOwned
+        });
     }
 
     public void ClearOverrideEntityData()
