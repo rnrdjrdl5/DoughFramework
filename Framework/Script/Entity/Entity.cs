@@ -347,9 +347,4 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
             IsOwned = isOwned
         });
     }
-
-    public void ClearOverrideEntityData()
-    {
-        overrideEntityDatas.Clear();
-    }
 }
