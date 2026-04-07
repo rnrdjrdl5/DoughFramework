@@ -173,7 +173,7 @@ public class Flow : Flow<Entity>
 
     public bool IsActivateFlow<FlowType>() where FlowType : Flow
     {
-        return typeof(FlowType) == activatedChildFlow.GetType();
+        return activatedChildFlow != null && typeof(FlowType) == activatedChildFlow.GetType();
     }
     public virtual void OnAddFlow()
     {
@@ -208,7 +208,11 @@ public class Flow : Flow<Entity>
 
     public virtual void OnExitFlow()
     {
-
+        if (activatedChildFlow != null)
+        {
+            activatedChildFlow.OnExitFlow();
+            activatedChildFlow = null;
+        }
     }
 }
 
