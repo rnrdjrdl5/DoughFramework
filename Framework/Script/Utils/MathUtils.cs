@@ -33,6 +33,11 @@ public static class MathUtils
         return roll < clampedThreshold;
     }
 
+    public static float DistanceSqr2D(Vector3 positionA, Vector3 positionB)
+    {
+        return ((Vector2)positionA - (Vector2)positionB).sqrMagnitude;
+    }
+
     public static int SelectRandomIndexByWeight(List<float> weights)
     {
         if (weights == null || weights.Count == 0)

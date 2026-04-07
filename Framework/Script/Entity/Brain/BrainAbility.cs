@@ -122,11 +122,19 @@ public class BrainAbility : Ability
 
     void OnChildRemoved(Entity entity)
     {
-        if (entity is not Brain brain)
+        if (entity is Brain brain)
         {
+            Unregister(brain);
             return;
         }
 
-        Unregister(brain);
+        var controlledBrains = Entity.GetChildren<Brain>()
+            .Where(brain => brain != null && brain.Controll == entity)
+            .ToList();
+
+        foreach (var controlledBrain in controlledBrains)
+        {
+            Entity.RemoveChild(controlledBrain);
+        }
     }
 }

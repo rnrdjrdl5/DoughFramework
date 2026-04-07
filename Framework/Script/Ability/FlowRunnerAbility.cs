@@ -31,4 +31,23 @@ public class FlowRunnerAbility : Ability
         
         flow.OnAddFlow();
     }
+
+    public FlowType SetRootFlow<FlowType>() where FlowType : Flow, new()
+    {
+        var rootFlow = Flow.Create<FlowType>(Entity);
+        SetRootFlow(rootFlow);
+        rootFlow.NextChildFlow();
+
+        return rootFlow;
+    }
+
+    public FlowType SetRootProcessorFlow<FlowType>(Processor processor) where FlowType : ProcessorFlow, new()
+    {
+        var rootFlow = Flow.Create<FlowType>(Entity);
+        rootFlow.SetProcessor(processor);
+        SetRootFlow(rootFlow);
+        rootFlow.NextChildFlow();
+
+        return rootFlow;
+    }
 }
