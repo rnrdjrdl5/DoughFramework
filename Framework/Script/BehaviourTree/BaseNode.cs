@@ -26,21 +26,34 @@ public class BaseNode
     
     public virtual void OnEnterNode()
     {
-        nodeState = BTNodeState.Success;
     }
 
     public virtual void OnExitNode()
     {
-        nodeState = BTNodeState.None;
     }
 
     public virtual BTNodeState OnUpdateNode()
     {
         return BTNodeState.Running;
     }
+
+    public virtual void Reset()
+    {
+        if (nodeState == BTNodeState.Running)
+        {
+            OnExitNode();
+        }
+
+        nodeState = BTNodeState.None;
+    }
     
     public void SetTargetData(IEnumerable<IData> datas)
     {
         dataSet.SetTargetDatas(datas);
+    }
+
+    protected internal virtual void SetDataSet(DataSet dataSet)
+    {
+        this.dataSet = dataSet ?? new DataSet();
     }
 }

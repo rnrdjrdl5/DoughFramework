@@ -1,10 +1,28 @@
+using UnityEngine;
 
-// NOTE : 재활용 필요 시, 변수를 Data로 분리해서 관리하기.
-// 단, 어떤 Node의 데이터인지 명시할 방법이 필요하다.
 public class CooldownDecorator : DecoratorNode
 {
+    float cooldownTime;
+    float nextAvailableTime;
+
+    public void SetCooldownTime(float cooldownTime)
+    {
+        this.cooldownTime = Mathf.Max(0.0f, cooldownTime);
+    }
+
     public override BTNodeState OnUpdateNode()
     {
-        return base.OnUpdateNode();
+        if (Time.time < nextAvailableTime)
+        {
+            return BTNodeState.Fail;
+        }
+
+        var result = base.OnUpdateNode();
+        if (result == BTNodeState.Success && cooldownTime > 0.0f)
+        {
+            nextAvailableTime = Time.time + cooldownTime;
+        }
+
+        return result;
     }
 }
