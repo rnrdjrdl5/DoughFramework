@@ -27,9 +27,10 @@ public class FlowRunnerAbility : Ability
     
     public void SetRootFlow(Flow flow)
     {
+        this.flow?.OnExitFlow();
         this.flow = flow;
         
-        flow.OnAddFlow();
+        this.flow?.OnAddFlow();
     }
 
     public FlowType SetRootFlow<FlowType>() where FlowType : Flow, new()

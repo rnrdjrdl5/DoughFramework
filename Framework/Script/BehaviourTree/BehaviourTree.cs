@@ -9,6 +9,6 @@ public class BehaviourTree
 
     public void Update()
     {
-        parentNode.OnUpdateNode();
+        parentNode?.Update();
     }
 }

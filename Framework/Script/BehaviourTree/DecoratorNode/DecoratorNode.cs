@@ -5,6 +5,7 @@ public class DecoratorNode : BaseNode
     public void SetWrapperNode(BaseNode wrapperNode)
     {
         this.wrapperNode = wrapperNode;
+        this.wrapperNode?.SetDataSet(dataSet);
     }
 
     public override BTNodeState OnUpdateNode()
@@ -16,5 +17,17 @@ public class DecoratorNode : BaseNode
         
         var result = wrapperNode.Update();
         return result; 
+    }
+
+    protected internal override void SetDataSet(DataSet dataSet)
+    {
+        base.SetDataSet(dataSet);
+        wrapperNode?.SetDataSet(this.dataSet);
+    }
+
+    public override void Reset()
+    {
+        base.Reset();
+        wrapperNode?.Reset();
     }
 }

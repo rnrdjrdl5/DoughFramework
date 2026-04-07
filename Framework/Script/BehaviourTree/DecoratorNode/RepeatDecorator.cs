@@ -11,14 +11,24 @@ public class RepeatDecorator : DecoratorNode
     
     public override BTNodeState OnUpdateNode()
     {
-        if (repeatCount >= maxRepeatCount)
+        if (maxRepeatCount <= 0)
         {
             return BTNodeState.Fail;
         }
-        
-        repeatCount++;
-        
-        return base.OnUpdateNode();
+
+        if (repeatCount >= maxRepeatCount)
+        {
+            return BTNodeState.Success;
+        }
+
+        var result = base.OnUpdateNode();
+        if (result == BTNodeState.Success)
+        {
+            repeatCount++;
+            return repeatCount >= maxRepeatCount ? BTNodeState.Success : BTNodeState.Running;
+        }
+
+        return result;
     }
 
     public override void OnEnterNode()

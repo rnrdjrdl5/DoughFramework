@@ -31,7 +31,7 @@ public class ProcessorFlow : Flow
         children.Add(flow);
 
         flow.parent = this;
-        flow.SetOwner(flow.Owner);
+        flow.SetOwner(Owner);
         flow.SetProcessor(processor);
         
         flow.OnAddFlow();
