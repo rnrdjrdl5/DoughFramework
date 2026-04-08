@@ -3,18 +3,18 @@ using System.Linq;
 
 public class BrainAbility : Ability
 {
-    public Brain PlayerBrain => playerBrain;
+    public Brain MainPlayerBrain => mainPlayerBrain;
     public IReadOnlyCollection<Brain> Brains => brains;
 
     readonly HashSet<Brain> brains = new();
-    Brain playerBrain;
+    Brain mainPlayerBrain;
 
     public override void Initialize(IInitData initData = null)
     {
         base.Initialize(initData);
 
         brains.Clear();
-        playerBrain = null;
+        mainPlayerBrain = null;
 
         if (Entity == null)
         {
@@ -34,7 +34,7 @@ public class BrainAbility : Ability
         }
 
         brains.Clear();
-        playerBrain = null;
+        mainPlayerBrain = null;
 
         base.Uninitialize();
     }
@@ -56,24 +56,24 @@ public class BrainAbility : Ability
             return false;
         }
 
-        if (playerBrain == brain)
+        if (mainPlayerBrain == brain)
         {
-            playerBrain = null;
+            mainPlayerBrain = null;
         }
 
         return brains.Remove(brain);
     }
 
-    public void SetPlayerBrain(Brain brain)
+    public void SetMainPlayerBrain(Brain brain)
     {
         if (brain == null)
         {
-            playerBrain = null;
+            mainPlayerBrain = null;
             return;
         }
 
         Register(brain);
-        playerBrain = brain;
+        mainPlayerBrain = brain;
     }
 
     public (Brain brain, TControlled controlled) CreateBrainAndControlled<TControlled>(
