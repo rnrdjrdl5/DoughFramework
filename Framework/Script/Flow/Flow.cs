@@ -81,6 +81,8 @@ public class Flow : Flow<Entity>
 
                     else
                     {
+                        activatedChildFlow.OnExitFlow();
+                        activatedChildFlow = null;
                         return null;
                     }
                 }
