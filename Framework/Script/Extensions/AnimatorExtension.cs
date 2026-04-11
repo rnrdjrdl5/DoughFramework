@@ -24,11 +24,11 @@ public static class AnimatorExtension
         return false;
     }
 
-    public static void PlayAnimByState(this Animator animator, int state, bool isRefresh = false)
+    public static void PlayAnimation(this Animator animator, int state, bool withRefresh = false)
     {
         animator.SetInteger(AnimatorParameters.AnimationState, state);
         
-        if (isRefresh)
+        if (withRefresh)
         {
             animator.SetTrigger(AnimatorParameters.Refresh);
         }

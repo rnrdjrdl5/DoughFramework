@@ -18,7 +18,7 @@ public partial class Realm
     {
         AsyncOperationHandle<ResourcesType> handle = Addressables.LoadAssetAsync<ResourcesType>(key);
         await handle.Task;
-
+        
         return handle.Result;
     }
     
@@ -30,8 +30,8 @@ public partial class Realm
     public static async UniTask<SpriteAtlas> LoadAtlasAsync(string atlasPath)
     {
         var handler = Addressables.LoadAssetAsync<SpriteAtlas>(atlasPath);
-        handler.WaitForCompletion();
-
+        await handler.Task;
+        
         return handler.Result;
     }
 
@@ -40,6 +40,19 @@ public partial class Realm
         var atlas = LoadAtlas(atlasPath);
 
         return atlas != null ? atlas.GetSprite(imagePath) : null;
+    }
+
+    public static async UniTask<Sprite> LoadImageAsync(string imagePath)
+    {
+        var handler = Addressables.LoadAssetAsync<Sprite>(imagePath);
+        await handler.Task;
+        
+        return handler.Result;
+    }
+    
+    public static Sprite LoadImage(string imagePath)
+    {
+        return Addressables.LoadAssetAsync<Sprite>(imagePath).WaitForCompletion();
     }
     
     public static async UniTask<Sprite> LoadImageFromAtlasAsync(string atlasPath, string imagePath)
