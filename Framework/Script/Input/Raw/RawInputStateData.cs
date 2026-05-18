@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-public class PhysicalInputStateData : IEntityData, IMessageBus
+public class RawInputStateData : IEntityData, IMessageBus
 {
     [JsonIgnore] public MessageBus MessageBus { get; set; }
 
