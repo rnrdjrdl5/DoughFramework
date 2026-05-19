@@ -73,6 +73,8 @@ public partial class ProcessorAbility : Ability
 
     public override void Uninitialize()
     {
+        ResetProcessorContext();
+
         for (var i = processorSet.Processors.Count - 1; i >= 0; i--)
         {
             processorSet.RemoveProcessor(processorSet.Processors[i]);
