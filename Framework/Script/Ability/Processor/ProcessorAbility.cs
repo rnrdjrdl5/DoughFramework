@@ -55,6 +55,8 @@ public partial class ProcessorAbility : Ability
         {
             updateProcessor.Initialize(initData);
         }
+
+        InitializeProcessorContext();
     }
 
     public override void Ready()
