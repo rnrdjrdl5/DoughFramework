@@ -32,6 +32,7 @@ Use the `On` prefix:
 - **Indentation**: 4 spaces
 - **Braces**: Allman style (start on a new line)
 - No underscore (`_`) prefix (disallowed for all variables/fields)
+- Use `var` for local variables when the assigned value makes the type clear.
 
 ## Property Style
 
