@@ -20,15 +20,21 @@ public class EntityRegistry
         OnAddEntity?.Invoke(entity);
     }
 
-    public void RemoveEntity(Entity entity)
+    public bool ContainsEntity(Entity entity)
+    {
+        return entity != null && entities.Contains(entity);
+    }
+
+    public bool RemoveEntity(Entity entity)
     {
         if (!entities.Contains(entity))
         {
-            return;
+            return false;
         }
         
         entities.Remove(entity);
         OnRemoveEntity?.Invoke(entity);
+        return true;
     }
 
     public IEnumerable<EntityType> GetEntities<EntityType>() where EntityType : Entity

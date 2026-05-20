@@ -236,12 +236,24 @@ public partial class Entity : MonoBehaviour , IControlled, IUniqueId
     
     public void RemoveChild(Entity entity)
     {
+        TryRemoveChild(entity);
+    }
+
+    public bool TryRemoveChild(Entity entity)
+    {
+        if (!children.ContainsEntity(entity))
+        {
+            return false;
+        }
+
         OnChildRemoved?.Invoke(entity);
         entity.Uninitialize();
         children.RemoveEntity(entity);
         
         var objectPoolModule = rootAbilitySet.GetAbility<ObjectPoolAbility>();
         objectPoolModule.DeallocateGameObject(entity.gameObject);
+
+        return true;
     }
 
     public void RemoveChildren()
