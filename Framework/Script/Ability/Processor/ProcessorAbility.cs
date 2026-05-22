@@ -56,6 +56,7 @@ public partial class ProcessorAbility : Ability
             updateProcessor.Initialize(initData);
         }
 
+        CreateProcessorContext();
         InitializeProcessorContext();
     }
 
@@ -104,6 +105,10 @@ public partial class ProcessorAbility : Ability
         {
             updateProcessorSet.Processors[i].Update();
         }
+    }
+
+    protected virtual void CreateProcessorContext()
+    {
     }
 }
 
