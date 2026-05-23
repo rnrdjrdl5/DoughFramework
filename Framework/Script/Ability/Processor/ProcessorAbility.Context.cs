@@ -3,7 +3,7 @@ public partial class ProcessorAbility
     IProcessorContext processorContext;
     bool isProcessorContextInitialized;
 
-    public TContext GetOrCreateContext<TContext>()
+    public TContext GetContext<TContext>()
         where TContext : class, IProcessorContext, new()
     {
         if (processorContext == null)
@@ -16,12 +16,6 @@ public partial class ProcessorAbility
             }
         }
 
-        return processorContext as TContext;
-    }
-
-    public TContext GetContext<TContext>()
-        where TContext : class, IProcessorContext
-    {
         return processorContext as TContext;
     }
 

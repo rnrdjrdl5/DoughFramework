@@ -47,6 +47,9 @@ public partial class ProcessorAbility : Ability
             AddProcessor(updateProcessor, initData);
         }
 
+        CreateProcessorContext();
+        InitializeProcessorContext();
+
         foreach (var processor in processorSet.Processors)
         {
             processor.Initialize(initData);
@@ -55,9 +58,6 @@ public partial class ProcessorAbility : Ability
         {
             updateProcessor.Initialize(initData);
         }
-
-        CreateProcessorContext();
-        InitializeProcessorContext();
     }
 
     public override void Ready()
